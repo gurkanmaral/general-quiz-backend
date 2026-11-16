@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_CONTENT_DIR, parseEnv } from '../src/env';
+import { DEFAULT_CONTENT_DIR, DEFAULT_DATABASE_URL, parseEnv } from '../src/env';
 
 describe('env', () => {
   it('applies defaults to a minimal environment', () => {
@@ -11,6 +11,11 @@ describe('env', () => {
   it('coerces PORT and lists every invalid variable', () => {
     expect(parseEnv({ DATABASE_URL: 'postgresql://db/kno', PORT: '9000' }).PORT).toBe(9000);
     expect(() => parseEnv({ DATABASE_URL: 'mysql://db', PORT: 'abc' })).toThrow(/DATABASE_URL[\s\S]*PORT/);
-    expect(() => parseEnv({})).toThrow(/DATABASE_URL/);
+  });
+
+  it('defaults DATABASE_URL to the local dev database outside production only', () => {
+    expect(parseEnv({}).DATABASE_URL).toBe(DEFAULT_DATABASE_URL);
+    expect(DEFAULT_DATABASE_URL).toBe('postgres://postgres@localhost:5432/kno');
+    expect(() => parseEnv({ NODE_ENV: 'production' })).toThrow(/DATABASE_URL/);
   });
 });

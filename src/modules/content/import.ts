@@ -38,6 +38,10 @@ export function publishedContent(files: ContentFiles): { quizzes: PublishedQuiz[
 export async function importContent(db: Db, dir: string): Promise<ImportReport> {
   const files = await readContentFiles(dir);
   const { quizzes, skippedPending: skippedItems } = publishedContent(files);
+  const allDates = files.schedule.entries.map((entry) => entry.dailyDate);
+  const duplicateDate = allDates.find((date, index) => allDates.indexOf(date) !== index);
+  if (duplicateDate) throw new Error(`daily/schedule.json: duplicate entry for ${duplicateDate}`);
+  // Only published entries are kept; pending or removed ones are deleted from the schedule.
   const entries = files.schedule.entries.filter((entry) => entry.status === 'published');
   const skippedPending = skippedItems + files.schedule.entries.length - entries.length;
 
@@ -64,6 +68,7 @@ export function countChanges(report: ImportReport): number {
     report.questions.unpublished +
     report.rotation.written +
     report.rotation.removed +
-    report.entries.written
+    report.entries.written +
+    report.entries.removed
   );
 }

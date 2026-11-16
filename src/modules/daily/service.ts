@@ -1,4 +1,4 @@
-import { asc, eq, gte, sql } from 'drizzle-orm';
+import { asc, eq, gte, notInArray, sql } from 'drizzle-orm';
 import { isCalendarDate, type DailyQuestion, type DailyResponse } from '@general-quiz/contracts';
 import { rotationSlug, type DailyRotation } from '@general-quiz/shared';
 import type { DbExecutor } from '../../db/client';
@@ -8,18 +8,20 @@ import { rotation, scheduleEntry } from './schema';
 /** Supplied by the app factory (from the quizzes module) so `daily` does not import `quizzes`. */
 export type QuestionLookup = (slug: string) => Promise<DailyQuestion | undefined>;
 
+/** Largest real UTC offset (UTC+14, Line Islands); the smallest is UTC−12. */
 const MAX_OFFSET_MS = 14 * 60 * 60 * 1000;
 
-function utcDateKey(ms: number): string {
-  return new Date(ms).toISOString().slice(0, 10);
+/** The latest date that is "today" somewhere on Earth at `now`. */
+export function latestDailyDate(now: Date): string {
+  return new Date(now.getTime() + MAX_OFFSET_MS).toISOString().slice(0, 10);
 }
 
-/** AD-5: a real `YYYY-MM-DD` that is the local date somewhere on Earth (UTC−14 h … UTC+14 h) at `now`. */
+/**
+ * AD-5 for reads: a real `YYYY-MM-DD` that is not after the latest "today on Earth".
+ * Past dates are valid (the Library reads them); only future Dailies stay hidden.
+ */
 export function isAcceptableDailyDate(dailyDate: string, now: Date): boolean {
-  if (!isCalendarDate(dailyDate)) return false;
-  const earliest = utcDateKey(now.getTime() - MAX_OFFSET_MS);
-  const latest = utcDateKey(now.getTime() + MAX_OFFSET_MS);
-  return dailyDate >= earliest && dailyDate <= latest;
+  return isCalendarDate(dailyDate) && dailyDate <= latestDailyDate(now);
 }
 
 async function readRotation(db: DbExecutor): Promise<DailyRotation | undefined> {
@@ -28,21 +30,23 @@ async function readRotation(db: DbExecutor): Promise<DailyRotation | undefined> 
   return first ? { anchor: first.anchor, questions: rows.map((row) => row.questionSlug) } : undefined;
 }
 
-/** Explicit schedule entry first, then the rotation. */
-export async function scheduledSlug(db: DbExecutor, dailyDate: string): Promise<string | undefined> {
+/** Candidate slugs in priority order: the explicit schedule entry, then the rotation. */
+export async function scheduledSlugs(db: DbExecutor, dailyDate: string): Promise<string[]> {
   const [entry] = await db.select().from(scheduleEntry).where(eq(scheduleEntry.dailyDate, dailyDate)).limit(1);
-  if (entry) return entry.questionSlug;
   const current = await readRotation(db);
-  return current ? rotationSlug(current, dailyDate) : undefined;
+  const fromRotation = current ? rotationSlug(current, dailyDate) : undefined;
+  return [entry?.questionSlug, fromRotation].filter((slug): slug is string => Boolean(slug));
 }
 
 export function createDailyService(db: DbExecutor, lookupQuestion: QuestionLookup) {
   return {
-    /** The Daily for a date, or undefined when nothing published is scheduled. */
+    /** The Daily for a date; an entry whose Question is no longer published falls back to the rotation. */
     async getDaily(dailyDate: string): Promise<DailyResponse | undefined> {
-      const slug = await scheduledSlug(db, dailyDate);
-      const question = slug ? await lookupQuestion(slug) : undefined;
-      return question ? { dailyDate, question } : undefined;
+      for (const slug of await scheduledSlugs(db, dailyDate)) {
+        const question = await lookupQuestion(slug);
+        if (question) return { dailyDate, question };
+      }
+      return undefined;
     },
   };
 }
@@ -52,14 +56,17 @@ export type ScheduleInput = {
   rotation: DailyRotation;
   entries: readonly { dailyDate: string; questionSlug: string }[];
 };
-export type ScheduleSyncReport = { rotation: { written: number; removed: number }; entries: { written: number } };
+export type ScheduleSyncReport = { rotation: { written: number; removed: number }; entries: { written: number; removed: number } };
 
 /**
- * Upserts the rotation by position and schedule entries by Daily Date. Rotation positions beyond the
- * new length are removed (they hold no answers); entries are never deleted.
+ * Makes the stored schedule match `input` exactly: rotation upserted by position, entries by Daily
+ * Date, and positions/entries absent from `input` deleted (schedule rows hold no answers).
  */
 export async function syncSchedule(db: DbExecutor, input: ScheduleInput): Promise<ScheduleSyncReport> {
-  const report: ScheduleSyncReport = { rotation: { written: 0, removed: 0 }, entries: { written: 0 } };
+  const dates = input.entries.map((entry) => entry.dailyDate);
+  const duplicate = dates.find((date, index) => dates.indexOf(date) !== index);
+  if (duplicate) throw new Error(`Duplicate schedule entry for ${duplicate}`);
+  const report: ScheduleSyncReport = { rotation: { written: 0, removed: 0 }, entries: { written: 0, removed: 0 } };
   const now = sql`now()`;
   for (const [position, questionSlug] of input.rotation.questions.entries()) {
     const rows = await db
@@ -91,5 +98,10 @@ export async function syncSchedule(db: DbExecutor, input: ScheduleInput): Promis
       .returning({ dailyDate: scheduleEntry.dailyDate });
     report.entries.written += rows.length;
   }
+  const removedEntries = await db
+    .delete(scheduleEntry)
+    .where(dates.length ? notInArray(scheduleEntry.dailyDate, dates) : undefined)
+    .returning({ dailyDate: scheduleEntry.dailyDate });
+  report.entries.removed = removedEntries.length;
   return report;
 }

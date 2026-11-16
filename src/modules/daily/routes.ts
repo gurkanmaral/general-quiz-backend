@@ -12,7 +12,7 @@ export function dailyRoutes(service: DailyService, now: () => Date) {
         status: 400,
         code: DAILY_PROBLEM_CODES.invalidDate,
         title: 'Invalid Daily Date',
-        detail: 'dailyDate must be a YYYY-MM-DD date that is today somewhere on Earth.',
+        detail: 'dailyDate must be a YYYY-MM-DD date no later than today somewhere on Earth (UTC+14).',
       });
     }
     const daily = await service.getDaily(params.data.dailyDate);

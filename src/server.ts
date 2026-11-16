@@ -15,7 +15,10 @@ const server = serve({ fetch: createApp({ db: database.db, logger }).fetch, port
   logger.info({ port: info.port }, 'KNO. API listening');
 });
 
+let shuttingDown = false;
 const shutdown = () => {
+  if (shuttingDown) return; // a second Ctrl-C must not end the pool twice
+  shuttingDown = true;
   server.close(() => void database.close().then(() => process.exit(0)));
 };
 process.on('SIGINT', shutdown);

@@ -93,6 +93,38 @@ describe('kno import', () => {
     expect(await db.select().from(scheduleEntry)).toEqual([expect.objectContaining({ dailyDate: '2026-12-01', questionSlug: 'largest-desert' })]);
   });
 
+  it('syncs schedule entries exactly: removed or pending entries are deleted', async () => {
+    await editJson('daily/schedule.json', (file) => {
+      file.entries = [
+        { dailyDate: '2026-12-01', question: 'largest-desert', status: 'published' },
+        { dailyDate: '2026-12-02', question: 'http-meaning', status: 'published' },
+        { dailyDate: '2026-12-03', question: 'lotr-oscars', status: 'published' },
+      ];
+    });
+    await importContent(db, dir);
+    await editJson('daily/schedule.json', (file) => {
+      file.entries = [
+        { dailyDate: '2026-12-01', question: 'largest-desert', status: 'published' },
+        { dailyDate: '2026-12-03', question: 'lotr-oscars', status: 'pending' },
+      ];
+    });
+    const report = await importContent(db, dir);
+    expect(report.entries.removed).toBe(2);
+    expect(countChanges(report)).toBe(2);
+    expect((await db.select().from(scheduleEntry)).map((row) => row.dailyDate)).toEqual(['2026-12-01']);
+  });
+
+  it('rejects duplicate schedule dates and writes nothing', async () => {
+    await editJson('daily/schedule.json', (file) => {
+      file.entries = [
+        { dailyDate: '2026-12-01', question: 'largest-desert', status: 'published' },
+        { dailyDate: '2026-12-01', question: 'http-meaning', status: 'pending' },
+      ];
+    });
+    await expect(importContent(db, dir)).rejects.toThrow(/duplicate entry for 2026-12-01/);
+    expect(await db.select().from(question)).toHaveLength(0);
+  });
+
   it('refuses a schedule naming an unpublished question and writes nothing', async () => {
     await editJson('daily/schedule.json', (file) => {
       file.rotation.questions.push('no-such-question');

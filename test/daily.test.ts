@@ -45,17 +45,17 @@ describe('GET /api/v1/daily/:dailyDate', () => {
     expect(body.question.source.url).toBe('https://www.grammy.com/artists/michael-jackson/13202');
   });
 
-  it('accepts the dates that are today at the UTC−14 h and UTC+14 h edges', async () => {
-    for (const date of ['2026-11-15', '2026-11-17']) {
+  it('accepts past dates (Library) and the UTC+14 "today", with the rotation question', async () => {
+    for (const date of ['2026-11-17', '2026-11-15', '2026-11-14', '2025-01-01']) {
       const res = await getDaily(date);
       expect(res.status).toBe(200);
       expect(DailyResponseSchema.parse(await res.json()).question.slug).toBe(rotationSlug(schedule.rotation, date));
     }
   });
 
-  it('rejects dates outside today-somewhere with daily.invalidDate', async () => {
-    await expectInvalidDate('2026-11-14');
+  it('rejects dates after the latest "today on Earth" (UTC+14) with daily.invalidDate', async () => {
     await expectInvalidDate('2026-11-18');
+    await expectInvalidDate('2027-01-01');
   });
 
   it('rejects malformed and impossible dates with daily.invalidDate', async () => {
@@ -67,14 +67,23 @@ describe('GET /api/v1/daily/:dailyDate', () => {
     const body = DailyResponseSchema.parse(await (await getDaily('2026-11-17')).json());
     expect(body.question.slug).toBe('largest-desert');
   });
+
+  it("falls back to the rotation when an entry's question is not published", async () => {
+    await database.db.insert(scheduleEntry).values({ dailyDate: '2026-11-15', questionSlug: 'no-longer-published' });
+    const body = DailyResponseSchema.parse(await (await getDaily('2026-11-15')).json());
+    expect(body.question.slug).toBe(rotationSlug(schedule.rotation, '2026-11-15'));
+  });
 });
 
 describe('isAcceptableDailyDate', () => {
-  it('moves the window with the clock', () => {
-    const lateUtc = new Date('2026-11-16T23:30:00Z'); // UTC+14 is already 11-17 13:30, UTC−14 is 11-16 09:30
-    expect(isAcceptableDailyDate('2026-11-15', lateUtc)).toBe(false);
-    expect(isAcceptableDailyDate('2026-11-16', lateUtc)).toBe(true);
-    expect(isAcceptableDailyDate('2026-11-17', lateUtc)).toBe(true);
+  it('moves the upper bound with the clock (UTC+14)', () => {
+    const early = new Date('2026-11-16T09:59:00Z'); // UTC+14 is 11-16 23:59
+    const late = new Date('2026-11-16T10:00:00Z'); // UTC+14 is 11-17 00:00
+    expect(isAcceptableDailyDate('2026-11-17', early)).toBe(false);
+    expect(isAcceptableDailyDate('2026-11-17', late)).toBe(true);
+    expect(isAcceptableDailyDate('2026-11-18', late)).toBe(false);
+    expect(isAcceptableDailyDate('2020-02-29', late)).toBe(true);
+    expect(isAcceptableDailyDate('2021-02-29', late)).toBe(false);
   });
 });
 

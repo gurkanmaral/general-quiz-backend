@@ -3,6 +3,8 @@ import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 
 const API_ROOT = fileURLToPath(new URL('..', import.meta.url));
+/** Local dev default, so a fresh clone runs without a `.env`; production must set DATABASE_URL. */
+export const DEFAULT_DATABASE_URL = 'postgres://postgres@localhost:5432/kno';
 export const DEFAULT_CONTENT_DIR = fileURLToPath(new URL('../../../content', import.meta.url));
 
 const EnvSchema = z.object({
@@ -16,7 +18,9 @@ export type Env = z.infer<typeof EnvSchema>;
 
 /** Validates configuration once; throws a readable error listing every bad variable. */
 export function parseEnv(source: Record<string, string | undefined>): Env {
-  const result = EnvSchema.safeParse(source);
+  const withDefaults =
+    source.NODE_ENV === 'production' || source.DATABASE_URL ? source : { ...source, DATABASE_URL: DEFAULT_DATABASE_URL };
+  const result = EnvSchema.safeParse(withDefaults);
   if (!result.success) {
     const issues = result.error.issues.map((issue) => `  ${issue.path.join('.')}: ${issue.message}`).join('\n');
     throw new Error(`Invalid environment:\n${issues}`);
