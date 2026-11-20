@@ -1,4 +1,5 @@
-import { doublePrecision, integer, jsonb, pgSchema, text, timestamp } from 'drizzle-orm/pg-core';
+import { boolean, doublePrecision, index, integer, jsonb, pgSchema, primaryKey, smallint, text, timestamp } from 'drizzle-orm/pg-core';
+import { accountsUserTable } from '../accounts';
 import type { DailyQuestion, LocalizedText } from '@general-quiz/contracts';
 
 export const knoQuizzes = pgSchema('kno_quizzes');
@@ -42,3 +43,46 @@ export const question = knoQuizzes.table('question', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+export const soloGameStatus = knoQuizzes.enum('solo_game_status', ['active', 'finished', 'abandoned']);
+
+/**
+ * A Solo Game (FR-14): the Questions drawn for it, in order, and its running score. A player has
+ * at most one active game; starting another abandons it. Rows go with the account (AD-2).
+ */
+export const soloGame = knoQuizzes.table(
+  'solo_game',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => accountsUserTable.id, { onDelete: 'cascade' }),
+    quizSlug: text('quiz_slug')
+      .notNull()
+      .references(() => quiz.slug),
+    questionSlugs: text('question_slugs').array().notNull(),
+    status: soloGameStatus('status').notNull().default('active'),
+    answered: smallint('answered').notNull().default(0),
+    score: smallint('score').notNull().default(0),
+    startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
+    /** When the game was finished or abandoned. */
+    endedAt: timestamp('ended_at', { withTimezone: true }),
+  },
+  (table) => [index('solo_game_user_idx').on(table.userId, table.status)],
+);
+
+/** One recorded answer in a Solo Game; the server decides correctness (AD-3). */
+export const soloAnswer = knoQuizzes.table(
+  'solo_answer',
+  {
+    gameId: text('game_id')
+      .notNull()
+      .references(() => soloGame.id, { onDelete: 'cascade' }),
+    position: smallint('position').notNull(),
+    questionSlug: text('question_slug').notNull(),
+    selectedIndex: smallint('selected_index').notNull(),
+    correct: boolean('correct').notNull(),
+    answeredAt: timestamp('answered_at', { withTimezone: true }).notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.gameId, table.position] })],
+);

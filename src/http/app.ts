@@ -6,7 +6,7 @@ import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
 import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from '../modules/accounts';
 import { createDailyService, dailyRoutes, deleteDailyUserData } from '../modules/daily';
-import { getPublishedQuestion, quizzesRoutes } from '../modules/quizzes';
+import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, quizzesRoutes, soloGameRoutes, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
 export type AppDeps = {
@@ -14,20 +14,24 @@ export type AppDeps = {
   logger: Logger;
   /** Injectable clock for tests. */
   now?: () => Date;
+  /** Injectable randomness (Solo Game draws) for tests. */
+  random?: Random;
   /** Better Auth settings; defaults suit tests and local dev (dev mailer, dev secret). */
   auth?: Partial<AuthConfig>;
 };
 
 /** Builds the HTTP app without listening, so tests call `app.request(...)` directly. */
-export function createApp({ db, logger, now = () => new Date(), auth }: AppDeps) {
+export function createApp({ db, logger, now = () => new Date(), random, auth }: AppDeps) {
   const accounts = createAccounts(
     db,
     { baseURL: DEFAULT_AUTH_URL, secret: DEV_AUTH_SECRET, ...auth, mailer: auth?.mailer ?? createDevMailer(logger) },
     logger,
     // Every module with per-player rows (FR-4).
-    [deleteDailyUserData],
+    [deleteDailyUserData, deleteQuizzesUserData],
   );
   const daily = createDailyService(db, (slug) => getPublishedQuestion(db, slug));
+  const games = createSoloGames(db, { now, random });
+  const quizzesDeps = { db, games, optionalUser: accounts.optionalUser, requireUser: accounts.requireUser };
 
   const app = new Hono();
 
@@ -46,7 +50,8 @@ export function createApp({ db, logger, now = () => new Date(), auth }: AppDeps)
   app.route('/api/v1/auth', accounts.providerRoutes());
   app.route('/api/v1/me', accounts.meRoutes());
   app.route('/api/v1/daily', dailyRoutes(daily, now, accounts.requireUser));
-  app.route('/api/v1/quizzes', quizzesRoutes({ db, optionalUser: accounts.optionalUser }));
+  app.route('/api/v1/quizzes', quizzesRoutes(quizzesDeps));
+  app.route('/api/v1/solo-games', soloGameRoutes(quizzesDeps));
 
   app.notFound((c) => problem(c, { status: 404, code: 'http.notFound', title: 'Not found' }));
   app.onError((error, c) => {

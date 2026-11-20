@@ -1,5 +1,15 @@
 // Public interface of the quizzes module (AD-2). Other modules import only from here.
-export { quizzesRoutes, type QuizzesRouteDeps } from './routes';
+export { quizzesRoutes, soloGameRoutes, type QuizzesRouteDeps } from './routes';
+export {
+  createSoloGames,
+  deleteQuizzesUserData,
+  pickQuestions,
+  type EndedSoloGame,
+  type GameEndedHook,
+  type Random,
+  type SoloGames,
+  type SoloGamesDeps,
+} from './games';
 export {
   getPublishedQuestion,
   listPublishedQuizzes,

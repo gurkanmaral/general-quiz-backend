@@ -29,6 +29,13 @@
       "when": 1795207984350,
       "tag": "0003_quiz_format",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795208544908,
+      "tag": "0004_solo_games",
+      "breakpoints": true
     }
   ]
 }
