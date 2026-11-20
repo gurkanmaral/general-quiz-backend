@@ -1,6 +1,6 @@
 import { boolean, doublePrecision, index, integer, jsonb, pgSchema, primaryKey, smallint, text, timestamp } from 'drizzle-orm/pg-core';
 import { accountsUserTable } from '../accounts';
-import type { DailyQuestion, LocalizedText } from '@general-quiz/contracts';
+import type { DailyQuestion, LocalizedText, UnlockRule } from '@general-quiz/contracts';
 
 export const knoQuizzes = pgSchema('kno_quizzes');
 
@@ -86,3 +86,26 @@ export const soloAnswer = knoQuizzes.table(
   },
   (table) => [primaryKey({ columns: [table.gameId, table.position] })],
 );
+
+export const awardKind = knoQuizzes.enum('award_kind', ['badge', 'title']);
+
+/**
+ * Badge and Title definitions that come with a Quiz's content (FR-16, FR-17), each with a declarative
+ * Unlock Rule (AD-10). Grants, evaluation and Rarity live in `progress`, which reads these through
+ * this module's interface. Withdrawn awards become `unpublished`; grants are never removed.
+ */
+export const award = knoQuizzes.table('award', {
+  slug: text('slug').primaryKey(),
+  quizSlug: text('quiz_slug')
+    .notNull()
+    .references(() => quiz.slug),
+  kind: awardKind('kind').notNull(),
+  status: contentStatus('status').notNull(),
+  position: integer('position').notNull(),
+  name: jsonb('name').$type<LocalizedText>().notNull(),
+  description: jsonb('description').$type<LocalizedText>().notNull(),
+  icon: text('icon').notNull(),
+  unlock: jsonb('unlock').$type<UnlockRule>().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});

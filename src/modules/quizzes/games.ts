@@ -189,6 +189,7 @@ export function createSoloGames<T = undefined>(db: Db, deps: SoloGamesDeps<T> = 
             score: updated!.score,
             result: finished ? { score: updated!.score, total: updated!.questionSlugs.length } : null,
             record: null,
+            unlocks: [],
           },
         };
       });

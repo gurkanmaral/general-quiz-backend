@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { asc, eq } from 'drizzle-orm';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { question, quiz, rotation, scheduleEntry } from '../src/db/schema';
+import { award, question, quiz, rotation, scheduleEntry } from '../src/db/schema';
 import { countChanges, importContent } from '../src/modules/content';
 import { openTestDatabase, truncateAll } from './db';
 
@@ -216,5 +216,53 @@ describe('kno import', () => {
       file.slug = 'planets';
     });
     await expect(importContent(db, dir)).rejects.toThrow(/solar-system\.json[\s\S]*slug: must match the file name/);
+  });
+  it('imports Badges and Titles with their Unlock Rules (Story 3.1)', async () => {
+    const report = await importContent(db, dir);
+    expect(report.awards.written).toBe(5);
+    const rows = await db.select().from(award).where(eq(award.quizSlug, 'lord-of-the-rings'));
+    expect(rows.map((row) => [row.kind, row.slug, row.unlock])).toEqual(
+      expect.arrayContaining([
+        ['badge', 'lotr-middle-earth-fan', { type: 'correctShare', min: 0.8 }],
+        ['title', 'lotr-gandalf', { type: 'allCorrect', difficulty: 'expert' }],
+        ['title', 'lotr-frodo', { type: 'correctShare', min: 0.5 }],
+      ]),
+    );
+    expect(countChanges(await importContent(db, dir))).toBe(0);
+  });
+
+  it('fails the import on an unknown Unlock Rule type, naming the file and item', async () => {
+    await editJson('quizzes/lord-of-the-rings.json', (file) => {
+      file.titles[0].unlock = { type: 'speedRun', seconds: 30 };
+    });
+    await expect(importContent(db, dir)).rejects.toThrow(/lord-of-the-rings\.json[\s\S]*titles\.0\.unlock\.type \(title "lotr-gandalf"\): Invalid discriminator value/);
+    expect(await db.select().from(award)).toHaveLength(0);
+  });
+
+  it('rejects malformed rules of a known type', async () => {
+    await editJson('quizzes/solar-system.json', (file) => {
+      file.badges[0].unlock = { type: 'correctShare', min: 80 };
+    });
+    await expect(importContent(db, dir)).rejects.toThrow(/badges\.0\.unlock\.min \(badge "solar-stargazer"\)/);
+  });
+
+  it('skips pending Badges and marks removed ones unpublished, never deleting them', async () => {
+    await importContent(db, dir);
+    await editJson('quizzes/lord-of-the-rings.json', (file) => {
+      file.badges[0].status = 'pending';
+      file.titles = file.titles.filter((item: { slug: string }) => item.slug !== 'lotr-frodo');
+    });
+    const report = await importContent(db, dir);
+    expect(report.awards.unpublished).toBe(2);
+    expect(report.pending).toEqual(['badge lotr-middle-earth-fan (lord-of-the-rings)']);
+    const rows = await db.select().from(award).where(eq(award.status, 'unpublished'));
+    expect(rows.map((row) => row.slug).sort()).toEqual(['lotr-frodo', 'lotr-middle-earth-fan']);
+  });
+
+  it('refuses duplicate Badge or Title slugs across files', async () => {
+    await editJson('quizzes/solar-system.json', (file) => {
+      file.titles[0].slug = 'lotr-gandalf';
+    });
+    await expect(importContent(db, dir)).rejects.toThrow(/Duplicate badge\/title slug "lotr-gandalf"/);
   });
 });

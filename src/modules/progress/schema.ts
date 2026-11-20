@@ -34,3 +34,18 @@ export const correctQuestion = knoProgress.table(
   },
   (table) => [primaryKey({ columns: [table.userId, table.questionSlug] }), index('correct_question_quiz_idx').on(table.userId, table.quizSlug)],
 );
+
+/** Badges and Titles a player has earned (FR-16, FR-17). Granted once, never removed. */
+export const userAward = knoProgress.table(
+  'user_award',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => accountsUserTable.id, { onDelete: 'cascade' }),
+    /** A Badge or Title slug from the quizzes module (by id only, AD-2). */
+    awardSlug: text('award_slug').notNull(),
+    quizSlug: text('quiz_slug').notNull(),
+    earnedAt: timestamp('earned_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.awardSlug] }), index('user_award_award_idx').on(table.awardSlug)],
+);

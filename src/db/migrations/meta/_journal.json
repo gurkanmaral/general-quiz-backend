@@ -43,6 +43,13 @@
       "when": 1795208880274,
       "tag": "0005_quiz_records",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795209220056,
+      "tag": "0006_badges_titles",
+      "breakpoints": true
     }
   ]
 }

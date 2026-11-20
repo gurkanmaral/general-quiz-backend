@@ -28,6 +28,7 @@ async function main(argv: string[]): Promise<number> {
     console.log(`Imported content from ${dir}`);
     console.log(`  quizzes:   ${report.quizzes.written} written, ${report.quizzes.unpublished} unpublished`);
     console.log(`  questions: ${report.questions.written} written, ${report.questions.unpublished} unpublished`);
+    console.log(`  badges/titles: ${report.awards.written} written, ${report.awards.unpublished} unpublished`);
     console.log(`  rotation:  ${report.rotation.written} written, ${report.rotation.removed} removed`);
     console.log(`  schedule:  ${report.entries.written} entries written, ${report.entries.removed} removed`);
     console.log(`  pending items skipped: ${report.skippedPending}`);

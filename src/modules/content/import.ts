@@ -1,6 +1,6 @@
 import type { Db } from '../../db/client';
 import { syncSchedule, type ScheduleSyncReport } from '../daily';
-import { publishedQuestionSlugs, syncPublishedQuizzes, type PublishedQuestion, type PublishedQuiz, type QuizzesSyncReport } from '../quizzes';
+import { publishedQuestionSlugs, syncPublishedQuizzes, type PublishedAward, type PublishedQuestion, type PublishedQuiz, type QuizzesSyncReport } from '../quizzes';
 import { readContentFiles, type ContentFiles } from './files';
 
 export type ImportReport = QuizzesSyncReport &
@@ -34,8 +34,16 @@ export function publishedContent(files: ContentFiles): { quizzes: PublishedQuiz[
       if (!category || !theme) throw new Error(`Question "${question.slug}" has no category or theme`);
       questions.push({ ...question, category, theme });
     }
+    const awards: PublishedAward[] = [];
+    for (const [kind, list] of [['badge', file.badges], ['title', file.titles]] as const) {
+      for (const { status, ...entry } of list) {
+        if (status === 'published') awards.push({ ...entry, kind });
+        else pending.push(`${kind} ${entry.slug} (${file.slug})`);
+      }
+    }
     quizzes.push({
       slug: file.slug,
+      awards,
       kind: file.kind,
       title: file.title,
       description: file.description,
@@ -48,6 +56,9 @@ export function publishedContent(files: ContentFiles): { quizzes: PublishedQuiz[
   const slugs = quizzes.flatMap((item) => item.questions.map((question) => question.slug));
   const duplicate = slugs.find((slug, index) => slugs.indexOf(slug) !== index);
   if (duplicate) throw new Error(`Duplicate question slug "${duplicate}"`);
+  const awardSlugs = files.quizzes.flatMap((file) => [...file.badges, ...file.titles].map((entry) => entry.slug));
+  const duplicateAward = awardSlugs.find((slug, index) => awardSlugs.indexOf(slug) !== index);
+  if (duplicateAward) throw new Error(`Duplicate badge/title slug "${duplicateAward}"`);
   return { quizzes, pending };
 }
 
@@ -89,6 +100,8 @@ export function countChanges(report: ImportReport): number {
     report.quizzes.unpublished +
     report.questions.written +
     report.questions.unpublished +
+    report.awards.written +
+    report.awards.unpublished +
     report.rotation.written +
     report.rotation.removed +
     report.entries.written +

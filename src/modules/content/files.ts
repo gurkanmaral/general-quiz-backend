@@ -9,6 +9,7 @@ import {
   QuestionDifficultySchema,
   QuestionFactSchema,
   QuestionThemeSchema,
+  UnlockRuleSchema,
 } from '@general-quiz/contracts';
 
 /** File formats under `content/` (AD-9). Not API payloads, so they live here, not in contracts. */
@@ -37,6 +38,18 @@ export const QuestionFileSchema = DailyQuestionSchema.extend({
 });
 export type QuestionFile = z.infer<typeof QuestionFileSchema>;
 
+/** A Badge or Title (FR-16, FR-17) with an Unlock Rule of a known type (AD-10). */
+export const AwardFileSchema = z.object({
+  slug: SlugSchema,
+  status: ContentStatusSchema,
+  name: LocalizedTextSchema,
+  description: LocalizedTextSchema,
+  /** One emoji shown on cards, celebrations and the Profile. */
+  icon: z.string().min(1).max(16),
+  unlock: UnlockRuleSchema,
+});
+export type AwardFile = z.infer<typeof AwardFileSchema>;
+
 export const QuizFileSchema = z
   .object({
     slug: SlugSchema,
@@ -48,8 +61,13 @@ export const QuizFileSchema = z
     theme: QuestionThemeSchema.optional(),
     expertShare: z.number().min(0).max(1).default(DEFAULT_EXPERT_SHARE),
     questions: z.array(QuestionFileSchema),
+    badges: z.array(AwardFileSchema).default([]),
+    titles: z.array(AwardFileSchema).default([]),
   })
   .superRefine((file, ctx) => {
+    if (file.kind === 'dailyPool' && file.badges.length + file.titles.length > 0) {
+      ctx.addIssue({ code: 'custom', path: ['badges'], message: 'a dailyPool cannot award Badges or Titles' });
+    }
     if (file.kind === 'quiz') {
       for (const field of ['category', 'theme', 'description'] as const) {
         if (file[field] === undefined) ctx.addIssue({ code: 'custom', path: [field], message: `required for a listed quiz (kind "quiz")` });
@@ -73,12 +91,14 @@ export type ScheduleFile = z.infer<typeof ScheduleFileSchema>;
 
 export type ContentFiles = { quizzes: QuizFile[]; schedule: ScheduleFile };
 
-/** `questions.3.source` plus the Question's slug when known, so reviewers find it fast. */
+/** `questions.3.source` plus the Question's (or Badge's, Title's) slug when known, so reviewers find it fast. */
 function describePath(raw: unknown, path: readonly PropertyKey[]): string {
   const text = path.map(String).join('.') || '(root)';
-  if (path[0] !== 'questions' || typeof path[1] !== 'number') return text;
-  const slug = (raw as { questions?: { slug?: unknown }[] })?.questions?.[path[1]]?.slug;
-  return typeof slug === 'string' ? `${text} (question "${slug}")` : text;
+  const [list, index] = path;
+  if (typeof index !== 'number' || (list !== 'questions' && list !== 'badges' && list !== 'titles')) return text;
+  const slug = (raw as Record<string, { slug?: unknown }[] | undefined>)?.[list]?.[index]?.slug;
+  const kind = list === 'questions' ? 'question' : list === 'badges' ? 'badge' : 'title';
+  return typeof slug === 'string' ? `${text} (${kind} "${slug}")` : text;
 }
 
 async function readJson<T>(path: string, schema: z.ZodType<T>): Promise<T> {

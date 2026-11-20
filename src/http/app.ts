@@ -1,12 +1,12 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import type { HealthResponse, QuizRecord } from '@general-quiz/contracts';
+import type { HealthResponse } from '@general-quiz/contracts';
 import { pingDatabase, type Db } from '../db/client';
 import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
 import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from '../modules/accounts';
 import { createDailyService, dailyRoutes, deleteDailyUserData } from '../modules/daily';
-import { createProgress, deleteProgressUserData } from '../modules/progress';
+import { createProgress, deleteProgressUserData, type RecordedGameResult } from '../modules/progress';
 import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, quizzesRoutes, soloGameRoutes, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
@@ -48,7 +48,7 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     optionalUser: accounts.optionalUser,
     requireUser: accounts.requireUser,
     quizRecords: progress.quizRecords,
-    endedResponse: (record: QuizRecord) => ({ record }),
+    endedResponse: (ended: RecordedGameResult) => ({ record: ended.record, unlocks: ended.unlocks }),
   };
 
   const app = new Hono();

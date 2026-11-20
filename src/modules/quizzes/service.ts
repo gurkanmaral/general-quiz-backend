@@ -1,11 +1,24 @@
 import { and, eq, inArray, notInArray, sql } from 'drizzle-orm';
-import { QUESTION_CATEGORIES, type DailyQuestion, type LocalizedText, type QuestionCategory, type QuestionDifficulty, type QuestionTheme, type QuizSummary } from '@general-quiz/contracts';
+import { QUESTION_CATEGORIES, type AwardKind, type AwardSummary, type UnlockRule, type DailyQuestion, type LocalizedText, type QuestionCategory, type QuestionDifficulty, type QuestionTheme, type QuizSummary } from '@general-quiz/contracts';
 import type { DbExecutor } from '../../db/client';
 import { anyChanged, excluded } from '../../db/upsert';
-import { question, quiz } from './schema';
+import { award, question, quiz } from './schema';
 
 /** A published Question as imported: the Daily shape plus its Difficulty. */
 export type PublishedQuestion = DailyQuestion & { difficulty: QuestionDifficulty };
+
+/** A published Badge or Title as imported. */
+export type PublishedAward = {
+  slug: string;
+  kind: AwardKind;
+  name: LocalizedText;
+  description: LocalizedText;
+  icon: string;
+  unlock: UnlockRule;
+};
+
+/** An award definition as `progress` reads it. */
+export type AwardDefinition = PublishedAward & { quizSlug: string; status: 'published' | 'unpublished' };
 
 export type PublishedQuiz = {
   slug: string;
@@ -16,10 +29,11 @@ export type PublishedQuiz = {
   theme?: QuestionTheme;
   expertShare: number;
   questions: readonly PublishedQuestion[];
+  awards: readonly PublishedAward[];
 };
 
 export type SyncCounts = { written: number; unpublished: number };
-export type QuizzesSyncReport = { quizzes: SyncCounts; questions: SyncCounts };
+export type QuizzesSyncReport = { quizzes: SyncCounts; questions: SyncCounts; awards: SyncCounts };
 
 type QuestionRow = typeof question.$inferSelect;
 
@@ -53,7 +67,11 @@ export async function publishedQuestionSlugs(db: DbExecutor): Promise<Set<string
  * from `published` becomes `unpublished` (rows are never deleted: players may have answered them).
  */
 export async function syncPublishedQuizzes(db: DbExecutor, published: readonly PublishedQuiz[]): Promise<QuizzesSyncReport> {
-  const report: QuizzesSyncReport = { quizzes: { written: 0, unpublished: 0 }, questions: { written: 0, unpublished: 0 } };
+  const report: QuizzesSyncReport = {
+    quizzes: { written: 0, unpublished: 0 },
+    questions: { written: 0, unpublished: 0 },
+    awards: { written: 0, unpublished: 0 },
+  };
   const now = sql`now()`;
 
   for (const item of published) {
@@ -119,6 +137,28 @@ export async function syncPublishedQuizzes(db: DbExecutor, published: readonly P
         .returning({ slug: question.slug });
       report.questions.written += rows.length;
     }
+    for (const [position, entry] of item.awards.entries()) {
+      const rows = await db
+        .insert(award)
+        .values({ ...entry, quizSlug: item.slug, status: 'published', position })
+        .onConflictDoUpdate({
+          target: award.slug,
+          set: {
+            quizSlug: excluded(award.quizSlug),
+            kind: excluded(award.kind),
+            status: excluded(award.status),
+            position: excluded(award.position),
+            name: excluded(award.name),
+            description: excluded(award.description),
+            icon: excluded(award.icon),
+            unlock: excluded(award.unlock),
+            updatedAt: now,
+          },
+          setWhere: anyChanged([award.quizSlug, award.kind, award.status, award.position, award.name, award.description, award.icon, award.unlock]),
+        })
+        .returning({ slug: award.slug });
+      report.awards.written += rows.length;
+    }
   }
 
   const quizSlugs = published.map((item) => item.slug);
@@ -140,11 +180,19 @@ export async function syncPublishedQuizzes(db: DbExecutor, published: readonly P
     .where(and(eq(quiz.status, 'published'), quizSlugs.length ? notInArray(quiz.slug, quizSlugs) : undefined))
     .returning({ slug: quiz.slug });
   report.quizzes.unpublished = withdrawnQuizzes.length;
+  const awardSlugs = published.flatMap((item) => item.awards.map((entry) => entry.slug));
+  const withdrawnAwards = await db
+    .update(award)
+    .set({ status: 'unpublished', updatedAt: now })
+    .where(and(eq(award.status, 'published'), awardSlugs.length ? notInArray(award.slug, awardSlugs) : undefined))
+    .returning({ slug: award.slug });
+  report.awards.unpublished = withdrawnAwards.length;
   return report;
 }
 
 
 export type ListedQuiz = Omit<QuizSummary, 'best' | 'record'>;
+
 
 /** Published, listed Quizzes with their published Question counts (FR-13). Quizzes without Questions are hidden. */
 export async function listPublishedQuizzes(db: DbExecutor): Promise<ListedQuiz[]> {
@@ -162,6 +210,7 @@ export async function listPublishedQuizzes(db: DbExecutor): Promise<ListedQuiz[]
     .innerJoin(question, and(eq(question.quizSlug, quiz.slug), eq(question.status, 'published')))
     .where(and(eq(quiz.status, 'published'), eq(quiz.kind, 'quiz')))
     .groupBy(quiz.slug);
+  const awards = await quizAwards(db, rows.map((row) => row.slug));
   const order = new Map<string, number>(QUESTION_CATEGORIES.map((category, index) => [category, index]));
   return rows
     .filter((row) => row.category && row.theme && row.description)
@@ -174,6 +223,9 @@ export async function listPublishedQuizzes(db: DbExecutor): Promise<ListedQuiz[]
       questionCount: row.standardCount + row.expertCount,
       standardCount: row.standardCount,
       expertCount: row.expertCount,
+      awards: awards
+        .filter((entry) => entry.quizSlug === row.slug)
+        .map(({ slug, kind, name, icon }): AwardSummary => ({ slug, kind, name, icon })),
     }))
     .sort((a, b) => (order.get(a.category) ?? 99) - (order.get(b.category) ?? 99) || a.title.en.localeCompare(b.title.en));
 }
@@ -191,4 +243,27 @@ export async function publishedQuestionIndex(db: DbExecutor, quizSlugs?: readonl
     index.set(row.quizSlug, questions);
   }
   return index;
+}
+
+/**
+ * Badge and Title definitions, Badges first, in file order. Published only unless `withUnpublished`
+ * (a player keeps an award even after it is withdrawn).
+ */
+export async function quizAwards(db: DbExecutor, quizSlugs?: readonly string[], withUnpublished = false): Promise<AwardDefinition[]> {
+  if (quizSlugs && quizSlugs.length === 0) return [];
+  const rows = await db
+    .select()
+    .from(award)
+    .where(and(withUnpublished ? undefined : eq(award.status, 'published'), quizSlugs ? inArray(award.quizSlug, [...quizSlugs]) : undefined))
+    .orderBy(award.quizSlug, award.kind, award.position);
+  return rows.map((row) => ({
+    slug: row.slug,
+    quizSlug: row.quizSlug,
+    kind: row.kind,
+    status: row.status,
+    name: row.name,
+    description: row.description,
+    icon: row.icon,
+    unlock: row.unlock,
+  }));
 }

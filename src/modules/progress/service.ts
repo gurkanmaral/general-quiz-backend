@@ -1,8 +1,9 @@
 import { and, eq, inArray, sql } from 'drizzle-orm';
-import type { QuestionDifficulty, QuizRecord } from '@general-quiz/contracts';
+import type { QuestionDifficulty, QuizRecord, UnlockedAward } from '@general-quiz/contracts';
 import type { Db, DbExecutor } from '../../db/client';
-import { publishedQuestionIndex, type EndedSoloGame } from '../quizzes';
-import { correctQuestion, quizRecord } from './schema';
+import { publishedQuestionIndex, quizAwards, type EndedSoloGame } from '../quizzes';
+import { correctQuestion, quizRecord, userAward } from './schema';
+import { isRuleMet } from './unlocks';
 
 /** A Solo Game counts as won when at least this share of its Questions was answered correctly. */
 export const SOLO_WIN_SHARE = 0.7;
@@ -66,12 +67,40 @@ export async function quizRecords(db: DbExecutor, userId: string, quizSlugs?: re
   return new Map(rows.map((row) => [row.quizSlug, toQuizRecord(row, correct.get(row.quizSlug) ?? new Set(), published.get(row.quizSlug) ?? new Map())]));
 }
 
+const EMPTY_RECORD: QuizRecord = { gamesPlayed: 0, gamesWon: 0, correctStandard: 0, correctExpert: 0, correctShare: 0 };
+
+export type RecordedGameResult = { record: QuizRecord; unlocks: UnlockedAward[] };
+
+/**
+ * Evaluates every published Badge and Title of a Quiz against the player's Quiz Record (AD-10) and
+ * grants the newly met ones. Grants are permanent: nothing is ever revoked. Returns the new ones.
+ */
+export async function evaluateUnlocks(db: DbExecutor, userId: string, quizSlug: string): Promise<UnlockedAward[]> {
+  const awards = await quizAwards(db, [quizSlug]);
+  if (awards.length === 0) return [];
+  const [row] = await db.select().from(quizRecord).where(and(eq(quizRecord.userId, userId), eq(quizRecord.quizSlug, quizSlug)));
+  const [correct, published] = await Promise.all([correctQuestionSlugs(db, userId, quizSlug), publishedQuestionIndex(db, [quizSlug])]);
+  const context = { correct, published: published.get(quizSlug) ?? new Map(), gamesWon: row?.gamesWon ?? 0 };
+  const met = awards.filter((entry) => isRuleMet(entry.unlock, context));
+  if (met.length === 0) return [];
+  const granted = await db
+    .insert(userAward)
+    .values(met.map((entry) => ({ userId, awardSlug: entry.slug, quizSlug })))
+    .onConflictDoNothing()
+    .returning({ slug: userAward.awardSlug });
+  const fresh = new Set(granted.map((item) => item.slug));
+  return met
+    .filter((entry) => fresh.has(entry.slug))
+    .map(({ slug, kind, name, description, icon }) => ({ slug, kind, quizSlug, name, description, icon }));
+}
+
 /**
  * Updates the Quiz Record after a finished or abandoned game (FR-15): every correctly answered
  * Question joins the distinct set, and the game counts as played (and won) when it has answers.
- * Runs in the game's transaction.
+ * After a finished game, the Quiz's Unlock Rules are evaluated (FR-16, FR-17). Runs in the
+ * game's transaction.
  */
-export async function recordGame(db: DbExecutor, game: RecordedGame): Promise<QuizRecord> {
+export async function recordGame(db: DbExecutor, game: RecordedGame): Promise<RecordedGameResult> {
   if (game.answers.length > 0) {
     const correct = game.answers.filter((answer) => answer.correct);
     if (correct.length) {
@@ -93,12 +122,14 @@ export async function recordGame(db: DbExecutor, game: RecordedGame): Promise<Qu
         },
       });
   }
+  const unlocks = game.status === 'finished' ? await evaluateUnlocks(db, game.userId, game.quizSlug) : [];
   const records = await quizRecords(db, game.userId, [game.quizSlug]);
-  return records.get(game.quizSlug) ?? { gamesPlayed: 0, gamesWon: 0, correctStandard: 0, correctExpert: 0, correctShare: 0 };
+  return { record: records.get(game.quizSlug) ?? EMPTY_RECORD, unlocks };
 }
 
 /** Account deletion (FR-4): every progress row of the player. */
 export async function deleteProgressUserData(db: DbExecutor, userId: string): Promise<void> {
+  await db.delete(userAward).where(eq(userAward.userId, userId));
   await db.delete(correctQuestion).where(eq(correctQuestion.userId, userId));
   await db.delete(quizRecord).where(eq(quizRecord.userId, userId));
 }
