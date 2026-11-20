@@ -11,7 +11,17 @@ const database = createDatabase(env.DATABASE_URL);
 await runMigrations(database.db);
 logger.info('migrations applied');
 
-const server = serve({ fetch: createApp({ db: database.db, logger }).fetch, port: env.PORT }, (info) => {
+const server = serve({ fetch: createApp({
+  db: database.db,
+  logger,
+  auth: {
+    baseURL: env.BETTER_AUTH_URL,
+    secret: env.BETTER_AUTH_SECRET,
+    // Both local web ports (Vite default and start-kno.command) during development.
+    trustedOrigins: env.NODE_ENV === 'production' ? [] : ['http://localhost:5173', 'http://localhost:5180'],
+    google: env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } : undefined,
+  },
+}).fetch, port: env.PORT }, (info) => {
   logger.info({ port: info.port }, 'KNO. API listening');
 });
 

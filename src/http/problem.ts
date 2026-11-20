@@ -27,3 +27,11 @@ export function problemBody(input: ProblemInput, instance?: string): Problem {
 export function problem(c: Context, input: ProblemInput): Response {
   return c.body(JSON.stringify(problemBody(input, c.req.path)), input.status, { 'Content-Type': PROBLEM_CONTENT_TYPE });
 }
+
+/** A problem+json Response outside a handler (e.g. to throw from a helper as an HTTPException). */
+export function problemResponse(input: ProblemInput, instance?: string): Response {
+  return new Response(JSON.stringify(problemBody(input, instance)), {
+    status: input.status,
+    headers: { 'Content-Type': PROBLEM_CONTENT_TYPE },
+  });
+}
