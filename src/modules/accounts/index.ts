@@ -1,4 +1,5 @@
 // Public interface of the accounts module (AD-2). Other modules import only from here.
+import type { Context } from 'hono';
 import type { Db } from '../../db/client';
 import type { Logger } from '../../logger';
 import { createAuth, type AuthConfig } from './auth';
@@ -21,6 +22,8 @@ export function createAccounts(db: Db, config: AuthConfig, logger?: Logger, user
     service,
     /** `requireUser(c)` for other modules' routes: the session user or a thrown 401 problem+json. */
     requireUser: service.requireUser,
+    /** The session user, or undefined when signed out (for public routes with extra signed-in data). */
+    optionalUser: (c: Context) => service.sessionUser(c.req.raw.headers),
     /** Mount at `AUTH_BASE_PATH`: Better Auth's own handler. */
     authHandler: (request: Request) => auth.handler(request),
     meRoutes: () => meRoutes(service),

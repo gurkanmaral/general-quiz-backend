@@ -1,5 +1,5 @@
 import { and, eq, notInArray, sql } from 'drizzle-orm';
-import type { DailyQuestion, LocalizedText, QuestionCategory, QuestionDifficulty, QuestionTheme } from '@general-quiz/contracts';
+import { QUESTION_CATEGORIES, type DailyQuestion, type LocalizedText, type QuestionCategory, type QuestionDifficulty, type QuestionTheme, type QuizSummary } from '@general-quiz/contracts';
 import type { DbExecutor } from '../../db/client';
 import { anyChanged, excluded } from '../../db/upsert';
 import { question, quiz } from './schema';
@@ -143,3 +143,37 @@ export async function syncPublishedQuizzes(db: DbExecutor, published: readonly P
   return report;
 }
 
+
+export type ListedQuiz = Omit<QuizSummary, 'best'>;
+
+/** Published, listed Quizzes with their published Question counts (FR-13). Quizzes without Questions are hidden. */
+export async function listPublishedQuizzes(db: DbExecutor): Promise<ListedQuiz[]> {
+  const rows = await db
+    .select({
+      slug: quiz.slug,
+      title: quiz.title,
+      description: quiz.description,
+      category: quiz.category,
+      theme: quiz.theme,
+      standardCount: sql<number>`count(*) filter (where ${question.difficulty} = 'standard')`.mapWith(Number),
+      expertCount: sql<number>`count(*) filter (where ${question.difficulty} = 'expert')`.mapWith(Number),
+    })
+    .from(quiz)
+    .innerJoin(question, and(eq(question.quizSlug, quiz.slug), eq(question.status, 'published')))
+    .where(and(eq(quiz.status, 'published'), eq(quiz.kind, 'quiz')))
+    .groupBy(quiz.slug);
+  const order = new Map<string, number>(QUESTION_CATEGORIES.map((category, index) => [category, index]));
+  return rows
+    .filter((row) => row.category && row.theme && row.description)
+    .map((row) => ({
+      slug: row.slug,
+      title: row.title,
+      description: row.description!,
+      category: row.category as QuestionCategory,
+      theme: row.theme as QuestionTheme,
+      questionCount: row.standardCount + row.expertCount,
+      standardCount: row.standardCount,
+      expertCount: row.expertCount,
+    }))
+    .sort((a, b) => (order.get(a.category) ?? 99) - (order.get(b.category) ?? 99) || a.title.en.localeCompare(b.title.en));
+}

@@ -6,7 +6,7 @@ import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
 import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from '../modules/accounts';
 import { createDailyService, dailyRoutes, deleteDailyUserData } from '../modules/daily';
-import { getPublishedQuestion } from '../modules/quizzes';
+import { getPublishedQuestion, quizzesRoutes } from '../modules/quizzes';
 import { problem } from './problem';
 
 export type AppDeps = {
@@ -46,6 +46,7 @@ export function createApp({ db, logger, now = () => new Date(), auth }: AppDeps)
   app.route('/api/v1/auth', accounts.providerRoutes());
   app.route('/api/v1/me', accounts.meRoutes());
   app.route('/api/v1/daily', dailyRoutes(daily, now, accounts.requireUser));
+  app.route('/api/v1/quizzes', quizzesRoutes({ db, optionalUser: accounts.optionalUser }));
 
   app.notFound((c) => problem(c, { status: 404, code: 'http.notFound', title: 'Not found' }));
   app.onError((error, c) => {
