@@ -5,7 +5,7 @@ import { pingDatabase, type Db } from '../db/client';
 import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
 import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from '../modules/accounts';
-import { createDailyService, dailyRoutes } from '../modules/daily';
+import { createDailyService, dailyRoutes, deleteDailyUserData } from '../modules/daily';
 import { getPublishedQuestion } from '../modules/quizzes';
 import { problem } from './problem';
 
@@ -24,6 +24,8 @@ export function createApp({ db, logger, now = () => new Date(), auth }: AppDeps)
     db,
     { baseURL: DEFAULT_AUTH_URL, secret: DEV_AUTH_SECRET, ...auth, mailer: auth?.mailer ?? createDevMailer(logger) },
     logger,
+    // Every module with per-player rows (FR-4).
+    [deleteDailyUserData],
   );
   const daily = createDailyService(db, (slug) => getPublishedQuestion(db, slug));
 

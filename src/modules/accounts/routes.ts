@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { ACCOUNTS_PROBLEM_CODES, ProfileUpdateSchema, type AuthProvidersResponse } from '@general-quiz/contracts';
+import { ACCOUNTS_PROBLEM_CODES, DeleteAccountBodySchema, ProfileUpdateSchema, type AuthProvidersResponse } from '@general-quiz/contracts';
 import { problem } from '../../http/problem';
 import type { AccountsService } from './service';
 
@@ -11,6 +11,24 @@ export function meRoutes(accounts: AccountsService) {
       const me = await accounts.getMe(signedIn.id);
       if (!me) return problem(c, { status: 401, code: ACCOUNTS_PROBLEM_CODES.unauthorized, title: 'Sign in required' });
       return c.json(me);
+    })
+    .delete('/', async (c) => {
+      const signedIn = await accounts.requireUser(c);
+      const body = DeleteAccountBodySchema.safeParse(await c.req.json().catch(() => undefined));
+      if (!body.success) {
+        return problem(c, {
+          status: 400,
+          code: ACCOUNTS_PROBLEM_CODES.confirmationRequired,
+          title: 'Confirmation required',
+          detail: 'Send { "confirm": "DELETE" } to delete your account.',
+        });
+      }
+      // Clearing cookies needs the live session, so collect the headers before deleting it.
+      const cleared = await accounts.clearSessionCookies(c.req.raw.headers);
+      await accounts.deleteAccount(signedIn.id);
+      const res = c.body(null, 204);
+      for (const cookie of cleared.getSetCookie()) res.headers.append('Set-Cookie', cookie);
+      return res;
     })
     .put('/profile', async (c) => {
       const signedIn = await accounts.requireUser(c);

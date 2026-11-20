@@ -3,19 +3,19 @@ import type { Db } from '../../db/client';
 import type { Logger } from '../../logger';
 import { createAuth, type AuthConfig } from './auth';
 import { meRoutes, providerRoutes } from './routes';
-import { createAccountsService } from './service';
+import { createAccountsService, type UserDataDeleter } from './service';
 
 export { AUTH_BASE_PATH, type AuthConfig, type GoogleConfig } from './auth';
 export { createDevMailer, type DevMailer, type Mail, type Mailer } from './mailer';
 export { isUsernameAllowed, isValidUsername, normalizeUsername } from './usernames';
-export type { AccountsService, SessionUser } from './service';
+export type { AccountsService, SessionUser, UserDataDeleter } from './service';
 /** For foreign keys to `kno_accounts.user.id` only (AD-2); never query it from another module. */
 export { user as accountsUserTable } from './schema';
 
 /** Builds Better Auth, the accounts service and its routes. */
-export function createAccounts(db: Db, config: AuthConfig, logger?: Logger) {
+export function createAccounts(db: Db, config: AuthConfig, logger?: Logger, userDataDeleters: readonly UserDataDeleter[] = []) {
   const auth = createAuth(db, config, logger);
-  const service = createAccountsService(db, auth);
+  const service = createAccountsService(db, auth, userDataDeleters);
   return {
     auth,
     service,

@@ -247,3 +247,8 @@ export async function syncSchedule(db: DbExecutor, input: ScheduleInput): Promis
   report.entries.removed = removedEntries.length;
   return report;
 }
+
+/** Removes every Daily answer of a player; runs inside the account-deletion transaction (FR-4). */
+export async function deleteDailyUserData(db: DbExecutor, userId: string): Promise<void> {
+  await db.delete(answer).where(eq(answer.userId, userId));
+}

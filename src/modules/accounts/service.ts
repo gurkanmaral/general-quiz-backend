@@ -2,14 +2,20 @@ import { and, eq, ne, sql } from 'drizzle-orm';
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { ACCOUNTS_PROBLEM_CODES, AvatarIdSchema, type MeResponse, type ProfileUpdate } from '@general-quiz/contracts';
-import type { Db } from '../../db/client';
+import type { Db, DbExecutor } from '../../db/client';
 import { problemResponse } from '../../http/problem';
 import type { Auth } from './auth';
-import { user } from './schema';
+import { user, verification } from './schema';
 import { isUsernameAllowed, normalizeUsername } from './usernames';
 
 /** The signed-in player as other modules see it. */
 export type SessionUser = { id: string; email: string };
+
+/**
+ * Removes one player's rows from another module, inside the account-deletion transaction.
+ * Every module that stores per-player rows registers one (FR-4).
+ */
+export type UserDataDeleter = (db: DbExecutor, userId: string) => Promise<void>;
 
 export type ProfileResult =
   | { ok: true; me: MeResponse }
@@ -34,7 +40,7 @@ function isUniqueViolation(error: unknown): boolean {
   return (error as { code?: string })?.code === '23505' || cause?.code === '23505';
 }
 
-export function createAccountsService(db: Db, auth: Auth) {
+export function createAccountsService(db: Db, auth: Auth, userDataDeleters: readonly UserDataDeleter[] = []) {
   async function sessionUser(headers: Headers): Promise<SessionUser | undefined> {
     const session = await auth.api.getSession({ headers });
     return session ? { id: session.user.id, email: session.user.email } : undefined;
@@ -61,6 +67,33 @@ export function createAccountsService(db: Db, auth: Auth) {
     async getMe(userId: string): Promise<MeResponse | undefined> {
       const [row] = await db.select().from(user).where(eq(user.id, userId)).limit(1);
       return row ? toMe(row) : undefined;
+    },
+
+    /**
+     * Deletes the account (FR-4): every module's rows for the player, then the user, whose sessions
+     * (cookie and bearer tokens) and sign-in accounts cascade, and pending verification tokens.
+     * One transaction, so a failure leaves the account intact. The Username is free afterwards.
+     */
+    async deleteAccount(userId: string): Promise<boolean> {
+      return db.transaction(async (tx) => {
+        const [row] = await tx.select({ email: user.email }).from(user).where(eq(user.id, userId)).limit(1);
+        if (!row) return false;
+        for (const deleteUserData of userDataDeleters) await deleteUserData(tx, userId);
+        await tx.delete(verification).where(eq(verification.identifier, row.email));
+        await tx.delete(user).where(eq(user.id, userId));
+        return true;
+      });
+    },
+
+    /** Set-Cookie headers that clear the session cookies in the browser. */
+    async clearSessionCookies(headers: Headers): Promise<Headers> {
+      try {
+        const result = await auth.api.signOut({ headers, returnHeaders: true });
+        return result.headers;
+      } catch {
+        // Deleting the user removes every session anyway; the browser cookie just goes stale.
+        return new Headers();
+      }
     },
 
     /** Sets the Username (unique case-insensitively, blocklisted names refused) and the avatar. */
