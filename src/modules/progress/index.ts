@@ -11,3 +11,4 @@ export {
   type RecordedGameResult,
 } from './service';
 export { describeUnlockRule, isRuleMet, type RuleContext } from './unlocks';
+export { RARITY_INTERVAL_MS, computeRarity, rarityOf, startRarityJob, type RankedAccountSource, type RarityReport } from './rarity';

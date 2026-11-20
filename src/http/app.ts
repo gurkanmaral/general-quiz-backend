@@ -5,9 +5,9 @@ import { pingDatabase, type Db } from '../db/client';
 import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
 import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from '../modules/accounts';
-import { createDailyService, dailyRoutes, deleteDailyUserData } from '../modules/daily';
+import { createDailyService, dailyPlayerIds, dailyRoutes, deleteDailyUserData } from '../modules/daily';
 import { createProgress, deleteProgressUserData, type RecordedGameResult } from '../modules/progress';
-import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, quizzesRoutes, soloGameRoutes, type Random } from '../modules/quizzes';
+import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
 export type AppDeps = {
@@ -31,7 +31,8 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     [deleteDailyUserData, deleteQuizzesUserData, deleteProgressUserData],
   );
   const daily = createDailyService(db, (slug) => getPublishedQuestion(db, slug));
-  const progress = createProgress(db);
+  // Ranked Accounts: finished a Daily or a Solo Game (Lobby Games join in Epic 5).
+  const progress = createProgress(db, [dailyPlayerIds, soloPlayerIds]);
   const games = createSoloGames(db, {
     now,
     random,
@@ -79,5 +80,5 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     return problem(c, { status: 500, code: 'http.internal', title: 'Internal server error' });
   });
 
-  return Object.assign(app, { accounts });
+  return Object.assign(app, { accounts, progress });
 }

@@ -4,6 +4,7 @@ export {
   createSoloGames,
   deleteQuizzesUserData,
   pickQuestions,
+  soloPlayerIds,
   type EndedSoloGame,
   type GameEndedHook,
   type Random,

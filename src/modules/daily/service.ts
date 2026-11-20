@@ -255,3 +255,9 @@ export async function syncSchedule(db: DbExecutor, input: ScheduleInput): Promis
 export async function deleteDailyUserData(db: DbExecutor, userId: string): Promise<void> {
   await db.delete(answer).where(eq(answer.userId, userId));
 }
+
+/** Accounts with at least one answered Daily (a Ranked Account source for Rarity, FR-19). */
+export async function dailyPlayerIds(db: DbExecutor): Promise<string[]> {
+  const rows = await db.selectDistinct({ userId: answer.userId }).from(answer);
+  return rows.map((row) => row.userId);
+}

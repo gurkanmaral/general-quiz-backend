@@ -2,6 +2,7 @@
 export { dailyRoutes, type RequireUser } from './routes';
 export {
   createDailyService,
+  dailyPlayerIds,
   deleteDailyUserData,
   isAcceptableDailyDate,
   isAnswerable,

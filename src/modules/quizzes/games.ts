@@ -221,3 +221,9 @@ export type SoloGames<T = undefined> = ReturnType<typeof createSoloGames<T>>;
 export async function deleteQuizzesUserData(db: DbExecutor, userId: string): Promise<void> {
   await db.delete(soloGame).where(eq(soloGame.userId, userId));
 }
+
+/** Accounts with at least one finished Solo Game (a Ranked Account source for Rarity, FR-19). */
+export async function soloPlayerIds(db: DbExecutor): Promise<string[]> {
+  const rows = await db.selectDistinct({ userId: soloGame.userId }).from(soloGame).where(eq(soloGame.status, 'finished'));
+  return rows.map((row) => row.userId);
+}

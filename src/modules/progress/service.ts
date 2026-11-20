@@ -4,6 +4,7 @@ import type { Db, DbExecutor } from '../../db/client';
 import { publishedQuestionIndex, quizAwards, type EndedSoloGame } from '../quizzes';
 import { correctQuestion, quizRecord, userAward } from './schema';
 import { isRuleMet } from './unlocks';
+import { computeRarity, rarityOf, type RankedAccountSource } from './rarity';
 
 /** A Solo Game counts as won when at least this share of its Questions was answered correctly. */
 export const SOLO_WIN_SHARE = 0.7;
@@ -88,10 +89,10 @@ export async function evaluateUnlocks(db: DbExecutor, userId: string, quizSlug: 
     .values(met.map((entry) => ({ userId, awardSlug: entry.slug, quizSlug })))
     .onConflictDoNothing()
     .returning({ slug: userAward.awardSlug });
-  const fresh = new Set(granted.map((item) => item.slug));
-  return met
-    .filter((entry) => fresh.has(entry.slug))
-    .map(({ slug, kind, name, description, icon }) => ({ slug, kind, quizSlug, name, description, icon }));
+  const fresh = met.filter((entry) => granted.some((item) => item.slug === entry.slug));
+  // Celebrations show the stored Rarity (AD-11); it updates with the next job run.
+  const rarities = await rarityOf(db, fresh.map((entry) => entry.slug));
+  return fresh.map(({ slug, kind, name, description, icon }) => ({ slug, kind, quizSlug, name, description, icon, rarity: rarities.get(slug)! }));
 }
 
 /**
@@ -134,8 +135,9 @@ export async function deleteProgressUserData(db: DbExecutor, userId: string): Pr
   await db.delete(quizRecord).where(eq(quizRecord.userId, userId));
 }
 
-export function createProgress(db: Db) {
+export function createProgress(db: Db, rankedAccountSources: readonly RankedAccountSource[] = []) {
   return {
+    computeRarity: () => computeRarity(db, rankedAccountSources),
     recordGame: (tx: DbExecutor, game: RecordedGame) => recordGame(tx, game),
     quizRecords: (userId: string, quizSlugs?: readonly string[]) => quizRecords(db, userId, quizSlugs),
     correctQuestionSlugs: (tx: DbExecutor, userId: string, quizSlug: string) => correctQuestionSlugs(tx, userId, quizSlug),

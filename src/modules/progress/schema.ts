@@ -1,4 +1,4 @@
-import { index, integer, pgSchema, primaryKey, text, timestamp } from 'drizzle-orm/pg-core';
+import { doublePrecision, index, integer, pgSchema, primaryKey, text, timestamp } from 'drizzle-orm/pg-core';
 import { accountsUserTable } from '../accounts';
 
 export const knoProgress = pgSchema('kno_progress');
@@ -49,3 +49,12 @@ export const userAward = knoProgress.table(
   },
   (table) => [primaryKey({ columns: [table.userId, table.awardSlug] }), index('user_award_award_idx').on(table.awardSlug)],
 );
+
+/** Precomputed Rarity per Badge/Title (AD-11): share of Ranked Accounts holding it. Reads only read this. */
+export const rarity = knoProgress.table('rarity', {
+  awardSlug: text('award_slug').primaryKey(),
+  holders: integer('holders').notNull(),
+  rankedAccounts: integer('ranked_accounts').notNull(),
+  percent: doublePrecision('percent').notNull(),
+  computedAt: timestamp('computed_at', { withTimezone: true }).notNull(),
+});
