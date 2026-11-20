@@ -1,4 +1,4 @@
-import { and, eq, notInArray, sql } from 'drizzle-orm';
+import { and, eq, inArray, notInArray, sql } from 'drizzle-orm';
 import { QUESTION_CATEGORIES, type DailyQuestion, type LocalizedText, type QuestionCategory, type QuestionDifficulty, type QuestionTheme, type QuizSummary } from '@general-quiz/contracts';
 import type { DbExecutor } from '../../db/client';
 import { anyChanged, excluded } from '../../db/upsert';
@@ -144,7 +144,7 @@ export async function syncPublishedQuizzes(db: DbExecutor, published: readonly P
 }
 
 
-export type ListedQuiz = Omit<QuizSummary, 'best'>;
+export type ListedQuiz = Omit<QuizSummary, 'best' | 'record'>;
 
 /** Published, listed Quizzes with their published Question counts (FR-13). Quizzes without Questions are hidden. */
 export async function listPublishedQuizzes(db: DbExecutor): Promise<ListedQuiz[]> {
@@ -176,4 +176,19 @@ export async function listPublishedQuizzes(db: DbExecutor): Promise<ListedQuiz[]
       expertCount: row.expertCount,
     }))
     .sort((a, b) => (order.get(a.category) ?? 99) - (order.get(b.category) ?? 99) || a.title.en.localeCompare(b.title.en));
+}
+
+/** Published Questions per Quiz with their Difficulty: what Quiz Records and Unlock Rules count against. */
+export async function publishedQuestionIndex(db: DbExecutor, quizSlugs?: readonly string[]): Promise<Map<string, Map<string, QuestionDifficulty>>> {
+  const rows = await db
+    .select({ quizSlug: question.quizSlug, slug: question.slug, difficulty: question.difficulty })
+    .from(question)
+    .where(and(eq(question.status, 'published'), quizSlugs ? inArray(question.quizSlug, [...quizSlugs]) : undefined));
+  const index = new Map<string, Map<string, QuestionDifficulty>>();
+  for (const row of rows) {
+    const questions = index.get(row.quizSlug) ?? new Map<string, QuestionDifficulty>();
+    questions.set(row.slug, row.difficulty);
+    index.set(row.quizSlug, questions);
+  }
+  return index;
 }

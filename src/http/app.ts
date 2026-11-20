@@ -1,11 +1,12 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import type { HealthResponse } from '@general-quiz/contracts';
+import type { HealthResponse, QuizRecord } from '@general-quiz/contracts';
 import { pingDatabase, type Db } from '../db/client';
 import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
 import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from '../modules/accounts';
 import { createDailyService, dailyRoutes, deleteDailyUserData } from '../modules/daily';
+import { createProgress, deleteProgressUserData } from '../modules/progress';
 import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, quizzesRoutes, soloGameRoutes, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
@@ -27,11 +28,28 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     { baseURL: DEFAULT_AUTH_URL, secret: DEV_AUTH_SECRET, ...auth, mailer: auth?.mailer ?? createDevMailer(logger) },
     logger,
     // Every module with per-player rows (FR-4).
-    [deleteDailyUserData, deleteQuizzesUserData],
+    [deleteDailyUserData, deleteQuizzesUserData, deleteProgressUserData],
   );
   const daily = createDailyService(db, (slug) => getPublishedQuestion(db, slug));
-  const games = createSoloGames(db, { now, random });
-  const quizzesDeps = { db, games, optionalUser: accounts.optionalUser, requireUser: accounts.requireUser };
+  const progress = createProgress(db);
+  const games = createSoloGames(db, {
+    now,
+    random,
+    // Questions not yet answered correctly come first, so replaying moves toward mastery (Story 2.4).
+    preferredQuestions: async (tx, userId, quizSlug) => {
+      const correct = await progress.correctQuestionSlugs(tx, userId, quizSlug);
+      return { has: (slug: string) => !correct.has(slug) };
+    },
+    onGameEnded: (tx, game) => progress.recordGame(tx, game),
+  });
+  const quizzesDeps = {
+    db,
+    games,
+    optionalUser: accounts.optionalUser,
+    requireUser: accounts.requireUser,
+    quizRecords: progress.quizRecords,
+    endedResponse: (record: QuizRecord) => ({ record }),
+  };
 
   const app = new Hono();
 

@@ -72,7 +72,7 @@ export type SoloGamesDeps<T> = {
   now?: () => Date;
   random?: Random;
   /** Questions to draw first for a player (e.g. not yet answered correctly). */
-  preferredQuestions?: (db: DbExecutor, userId: string, quizSlug: string) => Promise<ReadonlySet<string>>;
+  preferredQuestions?: (db: DbExecutor, userId: string, quizSlug: string) => Promise<{ has: (slug: string) => boolean }>;
   onGameEnded?: GameEndedHook<T>;
 };
 
@@ -122,7 +122,7 @@ export function createSoloGames<T = undefined>(db: Db, deps: SoloGamesDeps<T> = 
           if (game.answered > 0 && deps.onGameEnded) await deps.onGameEnded(tx, await endedGame(tx, game, 'abandoned'));
         }
 
-        const preferred = deps.preferredQuestions ? await deps.preferredQuestions(tx, userId, quizSlug) : new Set<string>();
+        const preferred = deps.preferredQuestions ? await deps.preferredQuestions(tx, userId, quizSlug) : { has: () => false };
         const slugs = pickQuestions(pool, found.expertShare, random, (slug) => preferred.has(slug));
         const gameId = uuidv7(at.getTime());
         await tx.insert(soloGame).values({ id: gameId, userId, quizSlug, questionSlugs: slugs, startedAt: at });
@@ -188,6 +188,7 @@ export function createSoloGames<T = undefined>(db: Db, deps: SoloGamesDeps<T> = 
             source: row.content.source,
             score: updated!.score,
             result: finished ? { score: updated!.score, total: updated!.questionSlugs.length } : null,
+            record: null,
           },
         };
       });

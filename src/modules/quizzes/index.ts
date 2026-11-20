@@ -13,6 +13,7 @@ export {
 export {
   getPublishedQuestion,
   listPublishedQuizzes,
+  publishedQuestionIndex,
   publishedQuestionSlugs,
   syncPublishedQuizzes,
   type PublishedQuestion,

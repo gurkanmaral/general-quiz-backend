@@ -36,6 +36,13 @@
       "when": 1795208544908,
       "tag": "0004_solo_games",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795208880274,
+      "tag": "0005_quiz_records",
+      "breakpoints": true
     }
   ]
 }

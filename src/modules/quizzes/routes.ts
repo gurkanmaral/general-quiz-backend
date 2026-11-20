@@ -1,5 +1,5 @@
 import { Hono, type Context } from 'hono';
-import { QUIZZES_PROBLEM_CODES, SoloAnswerBodySchema, type QuizListResponse, type SoloAnswerResponse } from '@general-quiz/contracts';
+import { QUIZZES_PROBLEM_CODES, SoloAnswerBodySchema, type QuizListResponse, type QuizRecord, type SoloAnswerResponse } from '@general-quiz/contracts';
 import type { DbExecutor } from '../../db/client';
 import { problem } from '../../http/problem';
 import type { SoloGames } from './games';
@@ -14,17 +14,23 @@ export type QuizzesRouteDeps<T> = {
   /** The signed-in player or undefined / a thrown 401 (from the accounts module, AD-12). */
   optionalUser: SessionLookup;
   requireUser: RequireUser;
-  /** Extra fields for the answer that ends a game (e.g. unlocks from `progress`). */
-  endedResponse?: (ended: T) => Record<string, unknown>;
+  /** The player's Quiz Records (from `progress`), shown on the cards. */
+  quizRecords?: (userId: string) => Promise<ReadonlyMap<string, QuizRecord>>;
+  /** Fields for the answer that ends a game, from what `onGameEnded` returned (e.g. the Quiz Record). */
+  endedResponse?: (ended: T) => Partial<SoloAnswerResponse>;
 };
 
 /** `/api/v1/quizzes`: the Quizzes page (public) and starting a Solo Game (signed in). */
-export function quizzesRoutes<T>({ db, games, optionalUser, requireUser }: QuizzesRouteDeps<T>) {
+export function quizzesRoutes<T>({ db, games, optionalUser, requireUser, quizRecords }: QuizzesRouteDeps<T>) {
   return new Hono()
     .get('/', async (c) => {
       const [quizzes, user] = await Promise.all([listPublishedQuizzes(db), optionalUser(c)]);
-      const best = user ? await games.bestResults(user.id) : new Map();
-      const body: QuizListResponse = { quizzes: quizzes.map((item) => ({ ...item, best: best.get(item.slug) ?? null })) };
+      const [best, records] = user
+        ? await Promise.all([games.bestResults(user.id), quizRecords?.(user.id) ?? new Map<string, QuizRecord>()])
+        : [new Map(), new Map<string, QuizRecord>()];
+      const body: QuizListResponse = {
+        quizzes: quizzes.map((item) => ({ ...item, best: best.get(item.slug) ?? null, record: records.get(item.slug) ?? null })),
+      };
       return c.json(body);
     })
     .post('/:slug/games', async (c) => {
