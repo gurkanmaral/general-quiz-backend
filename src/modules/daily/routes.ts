@@ -3,9 +3,11 @@ import {
   DAILY_PROBLEM_CODES,
   DailyAnswerBodySchema,
   DailyHistoryQuerySchema,
+  DailyMergeBodySchema,
   DailyParamsSchema,
   type DailyAnswerResponse,
   type DailyHistoryResponse,
+  type DailyMergeResponse,
 } from '@general-quiz/contracts';
 import { STREAK_REPAIR_DAYS } from '@general-quiz/shared';
 import { problem } from '../../http/problem';
@@ -52,6 +54,21 @@ export function dailyRoutes(service: DailyService, now: () => Date, requireUser:
         if (!query.success || !isTodaySomewhere(query.data.today, now())) return invalidToday(c, 'today');
         const history = await service.getHistory(user.id, query.data.today);
         return c.json(history satisfies DailyHistoryResponse);
+      })
+      .post('/merge', async (c) => {
+        const user = await requireUser(c);
+        const body = DailyMergeBodySchema.safeParse(await c.req.json().catch(() => undefined));
+        if (!body.success) {
+          return problem(c, {
+            status: 400,
+            code: DAILY_PROBLEM_CODES.invalidMerge,
+            title: 'Invalid history',
+            detail: 'Send { today, plays: [...] } with at most 2000 plays.',
+          });
+        }
+        if (!isTodaySomewhere(body.data.today, now())) return invalidToday(c, 'today');
+        const result = await service.merge(user.id, body.data.today, body.data.plays, now());
+        return c.json(result satisfies DailyMergeResponse);
       })
       .get('/:dailyDate', async (c) => {
         const params = DailyParamsSchema.safeParse(c.req.param());

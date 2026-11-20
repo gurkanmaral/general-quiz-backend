@@ -51,6 +51,22 @@ function streakOf(plays: readonly DailyPlay[], today: string): Streak {
   return computeStreak(plays, today);
 }
 
+export type MergeResult = { plays: DailyPlay[]; streak: Streak; merged: number; skipped: number };
+
+/** A local play the server can accept: real dates in order, nothing after "today" anywhere, nothing answered in the future. */
+function isPlausible(play: DailyPlay, now: Date): boolean {
+  const latest = latestDailyDate(now);
+  const answeredAt = Date.parse(play.answeredAt);
+  return (
+    isCalendarDate(play.dailyDate) &&
+    isCalendarDate(play.playedOn) &&
+    play.dailyDate <= play.playedOn &&
+    play.playedOn <= latest &&
+    Number.isFinite(answeredAt) &&
+    answeredAt <= now.getTime() + 60_000
+  );
+}
+
 export type AnswerResult =
   | { ok: true; play: DailyPlay; correctIndex: number; streak: Streak }
   | { ok: false; reason: 'notScheduled' | 'alreadyAnswered' };
@@ -119,6 +135,60 @@ export function createDailyService(db: DbExecutor, lookupQuestion: QuestionLooku
       if (!row) return { ok: false, reason: 'alreadyAnswered' };
       const { streak } = await this.getHistory(userId, input.playedOn);
       return { ok: true, play: toPlay(row), correctIndex: daily.question.correctIndex, streak };
+    },
+
+    /**
+     * Adds a browser's signed-out history (FR-3, AD-4): missing Daily Dates are added and on a
+     * conflict the earliest `answeredAt` wins. Correctness is re-decided against the answered
+     * Question when the server still has it; otherwise the local result is kept.
+     */
+    async merge(userId: string, today: string, plays: readonly DailyPlay[], now: Date): Promise<MergeResult> {
+      const byDate = new Map<string, DailyPlay>();
+      let skipped = 0;
+      for (const play of plays) {
+        if (!isPlausible(play, now)) {
+          skipped += 1;
+          continue;
+        }
+        const seen = byDate.get(play.dailyDate);
+        if (!seen || Date.parse(play.answeredAt) < Date.parse(seen.answeredAt)) byDate.set(play.dailyDate, play);
+      }
+      const questions = new Map<string, DailyQuestion | undefined>();
+      const rows = [];
+      for (const play of byDate.values()) {
+        if (!questions.has(play.questionSlug)) questions.set(play.questionSlug, await lookupQuestion(play.questionSlug));
+        const question = questions.get(play.questionSlug);
+        rows.push({
+          userId,
+          dailyDate: play.dailyDate,
+          questionSlug: play.questionSlug,
+          selectedIndex: play.selectedIndex,
+          correct: question ? play.selectedIndex === question.correctIndex : play.correct,
+          answeredAt: new Date(play.answeredAt),
+          playedOn: play.playedOn,
+        });
+      }
+      let merged = 0;
+      if (rows.length) {
+        const written = await db
+          .insert(answer)
+          .values(rows)
+          .onConflictDoUpdate({
+            target: [answer.userId, answer.dailyDate],
+            set: {
+              questionSlug: excluded(answer.questionSlug),
+              selectedIndex: excluded(answer.selectedIndex),
+              correct: excluded(answer.correct),
+              answeredAt: excluded(answer.answeredAt),
+              playedOn: excluded(answer.playedOn),
+            },
+            setWhere: sql`excluded.answered_at < ${answer.answeredAt}`,
+          })
+          .returning({ dailyDate: answer.dailyDate });
+        merged = written.length;
+      }
+      const history = await this.getHistory(userId, today);
+      return { ...history, merged, skipped };
     },
   };
 }
