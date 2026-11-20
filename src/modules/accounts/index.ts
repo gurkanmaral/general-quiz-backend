@@ -9,6 +9,8 @@ export { AUTH_BASE_PATH, type AuthConfig, type GoogleConfig } from './auth';
 export { createDevMailer, type DevMailer, type Mail, type Mailer } from './mailer';
 export { isUsernameAllowed, isValidUsername, normalizeUsername } from './usernames';
 export type { AccountsService, SessionUser } from './service';
+/** For foreign keys to `kno_accounts.user.id` only (AD-2); never query it from another module. */
+export { user as accountsUserTable } from './schema';
 
 /** Builds Better Auth, the accounts service and its routes. */
 export function createAccounts(db: Db, config: AuthConfig, logger?: Logger) {

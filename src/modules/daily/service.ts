@@ -1,20 +1,59 @@
 import { asc, eq, gte, notInArray, sql } from 'drizzle-orm';
-import { isCalendarDate, type DailyQuestion, type DailyResponse } from '@general-quiz/contracts';
-import { rotationSlug, type DailyRotation } from '@general-quiz/shared';
+import { isCalendarDate, type DailyPlay, type DailyQuestion, type DailyResponse, type Streak } from '@general-quiz/contracts';
+import { STREAK_REPAIR_DAYS, computeStreak, daysBetween, rotationSlug, type DailyRotation } from '@general-quiz/shared';
 import type { DbExecutor } from '../../db/client';
 import { anyChanged, excluded } from '../../db/upsert';
-import { rotation, scheduleEntry } from './schema';
+import { answer, rotation, scheduleEntry } from './schema';
 
 /** Supplied by the app factory (from the quizzes module) so `daily` does not import `quizzes`. */
 export type QuestionLookup = (slug: string) => Promise<DailyQuestion | undefined>;
 
 /** Largest real UTC offset (UTC+14, Line Islands); the smallest is UTC−12. */
 const MAX_OFFSET_MS = 14 * 60 * 60 * 1000;
+/** AD-5 accepts local dates for offsets UTC−14 … UTC+14 (a margin beyond the real UTC−12). */
+const MIN_OFFSET_MS = -14 * 60 * 60 * 1000;
 
 /** The latest date that is "today" somewhere on Earth at `now`. */
 export function latestDailyDate(now: Date): string {
   return new Date(now.getTime() + MAX_OFFSET_MS).toISOString().slice(0, 10);
 }
+
+/** The earliest date that can still be "today" somewhere at `now` (AD-5). */
+export function earliestDailyDate(now: Date): string {
+  return new Date(now.getTime() + MIN_OFFSET_MS).toISOString().slice(0, 10);
+}
+
+/** AD-5 for a player's "today": a real date that is the local date for some UTC offset right now. */
+export function isTodaySomewhere(date: string, now: Date): boolean {
+  return isCalendarDate(date) && date >= earliestDailyDate(now) && date <= latestDailyDate(now);
+}
+
+/** A Daily Date can be answered on `playedOn` when it is that day or up to the repair window before it. */
+export function isAnswerable(dailyDate: string, playedOn: string): boolean {
+  const late = daysBetween(dailyDate, playedOn);
+  return late >= 0 && late <= STREAK_REPAIR_DAYS;
+}
+
+type AnswerRow = typeof answer.$inferSelect;
+
+function toPlay(row: AnswerRow): DailyPlay {
+  return {
+    dailyDate: row.dailyDate,
+    questionSlug: row.questionSlug,
+    selectedIndex: row.selectedIndex,
+    correct: row.correct,
+    answeredAt: row.answeredAt.toISOString(),
+    playedOn: row.playedOn,
+  };
+}
+
+function streakOf(plays: readonly DailyPlay[], today: string): Streak {
+  return computeStreak(plays, today);
+}
+
+export type AnswerResult =
+  | { ok: true; play: DailyPlay; correctIndex: number; streak: Streak }
+  | { ok: false; reason: 'notScheduled' | 'alreadyAnswered' };
 
 /**
  * AD-5 for reads: a real `YYYY-MM-DD` that is not after the latest "today on Earth".
@@ -47,6 +86,39 @@ export function createDailyService(db: DbExecutor, lookupQuestion: QuestionLooku
         if (question) return { dailyDate, question };
       }
       return undefined;
+    },
+
+    /** Every answered Daily of a player (oldest first) and the Streak as of the player's `today`. */
+    async getHistory(userId: string, today: string): Promise<{ plays: DailyPlay[]; streak: Streak }> {
+      const rows = await db.select().from(answer).where(eq(answer.userId, userId)).orderBy(asc(answer.dailyDate));
+      const plays = rows.map(toPlay);
+      return { plays, streak: streakOf(plays, today) };
+    },
+
+    /**
+     * Records a player's answer; the first answer per Daily Date is final (FR-8). Correctness is
+     * decided here against the scheduled Question (AD-3). Callers validate dates first (AD-5).
+     */
+    async answer(userId: string, dailyDate: string, input: { selectedIndex: number; playedOn: string }, now: Date): Promise<AnswerResult> {
+      const daily = await this.getDaily(dailyDate);
+      if (!daily) return { ok: false, reason: 'notScheduled' };
+      const inserted = await db
+        .insert(answer)
+        .values({
+          userId,
+          dailyDate,
+          questionSlug: daily.question.slug,
+          selectedIndex: input.selectedIndex,
+          correct: input.selectedIndex === daily.question.correctIndex,
+          answeredAt: now,
+          playedOn: input.playedOn,
+        })
+        .onConflictDoNothing({ target: [answer.userId, answer.dailyDate] })
+        .returning();
+      const row = inserted[0];
+      if (!row) return { ok: false, reason: 'alreadyAnswered' };
+      const { streak } = await this.getHistory(userId, input.playedOn);
+      return { ok: true, play: toPlay(row), correctIndex: daily.question.correctIndex, streak };
     },
   };
 }

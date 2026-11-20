@@ -43,7 +43,7 @@ export function createApp({ db, logger, now = () => new Date(), auth }: AppDeps)
   app.on(['GET', 'POST'], `${AUTH_BASE_PATH}/*`, (c) => accounts.authHandler(c.req.raw));
   app.route('/api/v1/auth', accounts.providerRoutes());
   app.route('/api/v1/me', accounts.meRoutes());
-  app.route('/api/v1/daily', dailyRoutes(daily, now));
+  app.route('/api/v1/daily', dailyRoutes(daily, now, accounts.requireUser));
 
   app.notFound((c) => problem(c, { status: 404, code: 'http.notFound', title: 'Not found' }));
   app.onError((error, c) => {
