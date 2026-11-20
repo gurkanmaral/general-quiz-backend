@@ -16,6 +16,8 @@ export {
   listPublishedQuizzes,
   publishedQuestionIndex,
   quizAwards,
+  awardDefinitions,
+  quizTitles,
   type AwardDefinition,
   type PublishedAward,
   publishedQuestionSlugs,

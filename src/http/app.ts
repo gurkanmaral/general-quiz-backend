@@ -5,8 +5,8 @@ import { pingDatabase, type Db } from '../db/client';
 import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
 import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from '../modules/accounts';
-import { createDailyService, dailyPlayerIds, dailyRoutes, deleteDailyUserData } from '../modules/daily';
-import { createProgress, deleteProgressUserData, type RecordedGameResult } from '../modules/progress';
+import { createDailyService, dailyPlayerIds, dailyRoutes, deleteDailyUserData, isTodaySomewhere } from '../modules/daily';
+import { createProgress, deleteProgressUserData, playerRoutes, profileRoutes, type Progress, type RecordedGameResult } from '../modules/progress';
 import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
@@ -29,10 +29,12 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     logger,
     // Every module with per-player rows (FR-4).
     [deleteDailyUserData, deleteQuizzesUserData, deleteProgressUserData],
+    // `/me` shows the equipped Title (FR-18); progress is created below, so look it up lazily.
+    { equippedTitle: (userId) => progress.equippedTitle(userId) },
   );
   const daily = createDailyService(db, (slug) => getPublishedQuestion(db, slug));
   // Ranked Accounts: finished a Daily or a Solo Game (Lobby Games join in Epic 5).
-  const progress = createProgress(db, [dailyPlayerIds, soloPlayerIds]);
+  const progress: Progress = createProgress(db, [dailyPlayerIds, soloPlayerIds]);
   const games = createSoloGames(db, {
     now,
     random,
@@ -71,6 +73,15 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
   app.route('/api/v1/daily', dailyRoutes(daily, now, accounts.requireUser));
   app.route('/api/v1/quizzes', quizzesRoutes(quizzesDeps));
   app.route('/api/v1/solo-games', soloGameRoutes(quizzesDeps));
+  const profileDeps = {
+    db,
+    requireUser: accounts.requireUser,
+    findPlayer: accounts.service.findPlayer,
+    streakOf: async (userId: string, today: string) =>
+      isTodaySomewhere(today, now()) ? (await daily.getHistory(userId, today)).streak : undefined,
+  };
+  app.route('/api/v1/profile', profileRoutes(profileDeps));
+  app.route('/api/v1/players', playerRoutes(profileDeps));
 
   app.notFound((c) => problem(c, { status: 404, code: 'http.notFound', title: 'Not found' }));
   app.onError((error, c) => {

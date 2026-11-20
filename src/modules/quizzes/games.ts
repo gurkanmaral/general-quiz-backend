@@ -58,6 +58,8 @@ export type EndedSoloGame = {
   status: 'finished' | 'abandoned';
   score: number;
   total: number;
+  /** When the game was finished or abandoned (the app clock). */
+  endedAt: Date;
   answers: readonly { questionSlug: string; difficulty: QuestionDifficulty; correct: boolean }[];
 };
 
@@ -89,7 +91,7 @@ export function createSoloGames<T = undefined>(db: Db, deps: SoloGamesDeps<T> = 
       .innerJoin(question, eq(question.slug, soloAnswer.questionSlug))
       .where(eq(soloAnswer.gameId, game.id))
       .orderBy(soloAnswer.position);
-    return { userId: game.userId, quizSlug: game.quizSlug, status, score: game.score, total: game.questionSlugs.length, answers };
+    return { userId: game.userId, quizSlug: game.quizSlug, status, score: game.score, total: game.questionSlugs.length, endedAt: game.endedAt ?? now(), answers };
   }
 
   return {

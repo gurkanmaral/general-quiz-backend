@@ -58,3 +58,12 @@ export const rarity = knoProgress.table('rarity', {
   percent: doublePrecision('percent').notNull(),
   computedAt: timestamp('computed_at', { withTimezone: true }).notNull(),
 });
+
+/** The one Title a player shows next to their name (FR-18); no row means none. */
+export const equippedTitle = knoProgress.table('equipped_title', {
+  userId: text('user_id')
+    .primaryKey()
+    .references(() => accountsUserTable.id, { onDelete: 'cascade' }),
+  awardSlug: text('award_slug').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});

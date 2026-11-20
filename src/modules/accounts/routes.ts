@@ -1,16 +1,17 @@
 import { Hono } from 'hono';
-import { ACCOUNTS_PROBLEM_CODES, DeleteAccountBodySchema, ProfileUpdateSchema, type AuthProvidersResponse } from '@general-quiz/contracts';
+import { ACCOUNTS_PROBLEM_CODES, DeleteAccountBodySchema, ProfileUpdateSchema, type AuthProvidersResponse, type EquippedTitle, type MeResponse } from '@general-quiz/contracts';
 import { problem } from '../../http/problem';
 import type { AccountsService } from './service';
 
 /** `/api/v1/me`: the signed-in player's account and profile step. */
-export function meRoutes(accounts: AccountsService) {
+export function meRoutes(accounts: AccountsService, hooks: { equippedTitle?: (userId: string) => Promise<EquippedTitle | null> } = {}) {
+  const withTitle = async (me: MeResponse): Promise<MeResponse> => (hooks.equippedTitle ? { ...me, title: await hooks.equippedTitle(me.id) } : me);
   return new Hono()
     .get('/', async (c) => {
       const signedIn = await accounts.requireUser(c);
       const me = await accounts.getMe(signedIn.id);
       if (!me) return problem(c, { status: 401, code: ACCOUNTS_PROBLEM_CODES.unauthorized, title: 'Sign in required' });
-      return c.json(me);
+      return c.json(await withTitle(me));
     })
     .delete('/', async (c) => {
       const signedIn = await accounts.requireUser(c);
@@ -42,7 +43,7 @@ export function meRoutes(accounts: AccountsService) {
         });
       }
       const result = await accounts.updateProfile(signedIn.id, body.data);
-      if (result.ok) return c.json(result.me);
+      if (result.ok) return c.json(await withTitle(result.me));
       return result.reason === 'usernameTaken'
         ? problem(c, { status: 409, code: ACCOUNTS_PROBLEM_CODES.usernameTaken, title: 'Username taken', detail: 'That Username is already taken. Try another one.' })
         : problem(c, { status: 422, code: ACCOUNTS_PROBLEM_CODES.usernameNotAllowed, title: 'Username not allowed', detail: 'That Username is not allowed. Try another one.' });

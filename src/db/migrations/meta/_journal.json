@@ -57,6 +57,13 @@
       "when": 1795209477593,
       "tag": "0007_rarity",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795209742186,
+      "tag": "0008_equipped_title",
+      "breakpoints": true
     }
   ]
 }

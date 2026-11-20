@@ -267,3 +267,22 @@ export async function quizAwards(db: DbExecutor, quizSlugs?: readonly string[], 
     unlock: row.unlock,
   }));
 }
+
+/** Badge/Title definitions by slug, published or not (players keep withdrawn items). */
+export async function awardDefinitions(db: DbExecutor, slugs: readonly string[]): Promise<Map<string, AwardDefinition>> {
+  if (slugs.length === 0) return new Map();
+  const rows = await db.select().from(award).where(inArray(award.slug, [...slugs]));
+  return new Map(
+    rows.map((row) => [
+      row.slug,
+      { slug: row.slug, quizSlug: row.quizSlug, kind: row.kind, status: row.status, name: row.name, description: row.description, icon: row.icon, unlock: row.unlock },
+    ]),
+  );
+}
+
+/** Quiz titles by slug (any status), for grouping a player's Badges and Titles. */
+export async function quizTitles(db: DbExecutor, slugs: readonly string[]): Promise<Map<string, LocalizedText>> {
+  if (slugs.length === 0) return new Map();
+  const rows = await db.select({ slug: quiz.slug, title: quiz.title }).from(quiz).where(inArray(quiz.slug, [...slugs]));
+  return new Map(rows.map((row) => [row.slug, row.title]));
+}

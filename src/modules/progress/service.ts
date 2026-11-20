@@ -2,15 +2,16 @@ import { and, eq, inArray, sql } from 'drizzle-orm';
 import type { QuestionDifficulty, QuizRecord, UnlockedAward } from '@general-quiz/contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { publishedQuestionIndex, quizAwards, type EndedSoloGame } from '../quizzes';
-import { correctQuestion, quizRecord, userAward } from './schema';
+import { correctQuestion, equippedTitle, quizRecord, userAward } from './schema';
 import { isRuleMet } from './unlocks';
 import { computeRarity, rarityOf, type RankedAccountSource } from './rarity';
+import { getEquippedTitle } from './profile';
 
 /** A Solo Game counts as won when at least this share of its Questions was answered correctly. */
 export const SOLO_WIN_SHARE = 0.7;
 
 /** A finished or abandoned game as `progress` records it (Solo now, Lobby games later). */
-export type RecordedGame = Pick<EndedSoloGame, 'userId' | 'quizSlug' | 'status' | 'score' | 'total'> & {
+export type RecordedGame = Pick<EndedSoloGame, 'userId' | 'quizSlug' | 'status' | 'score' | 'total' | 'endedAt'> & {
   answers: readonly { questionSlug: string; correct: boolean }[];
 };
 
@@ -76,7 +77,7 @@ export type RecordedGameResult = { record: QuizRecord; unlocks: UnlockedAward[] 
  * Evaluates every published Badge and Title of a Quiz against the player's Quiz Record (AD-10) and
  * grants the newly met ones. Grants are permanent: nothing is ever revoked. Returns the new ones.
  */
-export async function evaluateUnlocks(db: DbExecutor, userId: string, quizSlug: string): Promise<UnlockedAward[]> {
+export async function evaluateUnlocks(db: DbExecutor, userId: string, quizSlug: string, at = new Date()): Promise<UnlockedAward[]> {
   const awards = await quizAwards(db, [quizSlug]);
   if (awards.length === 0) return [];
   const [row] = await db.select().from(quizRecord).where(and(eq(quizRecord.userId, userId), eq(quizRecord.quizSlug, quizSlug)));
@@ -86,7 +87,7 @@ export async function evaluateUnlocks(db: DbExecutor, userId: string, quizSlug: 
   if (met.length === 0) return [];
   const granted = await db
     .insert(userAward)
-    .values(met.map((entry) => ({ userId, awardSlug: entry.slug, quizSlug })))
+    .values(met.map((entry) => ({ userId, awardSlug: entry.slug, quizSlug, earnedAt: at })))
     .onConflictDoNothing()
     .returning({ slug: userAward.awardSlug });
   const fresh = met.filter((entry) => granted.some((item) => item.slug === entry.slug));
@@ -107,29 +108,30 @@ export async function recordGame(db: DbExecutor, game: RecordedGame): Promise<Re
     if (correct.length) {
       await db
         .insert(correctQuestion)
-        .values(correct.map((answer) => ({ userId: game.userId, quizSlug: game.quizSlug, questionSlug: answer.questionSlug })))
+        .values(correct.map((answer) => ({ userId: game.userId, quizSlug: game.quizSlug, questionSlug: answer.questionSlug, firstCorrectAt: game.endedAt })))
         .onConflictDoNothing();
     }
     const won = isWon(game) ? 1 : 0;
     await db
       .insert(quizRecord)
-      .values({ userId: game.userId, quizSlug: game.quizSlug, gamesPlayed: 1, gamesWon: won })
+      .values({ userId: game.userId, quizSlug: game.quizSlug, gamesPlayed: 1, gamesWon: won, updatedAt: game.endedAt })
       .onConflictDoUpdate({
         target: [quizRecord.userId, quizRecord.quizSlug],
         set: {
           gamesPlayed: sql`${quizRecord.gamesPlayed} + 1`,
           gamesWon: sql`${quizRecord.gamesWon} + ${won}`,
-          updatedAt: sql`now()`,
+          updatedAt: game.endedAt,
         },
       });
   }
-  const unlocks = game.status === 'finished' ? await evaluateUnlocks(db, game.userId, game.quizSlug) : [];
+  const unlocks = game.status === 'finished' ? await evaluateUnlocks(db, game.userId, game.quizSlug, game.endedAt) : [];
   const records = await quizRecords(db, game.userId, [game.quizSlug]);
   return { record: records.get(game.quizSlug) ?? EMPTY_RECORD, unlocks };
 }
 
 /** Account deletion (FR-4): every progress row of the player. */
 export async function deleteProgressUserData(db: DbExecutor, userId: string): Promise<void> {
+  await db.delete(equippedTitle).where(eq(equippedTitle.userId, userId));
   await db.delete(userAward).where(eq(userAward.userId, userId));
   await db.delete(correctQuestion).where(eq(correctQuestion.userId, userId));
   await db.delete(quizRecord).where(eq(quizRecord.userId, userId));
@@ -138,6 +140,7 @@ export async function deleteProgressUserData(db: DbExecutor, userId: string): Pr
 export function createProgress(db: Db, rankedAccountSources: readonly RankedAccountSource[] = []) {
   return {
     computeRarity: () => computeRarity(db, rankedAccountSources),
+    equippedTitle: (userId: string) => getEquippedTitle(db, userId),
     recordGame: (tx: DbExecutor, game: RecordedGame) => recordGame(tx, game),
     quizRecords: (userId: string, quizSlugs?: readonly string[]) => quizRecords(db, userId, quizSlugs),
     correctQuestionSlugs: (tx: DbExecutor, userId: string, quizSlug: string) => correctQuestionSlugs(tx, userId, quizSlug),

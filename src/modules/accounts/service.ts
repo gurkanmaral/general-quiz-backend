@@ -1,7 +1,7 @@
 import { and, eq, ne, sql } from 'drizzle-orm';
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { ACCOUNTS_PROBLEM_CODES, AvatarIdSchema, type MeResponse, type ProfileUpdate } from '@general-quiz/contracts';
+import { ACCOUNTS_PROBLEM_CODES, AvatarIdSchema, type AvatarId, type MeResponse, type ProfileUpdate } from '@general-quiz/contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { problemResponse } from '../../http/problem';
 import type { Auth } from './auth';
@@ -10,6 +10,9 @@ import { isUsernameAllowed, normalizeUsername } from './usernames';
 
 /** The signed-in player as other modules see it. */
 export type SessionUser = { id: string; email: string };
+
+/** What other players may see of an account: never the email. */
+export type PublicPlayer = { id: string; username: string; avatar: AvatarId | null };
 
 /**
  * Removes one player's rows from another module, inside the account-deletion transaction.
@@ -62,6 +65,14 @@ export function createAccountsService(db: Db, auth: Auth, userDataDeleters: read
           c.req.path,
         ),
       });
+    },
+
+    /** A player with a finished profile step, by id or by Username (case-insensitive). */
+    async findPlayer(by: { id: string } | { username: string }): Promise<PublicPlayer | undefined> {
+      const where = 'id' in by ? eq(user.id, by.id) : sql`lower(${user.username}) = ${normalizeUsername(by.username)}`;
+      const [row] = await db.select().from(user).where(where).limit(1);
+      const me = row ? toMe(row) : undefined;
+      return me?.profileComplete && me.username ? { id: me.id, username: me.username, avatar: me.avatar } : undefined;
     },
 
     async getMe(userId: string): Promise<MeResponse | undefined> {
