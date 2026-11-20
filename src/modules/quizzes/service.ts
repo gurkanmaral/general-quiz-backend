@@ -1,13 +1,21 @@
 import { and, eq, notInArray, sql } from 'drizzle-orm';
-import type { DailyQuestion, LocalizedText } from '@general-quiz/contracts';
+import type { DailyQuestion, LocalizedText, QuestionCategory, QuestionDifficulty, QuestionTheme } from '@general-quiz/contracts';
 import type { DbExecutor } from '../../db/client';
 import { anyChanged, excluded } from '../../db/upsert';
 import { question, quiz } from './schema';
 
+/** A published Question as imported: the Daily shape plus its Difficulty. */
+export type PublishedQuestion = DailyQuestion & { difficulty: QuestionDifficulty };
+
 export type PublishedQuiz = {
   slug: string;
+  kind: 'quiz' | 'dailyPool';
   title: LocalizedText;
-  questions: readonly DailyQuestion[];
+  description?: LocalizedText;
+  category?: QuestionCategory;
+  theme?: QuestionTheme;
+  expertShare: number;
+  questions: readonly PublishedQuestion[];
 };
 
 export type SyncCounts = { written: number; unpublished: number };
@@ -49,28 +57,48 @@ export async function syncPublishedQuizzes(db: DbExecutor, published: readonly P
   const now = sql`now()`;
 
   for (const item of published) {
+    const columns = [quiz.status, quiz.kind, quiz.title, quiz.description, quiz.category, quiz.theme, quiz.expertShare];
     const written = await db
       .insert(quiz)
-      .values({ slug: item.slug, status: 'published', title: item.title })
+      .values({
+        slug: item.slug,
+        status: 'published',
+        kind: item.kind,
+        title: item.title,
+        description: item.description ?? null,
+        category: item.category ?? null,
+        theme: item.theme ?? null,
+        expertShare: item.expertShare,
+      })
       .onConflictDoUpdate({
         target: quiz.slug,
-        set: { status: excluded(quiz.status), title: excluded(quiz.title), updatedAt: now },
-        setWhere: anyChanged([quiz.status, quiz.title]),
+        set: {
+          status: excluded(quiz.status),
+          kind: excluded(quiz.kind),
+          title: excluded(quiz.title),
+          description: excluded(quiz.description),
+          category: excluded(quiz.category),
+          theme: excluded(quiz.theme),
+          expertShare: excluded(quiz.expertShare),
+          updatedAt: now,
+        },
+        setWhere: anyChanged(columns),
       })
       .returning({ slug: quiz.slug });
     report.quizzes.written += written.length;
 
     for (const [position, entry] of item.questions.entries()) {
-      const { slug, category, theme, correctIndex, ...content } = entry;
+      const { slug, category, theme, correctIndex, difficulty, ...content } = entry;
       const rows = await db
         .insert(question)
-        .values({ slug, quizSlug: item.slug, position, status: 'published', category, theme, correctIndex, content })
+        .values({ slug, quizSlug: item.slug, position, status: 'published', difficulty, category, theme, correctIndex, content })
         .onConflictDoUpdate({
           target: question.slug,
           set: {
             quizSlug: excluded(question.quizSlug),
             position: excluded(question.position),
             status: excluded(question.status),
+            difficulty: excluded(question.difficulty),
             category: excluded(question.category),
             theme: excluded(question.theme),
             correctIndex: excluded(question.correctIndex),
@@ -81,6 +109,7 @@ export async function syncPublishedQuizzes(db: DbExecutor, published: readonly P
             question.quizSlug,
             question.position,
             question.status,
+            question.difficulty,
             question.category,
             question.theme,
             question.correctIndex,

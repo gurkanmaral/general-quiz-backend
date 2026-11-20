@@ -41,7 +41,7 @@ describe('GET /api/v1/daily/:dailyDate', () => {
     expect(body.question.correctIndex).toBe(1);
     expect(body.question.answerTitle.en).toMatch(/Michael Jackson/);
     expect(body.question.facts).toHaveLength(3);
-    expect(body.question.video.url).toMatch(/^https:\/\//);
+    expect(body.question.video?.url).toMatch(/^https:\/\//);
     expect(body.question.source.url).toBe('https://www.grammy.com/artists/michael-jackson/13202');
   });
 

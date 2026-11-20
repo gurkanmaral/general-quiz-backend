@@ -3,6 +3,7 @@ export {
   getPublishedQuestion,
   publishedQuestionSlugs,
   syncPublishedQuizzes,
+  type PublishedQuestion,
   type PublishedQuiz,
   type QuizzesSyncReport,
 } from './service';

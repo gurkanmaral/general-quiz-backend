@@ -30,8 +30,8 @@ afterAll(() => database.close());
 describe('kno import', () => {
   it('upserts published questions and the rotation, and a second run changes nothing', async () => {
     const first = await importContent(db, dir);
-    expect(first.quizzes.written).toBe(1);
-    expect(first.questions.written).toBe(7);
+    expect(first.quizzes.written).toBe(3);
+    expect(first.questions.written).toBe(42);
     expect(first.rotation.written).toBe(7);
 
     const before = await db.select().from(question).orderBy(asc(question.slug));
@@ -72,6 +72,7 @@ describe('kno import', () => {
     expect(report.questions.unpublished).toBe(1);
     expect(report.rotation.removed).toBe(1);
     expect(report.skippedPending).toBe(1);
+    expect(report.pending).toEqual(['question http-meaning (daily-originals)']);
     const [row] = await db.select().from(question).where(eq(question.slug, 'http-meaning'));
     expect(row?.status).toBe('unpublished');
     expect(await db.select().from(rotation)).toHaveLength(6);
@@ -89,6 +90,7 @@ describe('kno import', () => {
     });
     const report = await importContent(db, dir);
     expect(report.skippedPending).toBe(2);
+    expect(report.pending).toEqual(['question draft-question (daily-originals)', 'daily 2026-12-02 (largest-desert)']);
     expect(await db.select().from(question).where(eq(question.slug, 'draft-question'))).toHaveLength(0);
     expect(await db.select().from(scheduleEntry)).toEqual([expect.objectContaining({ dailyDate: '2026-12-01', questionSlug: 'largest-desert' })]);
   });
@@ -139,5 +141,80 @@ describe('kno import', () => {
       file.questions[2].options.pop();
     });
     await expect(importContent(db, dir)).rejects.toThrow(/daily-originals\.json[\s\S]*questions\.2\.options/);
+  });
+  it('stores quiz metadata and each Question\'s Difficulty (Story 2.1)', async () => {
+    await importContent(db, dir);
+    const [lotr] = await db.select().from(quiz).where(eq(quiz.slug, 'lord-of-the-rings'));
+    expect(lotr).toMatchObject({ kind: 'quiz', category: 'Movies', theme: 'emerald', status: 'published', expertShare: 0.3 });
+    expect(lotr!.description?.en).toBeTruthy();
+    const [pool] = await db.select().from(quiz).where(eq(quiz.slug, 'daily-originals'));
+    expect(pool).toMatchObject({ kind: 'dailyPool', category: null });
+
+    const rows = await db.select().from(question).where(eq(question.quizSlug, 'lord-of-the-rings'));
+    expect(rows).toHaveLength(20);
+    expect(rows.filter((row) => row.difficulty === 'expert')).toHaveLength(6);
+    // Category and theme come from the quiz when a Question sets none.
+    expect(rows.every((row) => row.category === 'Movies' && row.theme === 'emerald')).toBe(true);
+    expect(rows.every((row) => row.content.source.url.startsWith('https://'))).toBe(true);
+    expect(rows.every((row) => row.content.video === undefined)).toBe(true);
+  });
+
+  it('skips a pending quiz with all its Questions and lists it', async () => {
+    await editJson('quizzes/solar-system.json', (file) => {
+      file.status = 'pending';
+    });
+    const report = await importContent(db, dir);
+    expect(report.pending).toEqual(['quiz solar-system (with its 15 questions)']);
+    expect(await db.select().from(quiz).where(eq(quiz.slug, 'solar-system'))).toHaveLength(0);
+  });
+
+  it('marks a published Question removed from its file as unpublished, never deleting it (AD-9)', async () => {
+    await importContent(db, dir);
+    await editJson('quizzes/lord-of-the-rings.json', (file) => {
+      file.questions = file.questions.filter((item: { slug: string }) => item.slug !== 'lotr-balrog');
+    });
+    const report = await importContent(db, dir);
+    expect(report.questions.unpublished).toBe(1);
+    const [row] = await db.select().from(question).where(eq(question.slug, 'lotr-balrog'));
+    expect(row?.status).toBe('unpublished');
+
+    // Putting it back publishes it again.
+    await cp(join(REPO_CONTENT, 'quizzes/lord-of-the-rings.json'), join(dir, 'quizzes/lord-of-the-rings.json'));
+    await importContent(db, dir);
+    const [again] = await db.select().from(question).where(eq(question.slug, 'lotr-balrog'));
+    expect(again?.status).toBe('published');
+  });
+
+  it('names the file, field and Question when a Source is missing', async () => {
+    await editJson('quizzes/lord-of-the-rings.json', (file) => {
+      delete file.questions[3].source;
+    });
+    await expect(importContent(db, dir)).rejects.toThrow(/lord-of-the-rings\.json[\s\S]*questions\.3\.source \(question "lotr-gandalf-actor"\)/);
+    expect(await db.select().from(question)).toHaveLength(0);
+  });
+
+  it('rejects a Question with more than four Options, or without a Difficulty', async () => {
+    await editJson('quizzes/solar-system.json', (file) => {
+      file.questions[0].options.push({ en: 'Pluto' });
+      delete file.questions[1].difficulty;
+    });
+    const error = await importContent(db, dir).catch((caught: Error) => caught);
+    expect(String(error)).toMatch(/solar-system\.json/);
+    expect(String(error)).toMatch(/questions\.0\.options \(question "solar-largest-planet"\)/);
+    expect(String(error)).toMatch(/questions\.1\.difficulty/);
+  });
+
+  it('requires a Category, theme and description for a listed quiz', async () => {
+    await editJson('quizzes/solar-system.json', (file) => {
+      delete file.category;
+    });
+    await expect(importContent(db, dir)).rejects.toThrow(/solar-system\.json[\s\S]*category: required for a listed quiz/);
+  });
+
+  it('requires the quiz slug to match its file name', async () => {
+    await editJson('quizzes/solar-system.json', (file) => {
+      file.slug = 'planets';
+    });
+    await expect(importContent(db, dir)).rejects.toThrow(/solar-system\.json[\s\S]*slug: must match the file name/);
   });
 });

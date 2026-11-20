@@ -31,6 +31,7 @@ async function main(argv: string[]): Promise<number> {
     console.log(`  rotation:  ${report.rotation.written} written, ${report.rotation.removed} removed`);
     console.log(`  schedule:  ${report.entries.written} entries written, ${report.entries.removed} removed`);
     console.log(`  pending items skipped: ${report.skippedPending}`);
+    for (const item of report.pending) console.log(`    - ${item}`);
     console.log(countChanges(report) === 0 ? 'No changes.' : `${countChanges(report)} changes.`);
     return 0;
   } finally {
