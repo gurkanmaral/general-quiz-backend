@@ -1,6 +1,6 @@
 import { asc, eq, gte, notInArray, sql } from 'drizzle-orm';
 import { isCalendarDate, type DailyPlay, type DailyQuestion, type DailyResponse, type Streak } from '@general-quiz/contracts';
-import { STREAK_REPAIR_DAYS, computeStreak, daysBetween, rotationSlug, type DailyRotation } from '@general-quiz/shared';
+import { computeStreak, daysBetween, rotationSlug, type DailyRotation } from '@general-quiz/shared';
 import type { DbExecutor } from '../../db/client';
 import { anyChanged, excluded } from '../../db/upsert';
 import { answer, rotation, scheduleEntry } from './schema';
@@ -28,10 +28,13 @@ export function isTodaySomewhere(date: string, now: Date): boolean {
   return isCalendarDate(date) && date >= earliestDailyDate(now) && date <= latestDailyDate(now);
 }
 
-/** A Daily Date can be answered on `playedOn` when it is that day or up to the repair window before it. */
+/**
+ * A Daily Date can be answered on `playedOn` when it is that day or any earlier day (the Library,
+ * FR-7). Plays later than the repair window are stored but do not count for the Streak (FR-11).
+ */
 export function isAnswerable(dailyDate: string, playedOn: string): boolean {
   const late = daysBetween(dailyDate, playedOn);
-  return late >= 0 && late <= STREAK_REPAIR_DAYS;
+  return Number.isFinite(late) && late >= 0;
 }
 
 type AnswerRow = typeof answer.$inferSelect;

@@ -9,7 +9,6 @@ import {
   type DailyHistoryResponse,
   type DailyMergeResponse,
 } from '@general-quiz/contracts';
-import { STREAK_REPAIR_DAYS } from '@general-quiz/shared';
 import { problem } from '../../http/problem';
 import { isAcceptableDailyDate, isAnswerable, isTodaySomewhere, type DailyService } from './service';
 
@@ -97,8 +96,8 @@ export function dailyRoutes(service: DailyService, now: () => Date, requireUser:
           return problem(c, {
             status: 422,
             code: DAILY_PROBLEM_CODES.answerWindowClosed,
-            title: 'Too late to answer',
-            detail: `A Daily can be answered on its own date or up to ${STREAK_REPAIR_DAYS} days later.`,
+            title: 'Not answerable yet',
+            detail: 'A Daily can be answered on its own date or any later day, never before it.',
           });
         }
         const result = await service.answer(user.id, dailyDate, body.data, at);

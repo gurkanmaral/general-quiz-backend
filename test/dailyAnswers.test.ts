@@ -92,8 +92,20 @@ describe('POST /api/v1/daily/:dailyDate/answer (Story 1.5)', () => {
     expect((await answer(ada, '2026-11-13', 0, '2026-11-16')).status).toBe(200);
   });
 
-  it('refuses dates outside the repair window and dates after playedOn', async () => {
-    await expectProblem(await answer(ada, '2026-11-12', 0, '2026-11-16'), 422, 'daily.answerWindowClosed');
+  it('records a Library day older than the repair window without counting it for the Streak', async () => {
+    const cy = await createSignedInUser(app, mailer, 'cy@example.com');
+    expect((await answer(cy, '2026-11-16', 0, '2026-11-16')).status).toBe(200);
+    // 11-12 on 11-16 is 4 days late: stored (Library), but not counted for the Streak.
+    const late = DailyAnswerResponseSchema.parse(await (await answer(cy, '2026-11-12', 0, '2026-11-16')).json());
+    expect(late.play).toMatchObject({ dailyDate: '2026-11-12', playedOn: '2026-11-16' });
+    expect(late.streak).toEqual({ current: 1, best: 1 });
+    expect((await answer(cy, '2026-10-01', 0, '2026-11-16')).status).toBe(200);
+    const { plays, streak } = await history(cy, '2026-11-16');
+    expect(plays.map((play) => play.dailyDate)).toEqual(['2026-10-01', '2026-11-12', '2026-11-16']);
+    expect(streak).toEqual({ current: 1, best: 1 });
+  });
+
+  it('refuses dates after playedOn', async () => {
     await expectProblem(await answer(ada, '2026-11-17', 0, '2026-11-16'), 422, 'daily.answerWindowClosed');
   });
 
