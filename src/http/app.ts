@@ -9,7 +9,7 @@ import { createDailyService, dailyPlayerIds, dailyRoutes, deleteDailyUserData, i
 import { createProgress, deleteProgressUserData, playerRoutes, profileRoutes, type Progress, type RecordedGameResult } from '../modules/progress';
 import { createSocial, deleteSocialUserData, friendsRoutes, linkRoutes, notificationRoutes, socialSettingsRoutes } from '../modules/social';
 import { createLobbyHub, deleteLobbiesUserData, lobbyPlayerIds, lobbyRoutes, playedTogether, saveLobbyGame, type Clock } from '../modules/lobbies';
-import { createSoloGames, deleteQuizzesUserData, drawQuestions, getPublishedQuestion, playableQuiz, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
+import { createSoloGames, deleteQuizzesUserData, drawQuestions, getPublishedQuestion, publishedDailyPoolSlugs, playableQuiz, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 import { createRateLimiter } from './rateLimit';
 import { reportRoutes } from '../modules/content';
@@ -38,7 +38,7 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
     // `/me` shows the equipped Title (FR-18); progress is created below, so look it up lazily.
     { equippedTitle: (userId) => progress.equippedTitle(userId) },
   );
-  const daily = createDailyService(db, (slug) => getPublishedQuestion(db, slug));
+  const daily = createDailyService(db, (slug) => getPublishedQuestion(db, slug), () => publishedDailyPoolSlugs(db));
   // Ranked Accounts: finished a Daily, a Solo Game or a Lobby Game.
   const progress: Progress = createProgress(db, [dailyPlayerIds, soloPlayerIds, lobbyPlayerIds]);
   const games = createSoloGames(db, {

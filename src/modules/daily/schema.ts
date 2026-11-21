@@ -40,3 +40,13 @@ export const answer = knoDaily.table(
   },
   (table) => [primaryKey({ columns: [table.userId, table.dailyDate] })],
 );
+
+/**
+ * A Question picked automatically for a Daily Date that had nothing scheduled (FR-37). Kept apart
+ * from `schedule_entry`, which the import rewrites, so a fallback Daily never changes once played.
+ */
+export const fallbackAssignment = knoDaily.table('fallback_assignment', {
+  dailyDate: date('daily_date', { mode: 'string' }).primaryKey(),
+  questionSlug: text('question_slug').notNull(),
+  assignedAt: timestamp('assigned_at', { withTimezone: true }).notNull().defaultNow(),
+});

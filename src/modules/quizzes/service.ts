@@ -57,6 +57,17 @@ export async function getPublishedQuestion(db: DbExecutor, slug: string): Promis
   return row ? toDailyQuestion(row) : undefined;
 }
 
+/** Published Daily-only Questions (`dailyPool` quizzes), by slug: the Daily fallback pool (FR-37). */
+export async function publishedDailyPoolSlugs(db: DbExecutor): Promise<string[]> {
+  const rows = await db
+    .select({ slug: question.slug })
+    .from(question)
+    .innerJoin(quiz, eq(question.quizSlug, quiz.slug))
+    .where(and(eq(question.status, 'published'), eq(quiz.status, 'published'), eq(quiz.kind, 'dailyPool')))
+    .orderBy(question.slug);
+  return rows.map((row) => row.slug);
+}
+
 export async function publishedQuestionSlugs(db: DbExecutor): Promise<Set<string>> {
   const rows = await db.select({ slug: question.slug }).from(question).where(eq(question.status, 'published'));
   return new Set(rows.map((row) => row.slug));

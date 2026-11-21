@@ -1,12 +1,14 @@
-import { asc, eq, gte, inArray, notInArray, sql } from 'drizzle-orm';
+import { and, asc, eq, gte, inArray, notInArray, sql } from 'drizzle-orm';
 import { isCalendarDate, type DailyPlay, type DailyQuestion, type DailyResponse, type Streak } from '@general-quiz/contracts';
-import { computeStreak, daysBetween, rotationSlug, type DailyRotation } from '@general-quiz/shared';
+import { computeStreak, dayNumber, daysBetween, rotationSlug, type DailyRotation } from '@general-quiz/shared';
 import type { DbExecutor } from '../../db/client';
 import { anyChanged, excluded } from '../../db/upsert';
-import { answer, rotation, scheduleEntry } from './schema';
+import { answer, fallbackAssignment, rotation, scheduleEntry } from './schema';
 
 /** Supplied by the app factory (from the quizzes module) so `daily` does not import `quizzes`. */
 export type QuestionLookup = (slug: string) => Promise<DailyQuestion | undefined>;
+/** Published Daily-pool Question slugs (from `quizzes`), the fallback pool (FR-37). */
+export type DailyPool = () => Promise<string[]>;
 
 /** Largest real UTC offset (UTC+14, Line Islands); the smallest is UTC−12. */
 const MAX_OFFSET_MS = 14 * 60 * 60 * 1000;
@@ -88,23 +90,72 @@ async function readRotation(db: DbExecutor): Promise<DailyRotation | undefined> 
   return first ? { anchor: first.anchor, questions: rows.map((row) => row.questionSlug) } : undefined;
 }
 
-/** Candidate slugs in priority order: the explicit schedule entry, then the rotation. */
+/**
+ * Candidate slugs in priority order: the explicit schedule entry, a fallback already stored for
+ * the date (so a played fallback Daily never changes), then the rotation.
+ */
 export async function scheduledSlugs(db: DbExecutor, dailyDate: string): Promise<string[]> {
   const [entry] = await db.select().from(scheduleEntry).where(eq(scheduleEntry.dailyDate, dailyDate)).limit(1);
+  const [fallback] = await db.select().from(fallbackAssignment).where(eq(fallbackAssignment.dailyDate, dailyDate)).limit(1);
   const current = await readRotation(db);
   const fromRotation = current ? rotationSlug(current, dailyDate) : undefined;
-  return [entry?.questionSlug, fromRotation].filter((slug): slug is string => Boolean(slug));
+  return [entry?.questionSlug, fallback?.questionSlug, fromRotation].filter((slug): slug is string => Boolean(slug));
 }
 
-export function createDailyService(db: DbExecutor, lookupQuestion: QuestionLookup) {
+/**
+ * The fallback Question for an unscheduled Daily Date (FR-37): among published Daily-pool
+ * Questions not used by the schedule, the rotation or another fallback, the one at
+ * `dayNumber(date) mod count` in slug order. When every pool Question is used, the whole pool is
+ * cycled the same way. Deterministic for the same stored state.
+ */
+export function pickFallback(pool: readonly string[], used: ReadonlySet<string>, dailyDate: string): string | undefined {
+  const unused = pool.filter((slug) => !used.has(slug));
+  const candidates = unused.length ? unused : [...pool];
+  if (candidates.length === 0) return undefined;
+  candidates.sort();
+  const n = candidates.length;
+  return candidates[((dayNumber(dailyDate) % n) + n) % n];
+}
+
+async function usedSlugs(db: DbExecutor): Promise<Set<string>> {
+  const [entries, rotated, fallbacks] = await Promise.all([
+    db.select({ slug: scheduleEntry.questionSlug }).from(scheduleEntry),
+    db.select({ slug: rotation.questionSlug }).from(rotation),
+    db.select({ slug: fallbackAssignment.questionSlug }).from(fallbackAssignment),
+  ]);
+  return new Set([...entries, ...rotated, ...fallbacks].map((row) => row.slug));
+}
+
+export function createDailyService(db: DbExecutor, lookupQuestion: QuestionLookup, dailyPool: DailyPool = async () => []) {
+  /** Stores a fallback for `dailyDate`; a concurrent request that stored one first wins. */
+  async function assignFallback(dailyDate: string): Promise<DailyQuestion | undefined> {
+    const slug = pickFallback(await dailyPool(), await usedSlugs(db), dailyDate);
+    if (!slug) return undefined;
+    await db.insert(fallbackAssignment).values({ dailyDate, questionSlug: slug }).onConflictDoNothing({ target: fallbackAssignment.dailyDate });
+    const [stored] = await db.select().from(fallbackAssignment).where(eq(fallbackAssignment.dailyDate, dailyDate)).limit(1);
+    return stored ? lookupQuestion(stored.questionSlug) : undefined;
+  }
+
   return {
-    /** The Daily for a date; an entry whose Question is no longer published falls back to the rotation. */
+    /**
+     * The Daily for a date: an entry whose Question is no longer published falls back to the
+     * stored fallback, then the rotation; with none of these a fallback is picked and stored
+     * (FR-37). Callers validate the date first (AD-5), so future dates never get one.
+     */
     async getDaily(dailyDate: string): Promise<DailyResponse | undefined> {
       for (const slug of await scheduledSlugs(db, dailyDate)) {
         const question = await lookupQuestion(slug);
         if (question) return { dailyDate, question };
       }
-      return undefined;
+      // A stored fallback whose Question was unpublished is replaced (only that stale row).
+      const [stale] = await db.select().from(fallbackAssignment).where(eq(fallbackAssignment.dailyDate, dailyDate)).limit(1);
+      if (stale) {
+        await db
+          .delete(fallbackAssignment)
+          .where(and(eq(fallbackAssignment.dailyDate, dailyDate), eq(fallbackAssignment.questionSlug, stale.questionSlug)));
+      }
+      const question = await assignFallback(dailyDate);
+      return question ? { dailyDate, question } : undefined;
     },
 
     /** Every answered Daily of a player (oldest first) and the Streak as of the player's `today`. */
@@ -274,4 +325,22 @@ export async function deleteDailyUserData(db: DbExecutor, userId: string): Promi
 export async function dailyPlayerIds(db: DbExecutor): Promise<string[]> {
   const rows = await db.selectDistinct({ userId: answer.userId }).from(answer);
   return rows.map((row) => row.userId);
+}
+
+/** Daily Dates the import must see covered ahead of time (Story 6.2). */
+export const SCHEDULE_HORIZON_DAYS = 14;
+
+/**
+ * How many of the `days` Daily Dates after `today` the schedule covers with an explicit entry or
+ * the rotation; uncovered dates will get a fallback Question (FR-37).
+ */
+export function scheduleCoverage(input: ScheduleInput, today: string, days = SCHEDULE_HORIZON_DAYS): { covered: number; days: number; uncovered: string[] } {
+  const entryDates = new Set(input.entries.map((entry) => entry.dailyDate));
+  const uncovered: string[] = [];
+  const start = Date.parse(`${today}T00:00:00Z`);
+  for (let offset = 1; offset <= days; offset += 1) {
+    const date = new Date(start + offset * 86_400_000).toISOString().slice(0, 10);
+    if (!entryDates.has(date) && !rotationSlug(input.rotation, date)) uncovered.push(date);
+  }
+  return { covered: days - uncovered.length, days, uncovered };
 }

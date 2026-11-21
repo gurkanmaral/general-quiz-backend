@@ -1,5 +1,5 @@
 import type { Db } from '../../db/client';
-import { syncSchedule, type ScheduleSyncReport } from '../daily';
+import { scheduleCoverage, syncSchedule, type ScheduleSyncReport } from '../daily';
 import { publishedQuestionSlugs, syncPublishedQuizzes, type PublishedAward, type PublishedQuestion, type PublishedQuiz, type QuizzesSyncReport } from '../quizzes';
 import { readContentFiles, type ContentFiles } from './files';
 
@@ -8,6 +8,8 @@ export type ImportReport = QuizzesSyncReport &
     /** Pending items left out, e.g. `question lotr-balrog (lord-of-the-rings)` (FR-36). */
     pending: string[];
     skippedPending: number;
+    /** Things Gurkan should fix soon, e.g. fewer than 14 future Daily Dates scheduled (Story 6.2). */
+    warnings: string[];
   };
 
 /** Published quizzes with only their published questions; pending items are skipped and listed. */
@@ -67,7 +69,7 @@ export function publishedContent(files: ContentFiles): { quizzes: PublishedQuiz[
  * run with unchanged files writes nothing. Fails without writing if the schedule names a Question
  * that is not published.
  */
-export async function importContent(db: Db, dir: string): Promise<ImportReport> {
+export async function importContent(db: Db, dir: string, now: Date = new Date()): Promise<ImportReport> {
   const files = await readContentFiles(dir);
   const { quizzes, pending } = publishedContent(files);
   const allDates = files.schedule.entries.map((entry) => entry.dailyDate);
@@ -86,11 +88,19 @@ export async function importContent(db: Db, dir: string): Promise<ImportReport> 
     const missing = [...new Set(referenced.filter((slug) => !published.has(slug)))];
     if (missing.length) throw new Error(`Schedule references unpublished or unknown questions: ${missing.join(', ')}`);
 
-    const scheduleReport = await syncSchedule(tx, {
+    const schedule = {
       rotation: files.schedule.rotation,
       entries: entries.map((entry) => ({ dailyDate: entry.dailyDate, questionSlug: entry.question })),
-    });
-    return { ...quizReport, ...scheduleReport, pending, skippedPending: pending.length };
+    };
+    const scheduleReport = await syncSchedule(tx, schedule);
+    const warnings: string[] = [];
+    const coverage = scheduleCoverage(schedule, now.toISOString().slice(0, 10));
+    if (coverage.covered < coverage.days) {
+      warnings.push(
+        `Only ${coverage.covered} of the next ${coverage.days} Daily Dates are scheduled; ${coverage.uncovered.join(', ')} will use fallback Questions from the daily pool.`,
+      );
+    }
+    return { ...quizReport, ...scheduleReport, pending, skippedPending: pending.length, warnings };
   });
 }
 

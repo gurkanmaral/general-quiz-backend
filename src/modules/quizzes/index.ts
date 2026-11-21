@@ -24,6 +24,7 @@ export {
   type AwardDefinition,
   type PublishedAward,
   publishedQuestionSlugs,
+  publishedDailyPoolSlugs,
   syncPublishedQuizzes,
   type PublishedQuestion,
   type PublishedQuiz,
