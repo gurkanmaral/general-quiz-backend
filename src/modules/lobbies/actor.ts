@@ -510,6 +510,7 @@ export class LobbyActor {
         ? {
             index: game.index,
             total: game.questions.length,
+            questionSlug: current.slug,
             difficulty: current.difficulty,
             text: current.text,
             options: current.options,

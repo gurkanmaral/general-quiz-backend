@@ -1,13 +1,15 @@
 import { parseArgs } from './cliArgs';
 import { createDatabase, runMigrations } from './db/client';
 import { loadEnv } from './env';
-import { countChanges, importContent } from './modules/content';
+import { countChanges, importContent, listOpenReports, resolveReports } from './modules/content';
 
 const USAGE = `Usage: npm run kno -- <command>
 
 Commands:
   import [--dir <path>]  apply migrations, then upsert published content from content/ (default CONTENT_DIR)
-  migrate                apply database migrations only`;
+  migrate                apply database migrations only
+  reports                list open reports of wrong Questions, grouped by Question
+  reports resolve <id>   close one report by id (or every open report of a Question by its slug)`;
 
 async function main(argv: string[]): Promise<number> {
   const args = parseArgs(argv, process.env.INIT_CWD ?? process.cwd());
@@ -22,6 +24,22 @@ async function main(argv: string[]): Promise<number> {
     if (args.command === 'migrate') {
       console.log('Migrations applied.');
       return 0;
+    }
+    if (args.command === 'reports') {
+      const groups = await listOpenReports(database.db);
+      if (groups.length === 0) console.log('No open reports.');
+      for (const group of groups) {
+        console.log(`${group.questionSlug}  (${group.reports.length} open)`);
+        for (const item of group.reports) {
+          console.log(`  ${item.id}  ${item.createdAt.toISOString().slice(0, 16).replace('T', ' ')}  ${item.source}${item.note ? `  "${item.note}"` : ''}`);
+        }
+      }
+      return 0;
+    }
+    if (args.command === 'resolveReport') {
+      const count = await resolveReports(database.db, args.id, new Date());
+      console.log(count === 0 ? `No open report matches ${args.id}.` : `Resolved ${count} report${count === 1 ? '' : 's'}.`);
+      return count === 0 ? 1 : 0;
     }
     const dir = args.dir ?? env.CONTENT_DIR;
     const report = await importContent(database.db, dir);

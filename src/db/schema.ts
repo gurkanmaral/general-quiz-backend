@@ -5,3 +5,4 @@ export { knoAccounts, user, session, account, verification } from '../modules/ac
 export { knoProgress, quizRecord, correctQuestion, userAward, rarity, equippedTitle } from '../modules/progress/schema';
 export { knoSocial, playerLink, friendRequest, friendship, notification, nudge, socialSettings } from '../modules/social/schema';
 export { knoLobbies, lobbyGame, lobbyGamePlayer } from '../modules/lobbies/schema';
+export { knoContent, reportSource, reportStatus, report } from '../modules/content/schema';

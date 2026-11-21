@@ -11,6 +11,8 @@ import { createSocial, deleteSocialUserData, friendsRoutes, linkRoutes, notifica
 import { createLobbyHub, deleteLobbiesUserData, lobbyPlayerIds, lobbyRoutes, playedTogether, saveLobbyGame, type Clock } from '../modules/lobbies';
 import { createSoloGames, deleteQuizzesUserData, drawQuestions, getPublishedQuestion, playableQuiz, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
+import { createRateLimiter } from './rateLimit';
+import { reportRoutes } from '../modules/content';
 
 export type AppDeps = {
   db: Db;
@@ -104,6 +106,8 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
     endedResponse: (ended: RecordedGameResult) => ({ record: ended.record, unlocks: ended.unlocks }),
   };
 
+  // Per-account rate limits (Stories 6.1, 6.3), one counter store per app.
+  const limiter = createRateLimiter(now);
   const app = new Hono();
 
   app.use(async (c, next) => {
@@ -139,6 +143,10 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
   app.route('/api/v1/links', linkRoutes({ social, optionalUser: accounts.optionalUser }));
   app.route('/api/v1/lobbies', lobbyRoutes({ hub: lobbies, requireUser: accounts.requireUser, invite: social.inviteToLobby }));
   app.route('/api/v1/social', socialSettingsRoutes({ social, requireUser: accounts.requireUser }));
+  app.route(
+    '/api/v1/reports',
+    reportRoutes({ db, now, requireUser: accounts.requireUser, limiter, questionExists: async (slug) => Boolean(await getPublishedQuestion(db, slug)) }),
+  );
   app.route('/api/v1/notifications', notificationRoutes({ social, requireUser: accounts.requireUser }));
 
   app.notFound((c) => problem(c, { status: 404, code: 'http.notFound', title: 'Not found' }));
@@ -149,5 +157,5 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
     return problem(c, { status: 500, code: 'http.internal', title: 'Internal server error' });
   });
 
-  return Object.assign(app, { accounts, progress, social, lobbies });
+  return Object.assign(app, { accounts, progress, social, lobbies, limiter });
 }
