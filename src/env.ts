@@ -6,6 +6,8 @@ const API_ROOT = fileURLToPath(new URL('..', import.meta.url));
 /** Local dev default, so a fresh clone runs without a `.env`; production must set DATABASE_URL. */
 export const DEFAULT_DATABASE_URL = 'postgres://postgres@localhost:5432/kno';
 export const DEFAULT_CONTENT_DIR = fileURLToPath(new URL('../../../content', import.meta.url));
+/** The built web app (`apps/web/dist`), served by the API in production. Same depth from src/ and dist/. */
+export const DEFAULT_WEB_DIR = fileURLToPath(new URL('../../web/dist', import.meta.url));
 
 /** The Vite dev server (same origin as the API through its `/api` proxy). */
 export const DEFAULT_AUTH_URL = 'http://localhost:5180';
@@ -28,6 +30,13 @@ const EnvSchema = z.object({
   /** Google sign-in is offered only when both are set (Story 1.4). */
   GOOGLE_CLIENT_ID: optionalText,
   GOOGLE_CLIENT_SECRET: optionalText,
+  /** Sends sign-in emails through Resend when set; otherwise links are only logged (dev). */
+  RESEND_API_KEY: optionalText,
+  MAIL_FROM: z.string().min(3).default('KNO. <no-reply@kno.example>'),
+  /** Serve the built web app from this folder; defaults to apps/web/dist in production. */
+  WEB_DIR: optionalText,
+  /** Run migrations and `kno import` on start (behind an advisory lock); defaults to on in production. */
+  IMPORT_ON_START: z.enum(['true', 'false']).optional(),
   /** Comma-separated reverse-proxy IPs/CIDRs in front of the API (Better Auth's trusted proxies). */
   TRUST_PROXY: z.preprocess(
     (value) => (typeof value === 'string' ? value.split(',').map((item) => item.trim()).filter(Boolean) : []),

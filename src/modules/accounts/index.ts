@@ -8,7 +8,7 @@ import { meRoutes, providerRoutes } from './routes';
 import { createAccountsService, type UserDataDeleter } from './service';
 
 export { AUTH_BASE_PATH, type AuthConfig, type GoogleConfig } from './auth';
-export { createDevMailer, type DevMailer, type Mail, type Mailer } from './mailer';
+export { createDevMailer, createMailer, createResendMailer, type DevMailer, type Mail, type Mailer } from './mailer';
 export { isUsernameAllowed, isValidUsername, normalizeUsername } from './usernames';
 export type { AccountsService, PublicPlayer, SessionUser, UserDataDeleter } from './service';
 /** For foreign keys to `kno_accounts.user.id` only (AD-2); never query it from another module. */

@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "start": "tsx src/server.ts",
+    "start": "node --enable-source-maps dist/server.js",
     "kno": "tsx src/cli.ts",
     "db:generate": "drizzle-kit generate",
     "test": "vitest run",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "build": "node build.mjs",
+    "kno:prod": "node --enable-source-maps dist/cli.js"
   },
   "dependencies": {
     "@general-quiz/contracts": "*",
@@ -30,6 +32,7 @@
     "socket.io-client": "^4.8.4",
     "tsx": "^4.23.15",
     "typescript": "^5.6.3",
-    "vitest": "^2.1.9"
+    "vitest": "^2.1.9",
+    "esbuild": "^0.21.5"
   }
 }

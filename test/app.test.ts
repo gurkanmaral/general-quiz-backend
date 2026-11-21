@@ -16,6 +16,14 @@ describe('app factory', () => {
     expect(HealthResponseSchema.parse(await res.json())).toEqual({ status: 'ok', database: 'ok' });
   });
 
+  it('answers /health with 503 and database "down" when Postgres is unreachable', async () => {
+    const broken = openTestDatabase();
+    await broken.close();
+    const res = await createApp({ db: broken.db, logger }).request('/health');
+    expect(res.status).toBe(503);
+    expect(HealthResponseSchema.parse(await res.json())).toEqual({ status: 'error', database: 'down' });
+  });
+
   it('returns problem+json with a stable code for unknown routes', async () => {
     const res = await createApp({ db: database.db, logger }).request('/api/v1/nope');
     expect(res.status).toBe(404);
@@ -26,7 +34,7 @@ describe('app factory', () => {
   it('turns unexpected errors into a 500 problem without leaking details', async () => {
     const broken = openTestDatabase();
     await broken.close();
-    const res = await createApp({ db: broken.db, logger }).request('/health');
+    const res = await createApp({ db: broken.db, logger }).request('/api/v1/quizzes');
     expect(res.status).toBe(500);
     const body = ProblemSchema.parse(await res.json());
     expect(body).toMatchObject({ code: 'http.internal', title: 'Internal server error' });

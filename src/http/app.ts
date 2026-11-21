@@ -12,6 +12,7 @@ import { createLobbyHub, deleteLobbiesUserData, lobbyPlayerIds, lobbyRoutes, pla
 import { createSoloGames, deleteQuizzesUserData, drawQuestions, getPublishedQuestion, publishedDailyPoolSlugs, playableQuiz, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 import { createRateLimiter, rateLimitWith } from './rateLimit';
+import { serveWeb } from './static';
 import { reportRoutes } from '../modules/content';
 
 export type AppDeps = {
@@ -23,12 +24,14 @@ export type AppDeps = {
   random?: Random;
   /** Injectable server clock and timers for Lobbies (AD-8) in tests. */
   lobbyClock?: Clock;
+  /** The built web app to serve on the same origin (production, Story 6.4). */
+  webDir?: string;
   /** Better Auth settings; defaults suit tests and local dev (dev mailer, dev secret). */
   auth?: Partial<AuthConfig>;
 };
 
 /** Builds the HTTP app without listening, so tests call `app.request(...)` directly. */
-export function createApp({ db, logger, now = () => new Date(), random, auth, lobbyClock }: AppDeps) {
+export function createApp({ db, logger, now = () => new Date(), random, auth, lobbyClock, webDir }: AppDeps) {
   const accounts = createAccounts(
     db,
     { baseURL: DEFAULT_AUTH_URL, secret: DEV_AUTH_SECRET, ...auth, mailer: auth?.mailer ?? createDevMailer(logger) },
@@ -118,7 +121,12 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
   });
 
   app.get('/health', async (c) => {
-    await pingDatabase(db);
+    try {
+      await pingDatabase(db);
+    } catch (error) {
+      logger.warn({ err: error }, 'health check: database unreachable');
+      return c.json({ status: 'error', database: 'down' } satisfies HealthResponse, 503);
+    }
     return c.json({ status: 'ok', database: 'ok' } satisfies HealthResponse);
   });
 
@@ -157,6 +165,8 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
     reportRoutes({ db, now, requireUser: accounts.requireUser, rateLimit, questionExists: async (slug) => Boolean(await getPublishedQuestion(db, slug)) }),
   );
   app.route('/api/v1/notifications', notificationRoutes({ social, requireUser: accounts.requireUser }));
+
+  if (webDir) app.use(serveWeb(webDir));
 
   app.notFound((c) => problem(c, { status: 404, code: 'http.notFound', title: 'Not found' }));
   app.onError((error, c) => {
