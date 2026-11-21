@@ -26,6 +26,12 @@ export function createSocial(db: Db, deps: SocialDeps) {
       if (result.ok && result.status === 'requested' && result.created) await notifications.notify(result.player.id, 'friendRequest', fromId, {});
       return result;
     },
+    /** A Lobby Invite to a Friend (FR-29); false when they are not Friends. */
+    async inviteToLobby(fromId: string, toId: string, lobby: { code: string; quizTitle: { en: string; tr?: string } }): Promise<boolean> {
+      if (!(await friends.areFriends(fromId, toId))) return false;
+      await notifications.notify(toId, 'lobbyInvite', fromId, { code: lobby.code, quizTitle: lobby.quizTitle });
+      return true;
+    },
     acceptFriendRequest: (userId: string, requestId: string) => friends.accept(userId, requestId),
     /** Profile visibility (FR-20): Friends may see each other's Profiles. */
     areFriends: (userId: string, otherId: string) => friends.areFriends(userId, otherId),

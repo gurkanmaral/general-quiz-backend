@@ -1,6 +1,7 @@
 import type { IncomingHttpHeaders, Server as HttpServer } from 'node:http';
 import { Server, type Socket } from 'socket.io';
-import { NOTIFICATION_EVENT, NOTIFICATIONS_NAMESPACE, SOCKET_PATH, UNREAD_EVENT } from '@general-quiz/contracts';
+import { LOBBY_NAMESPACE, NOTIFICATION_EVENT, NOTIFICATIONS_NAMESPACE, SOCKET_PATH, UNREAD_EVENT } from '@general-quiz/contracts';
+import { attachLobbySockets } from '../modules/lobbies';
 import type { Logger } from '../logger';
 import type { createApp } from './app';
 
@@ -40,7 +41,7 @@ export function socketAuth(app: App) {
 
 /**
  * Socket.IO on the API's HTTP server (AD-1, one instance): `/notifications` pushes notifications
- * live to every signed-in socket of the recipient (FR-26).
+ * live to every signed-in socket of the recipient (FR-26); `/lobby` runs Lobbies (FR-27–FR-34).
  */
 export function attachRealtime(httpServer: HttpServer, app: App, options: RealtimeOptions): Server {
   const io = new Server(httpServer, {
@@ -61,6 +62,11 @@ export function attachRealtime(httpServer: HttpServer, app: App, options: Realti
   const bus = app.social.notifications.bus;
   bus.on('notification', (userId, event) => notifications.to(`user:${userId}`).emit(NOTIFICATION_EVENT, event));
   bus.on('unread', (userId, unread) => notifications.to(`user:${userId}`).emit(UNREAD_EVENT, { unread }));
+
+  // Lobbies (AD-8): one namespace, each Lobby a server actor.
+  const lobby = io.of(LOBBY_NAMESPACE);
+  lobby.use(socketAuth(app));
+  attachLobbySockets(lobby, app.lobbies);
 
   options.logger?.debug('realtime attached');
   return io;

@@ -8,7 +8,8 @@ import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from
 import { createDailyService, dailyPlayerIds, dailyRoutes, deleteDailyUserData, isTodaySomewhere } from '../modules/daily';
 import { createProgress, deleteProgressUserData, playerRoutes, profileRoutes, type Progress, type RecordedGameResult } from '../modules/progress';
 import { createSocial, deleteSocialUserData, friendsRoutes, linkRoutes, notificationRoutes, socialSettingsRoutes } from '../modules/social';
-import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
+import { createLobbyHub, lobbyRoutes, type Clock } from '../modules/lobbies';
+import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, playableQuiz, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
 export type AppDeps = {
@@ -18,12 +19,14 @@ export type AppDeps = {
   now?: () => Date;
   /** Injectable randomness (Solo Game draws) for tests. */
   random?: Random;
+  /** Injectable server clock and timers for Lobbies (AD-8) in tests. */
+  lobbyClock?: Clock;
   /** Better Auth settings; defaults suit tests and local dev (dev mailer, dev secret). */
   auth?: Partial<AuthConfig>;
 };
 
 /** Builds the HTTP app without listening, so tests call `app.request(...)` directly. */
-export function createApp({ db, logger, now = () => new Date(), random, auth }: AppDeps) {
+export function createApp({ db, logger, now = () => new Date(), random, auth, lobbyClock }: AppDeps) {
   const accounts = createAccounts(
     db,
     { baseURL: DEFAULT_AUTH_URL, secret: DEV_AUTH_SECRET, ...auth, mailer: auth?.mailer ?? createDevMailer(logger) },
@@ -53,6 +56,14 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
       findPlayers: accounts.service.findPlayers,
       titlesOf: (ids) => progress.equippedTitles(ids),
     },
+  });
+  const lobbies = createLobbyHub({
+    clock: lobbyClock,
+    playerCard: async (userId) => {
+      const player = await accounts.service.findPlayer({ id: userId });
+      return player ? { ...player, title: await progress.equippedTitle(userId) } : undefined;
+    },
+    quiz: (slug) => playableQuiz(db, slug),
   });
   const quizzesDeps = {
     db,
@@ -88,13 +99,14 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     findPlayer: accounts.service.findPlayer,
     streakOf: async (userId: string, today: string) =>
       isTodaySomewhere(today, now()) ? (await daily.getHistory(userId, today)).streak : undefined,
-    // Friends may see each other's Profiles (FR-20).
-    canViewProfile: (viewerId: string, playerId: string) => social.areFriends(viewerId, playerId),
+    // Friends and Lobby co-players may see each other's Profiles (FR-20).
+    canViewProfile: async (viewerId: string, playerId: string) => lobbies.together(viewerId, playerId) || social.areFriends(viewerId, playerId),
   };
   app.route('/api/v1/profile', profileRoutes(profileDeps));
   app.route('/api/v1/players', playerRoutes(profileDeps));
   app.route('/api/v1/friends', friendsRoutes({ social, requireUser: accounts.requireUser, isToday: (date) => isTodaySomewhere(date, now()) }));
   app.route('/api/v1/links', linkRoutes({ social, optionalUser: accounts.optionalUser }));
+  app.route('/api/v1/lobbies', lobbyRoutes({ hub: lobbies, requireUser: accounts.requireUser, invite: social.inviteToLobby }));
   app.route('/api/v1/social', socialSettingsRoutes({ social, requireUser: accounts.requireUser }));
   app.route('/api/v1/notifications', notificationRoutes({ social, requireUser: accounts.requireUser }));
 
@@ -106,5 +118,5 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     return problem(c, { status: 500, code: 'http.internal', title: 'Internal server error' });
   });
 
-  return Object.assign(app, { accounts, progress, social });
+  return Object.assign(app, { accounts, progress, social, lobbies });
 }

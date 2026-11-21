@@ -13,6 +13,7 @@ export {
 } from './games';
 export {
   getPublishedQuestion,
+  playableQuiz,
   listPublishedQuizzes,
   publishedQuestionIndex,
   quizAwards,

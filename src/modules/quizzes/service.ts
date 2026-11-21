@@ -286,3 +286,19 @@ export async function quizTitles(db: DbExecutor, slugs: readonly string[]): Prom
   const rows = await db.select({ slug: quiz.slug, title: quiz.title }).from(quiz).where(inArray(quiz.slug, [...slugs]));
   return new Map(rows.map((row) => [row.slug, row.title]));
 }
+
+/** A published, listed Quiz with at least one published Question (playable in a Lobby), or undefined. */
+export async function playableQuiz(db: DbExecutor, slug: string): Promise<{ slug: string; title: LocalizedText } | undefined> {
+  const [found] = await db
+    .select({ slug: quiz.slug, title: quiz.title })
+    .from(quiz)
+    .where(and(eq(quiz.slug, slug), eq(quiz.status, 'published'), eq(quiz.kind, 'quiz')))
+    .limit(1);
+  if (!found) return undefined;
+  const [one] = await db
+    .select({ slug: question.slug })
+    .from(question)
+    .where(and(eq(question.quizSlug, slug), eq(question.status, 'published')))
+    .limit(1);
+  return one ? found : undefined;
+}
