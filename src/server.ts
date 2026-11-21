@@ -22,6 +22,7 @@ const app = createApp({
     secret: env.BETTER_AUTH_SECRET,
     // Both local web ports (Vite default and start-kno.command) during development.
     trustedOrigins,
+    trustedProxies: env.TRUST_PROXY,
     google: env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } : undefined,
   },
 });

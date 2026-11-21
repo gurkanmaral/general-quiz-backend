@@ -21,6 +21,8 @@ export type AuthConfig = {
   mailer: Mailer;
   /** Better Auth's built-in limiter (on by default); tests turn it off to sign in freely. */
   rateLimit?: boolean;
+  /** Reverse-proxy IPs/CIDRs whose X-Forwarded-For hops are skipped to find the client IP (TRUST_PROXY). */
+  trustedProxies?: readonly string[];
 };
 
 export const AUTH_BASE_PATH = '/api/auth';
@@ -74,7 +76,11 @@ export function createAuth(db: Db, config: AuthConfig, logger?: Logger) {
     },
     session: { expiresIn: SESSION_EXPIRES_IN_S, updateAge: SESSION_UPDATE_AGE_S },
     rateLimit: { enabled: config.rateLimit ?? true, storage: 'memory' },
-    advanced: { cookiePrefix: 'kno' },
+    advanced: {
+      cookiePrefix: 'kno',
+      // The client IP feeds the auth rate limiter; behind a proxy only its forwarded chain is trusted.
+      ipAddress: config.trustedProxies?.length ? { ipAddressHeaders: ['x-forwarded-for'], trustedProxies: [...config.trustedProxies] } : undefined,
+    },
     telemetry: { enabled: false },
     plugins: [
       username({

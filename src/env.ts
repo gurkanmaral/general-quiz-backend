@@ -28,6 +28,11 @@ const EnvSchema = z.object({
   /** Google sign-in is offered only when both are set (Story 1.4). */
   GOOGLE_CLIENT_ID: optionalText,
   GOOGLE_CLIENT_SECRET: optionalText,
+  /** Comma-separated reverse-proxy IPs/CIDRs in front of the API (Better Auth's trusted proxies). */
+  TRUST_PROXY: z.preprocess(
+    (value) => (typeof value === 'string' ? value.split(',').map((item) => item.trim()).filter(Boolean) : []),
+    z.array(z.string().min(1)),
+  ),
 });
 export type Env = z.infer<typeof EnvSchema>;
 

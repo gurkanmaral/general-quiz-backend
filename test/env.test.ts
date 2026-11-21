@@ -26,4 +26,9 @@ describe('env', () => {
     expect(env.GOOGLE_CLIENT_ID).toBeUndefined();
     expect(env.BETTER_AUTH_URL).toBe('http://localhost:5180');
   });
+
+  it('reads TRUST_PROXY as a comma-separated list of proxy addresses', () => {
+    expect(parseEnv({}).TRUST_PROXY).toEqual([]);
+    expect(parseEnv({ TRUST_PROXY: ' 10.0.0.1, 192.0.2.0/24 ,' }).TRUST_PROXY).toEqual(['10.0.0.1', '192.0.2.0/24']);
+  });
 });

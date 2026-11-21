@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import type { HealthResponse, UnlockedAward } from '@general-quiz/contracts';
+import { RATE_LIMITED_CODE, type HealthResponse, type UnlockedAward } from '@general-quiz/contracts';
 import { pingDatabase, type Db } from '../db/client';
 import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
@@ -11,7 +11,7 @@ import { createSocial, deleteSocialUserData, friendsRoutes, linkRoutes, notifica
 import { createLobbyHub, deleteLobbiesUserData, lobbyPlayerIds, lobbyRoutes, playedTogether, saveLobbyGame, type Clock } from '../modules/lobbies';
 import { createSoloGames, deleteQuizzesUserData, drawQuestions, getPublishedQuestion, publishedDailyPoolSlugs, playableQuiz, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
-import { createRateLimiter } from './rateLimit';
+import { createRateLimiter, rateLimitWith } from './rateLimit';
 import { reportRoutes } from '../modules/content';
 
 export type AppDeps = {
@@ -108,6 +108,7 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
 
   // Per-account rate limits (Stories 6.1, 6.3), one counter store per app.
   const limiter = createRateLimiter(now);
+  const rateLimit = rateLimitWith(limiter);
   const app = new Hono();
 
   app.use(async (c, next) => {
@@ -121,7 +122,15 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
     return c.json({ status: 'ok', database: 'ok' } satisfies HealthResponse);
   });
 
-  app.on(['GET', 'POST'], `${AUTH_BASE_PATH}/*`, (c) => accounts.authHandler(c.req.raw));
+  app.on(['GET', 'POST'], `${AUTH_BASE_PATH}/*`, async (c) => {
+    const res = await accounts.authHandler(c.req.raw);
+    if (res.status !== 429) return res;
+    // Better Auth's limiter (by client IP) answers like every other limit: problem+json `rateLimited` (Story 6.3).
+    const retryAfter = res.headers.get('X-Retry-After') ?? res.headers.get('Retry-After') ?? '60';
+    const limited = problem(c, { status: 429, code: RATE_LIMITED_CODE, title: 'Too many requests', detail: `Try again in ${retryAfter} seconds.` });
+    limited.headers.set('Retry-After', retryAfter);
+    return limited;
+  });
   app.route('/api/v1/auth', accounts.providerRoutes());
   app.route('/api/v1/me', accounts.meRoutes());
   app.route('/api/v1/daily', dailyRoutes(daily, now, accounts.requireUser));
@@ -139,13 +148,13 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
   };
   app.route('/api/v1/profile', profileRoutes(profileDeps));
   app.route('/api/v1/players', playerRoutes(profileDeps));
-  app.route('/api/v1/friends', friendsRoutes({ social, requireUser: accounts.requireUser, isToday: (date) => isTodaySomewhere(date, now()) }));
+  app.route('/api/v1/friends', friendsRoutes({ social, requireUser: accounts.requireUser, isToday: (date) => isTodaySomewhere(date, now()), rateLimit }));
   app.route('/api/v1/links', linkRoutes({ social, optionalUser: accounts.optionalUser }));
-  app.route('/api/v1/lobbies', lobbyRoutes({ hub: lobbies, requireUser: accounts.requireUser, invite: social.inviteToLobby }));
+  app.route('/api/v1/lobbies', lobbyRoutes({ hub: lobbies, requireUser: accounts.requireUser, invite: social.inviteToLobby, rateLimit }));
   app.route('/api/v1/social', socialSettingsRoutes({ social, requireUser: accounts.requireUser }));
   app.route(
     '/api/v1/reports',
-    reportRoutes({ db, now, requireUser: accounts.requireUser, limiter, questionExists: async (slug) => Boolean(await getPublishedQuestion(db, slug)) }),
+    reportRoutes({ db, now, requireUser: accounts.requireUser, rateLimit, questionExists: async (slug) => Boolean(await getPublishedQuestion(db, slug)) }),
   );
   app.route('/api/v1/notifications', notificationRoutes({ social, requireUser: accounts.requireUser }));
 

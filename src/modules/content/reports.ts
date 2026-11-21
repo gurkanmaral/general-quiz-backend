@@ -4,7 +4,7 @@ import { CONTENT_PROBLEM_CODES, ReportBodySchema, type ReportBody, type ReportRe
 import type { DbExecutor } from '../../db/client';
 import { uuidv7 } from '../../db/ids';
 import { problem } from '../../http/problem';
-import { RATE_LIMITS, type RateLimiter } from '../../http/rateLimit';
+import type { RateLimit } from '../../http/rateLimit';
 import { report } from './schema';
 
 /** Supplied by the app (from `quizzes`) so reports only name Questions that exist. */
@@ -48,11 +48,11 @@ export type ReportRouteDeps = {
   now: () => Date;
   requireUser: (c: Context) => Promise<{ id: string }>;
   questionExists: QuestionExists;
-  limiter: RateLimiter;
+  rateLimit: RateLimit;
 };
 
 /** `/api/v1/reports`: report a wrong Question (Story 6.1); signed-in and rate-limited. */
-export function reportRoutes({ db, now, requireUser, questionExists, limiter }: ReportRouteDeps) {
+export function reportRoutes({ db, now, requireUser, questionExists, rateLimit }: ReportRouteDeps) {
   return new Hono().post('/', async (c) => {
     const user = await requireUser(c);
     const body = ReportBodySchema.safeParse(await c.req.json().catch(() => undefined));
@@ -67,7 +67,7 @@ export function reportRoutes({ db, now, requireUser, questionExists, limiter }: 
     if (!(await questionExists(body.data.questionSlug))) {
       return problem(c, { status: 404, code: CONTENT_PROBLEM_CODES.questionNotFound, title: 'Question not found' });
     }
-    limiter.enforce(`report:${user.id}`, RATE_LIMITS.report, c.req.path);
+    rateLimit(c, user.id, 'report');
     const id = await createReport(db, user.id, body.data, now());
     return c.json({ id } satisfies ReportResponse, 201);
   });

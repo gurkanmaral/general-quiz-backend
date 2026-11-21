@@ -13,6 +13,7 @@ import {
   type SendFriendRequestResponse,
 } from '@general-quiz/contracts';
 import { problem } from '../../http/problem';
+import type { RateLimit } from '../../http/rateLimit';
 import type { Social } from './service';
 
 export type SocialRouteDeps = {
@@ -20,6 +21,7 @@ export type SocialRouteDeps = {
   requireUser: (c: Context) => Promise<{ id: string }>;
   /** True when `date` is a valid local "today" somewhere (AD-5, from `daily`). */
   isToday: (date: string) => boolean;
+  rateLimit: RateLimit;
 };
 
 const REASONS = {
@@ -39,7 +41,7 @@ const NUDGE_REASONS = {
 const requestNotFound = (c: Context) => problem(c, { status: 404, code: SOCIAL_PROBLEM_CODES.requestNotFound, title: 'Friend Request not found' });
 
 /** `/api/v1/friends`: the Friends list, Friend Requests and removing a Friend (FR-21, FR-22). */
-export function friendsRoutes({ social, requireUser, isToday }: SocialRouteDeps) {
+export function friendsRoutes({ social, requireUser, isToday, rateLimit }: SocialRouteDeps) {
   return new Hono()
     .get('/', async (c) => {
       const user = await requireUser(c);
@@ -51,6 +53,7 @@ export function friendsRoutes({ social, requireUser, isToday }: SocialRouteDeps)
     })
     .post('/requests', async (c) => {
       const user = await requireUser(c);
+      rateLimit(c, user.id, 'friendRequest');
       const body = SendFriendRequestBodySchema.safeParse(await c.req.json().catch(() => undefined));
       if (!body.success) {
         return problem(c, {
@@ -75,6 +78,7 @@ export function friendsRoutes({ social, requireUser, isToday }: SocialRouteDeps)
     })
     .post('/:userId/nudge', async (c) => {
       const user = await requireUser(c);
+      rateLimit(c, user.id, 'nudge');
       const body = NudgeBodySchema.safeParse(await c.req.json().catch(() => undefined));
       if (!body.success || !isToday(body.data.dailyDate)) {
         return problem(c, { status: 400, code: SOCIAL_PROBLEM_CODES.invalidToday, title: 'Invalid Daily Date', detail: 'dailyDate must be your local date as YYYY-MM-DD.' });
@@ -104,7 +108,7 @@ export function linkRoutes({ social, optionalUser }: Pick<SocialRouteDeps, 'soci
 }
 
 /** `/api/v1/social/settings`: turn receiving Nudges on or off (FR-24). */
-export function socialSettingsRoutes({ social, requireUser }: Omit<SocialRouteDeps, 'isToday'>) {
+export function socialSettingsRoutes({ social, requireUser }: Omit<SocialRouteDeps, 'isToday' | 'rateLimit'>) {
   return new Hono()
     .get('/settings', async (c) => {
       const user = await requireUser(c);
@@ -119,7 +123,7 @@ export function socialSettingsRoutes({ social, requireUser }: Omit<SocialRouteDe
 }
 
 /** `/api/v1/notifications`: the in-app list with its unread count; opening it marks all read (FR-26). */
-export function notificationRoutes({ social, requireUser }: Omit<SocialRouteDeps, 'isToday'>) {
+export function notificationRoutes({ social, requireUser }: Omit<SocialRouteDeps, 'isToday' | 'rateLimit'>) {
   return new Hono()
     .get('/', async (c) => {
       const user = await requireUser(c);

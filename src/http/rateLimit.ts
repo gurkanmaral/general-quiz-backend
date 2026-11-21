@@ -1,3 +1,4 @@
+import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { RATE_LIMITED_CODE } from '@general-quiz/contracts';
 import { problemResponse } from './problem';
@@ -43,7 +44,18 @@ export type RateLimiter = ReturnType<typeof createRateLimiter>;
 
 const HOUR = 60 * 60 * 1000;
 
-/** Per-account limits (Stories 6.1, 6.3). */
+/** Per-account limits (Stories 6.1, 6.3); generous for people, tight for scripts. */
 export const RATE_LIMITS = {
   report: { limit: 10, windowMs: HOUR },
+  friendRequest: { limit: 20, windowMs: HOUR },
+  nudge: { limit: 30, windowMs: HOUR },
+  lobbyCreate: { limit: 10, windowMs: HOUR },
 } satisfies Record<string, RateLimitRule>;
+export type RateLimitBucket = keyof typeof RATE_LIMITS;
+
+/** Given to route modules: throws 429 `rateLimited` when the player is over the bucket's limit. */
+export type RateLimit = (c: Context, userId: string, bucket: RateLimitBucket) => void;
+
+export function rateLimitWith(limiter: RateLimiter): RateLimit {
+  return (c, userId, bucket) => limiter.enforce(`${bucket}:${userId}`, RATE_LIMITS[bucket], c.req.path);
+}
