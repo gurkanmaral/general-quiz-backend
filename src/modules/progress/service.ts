@@ -5,7 +5,7 @@ import { publishedQuestionIndex, quizAwards, type EndedSoloGame } from '../quizz
 import { correctQuestion, equippedTitle, quizRecord, userAward } from './schema';
 import { isRuleMet } from './unlocks';
 import { computeRarity, rarityOf, type RankedAccountSource } from './rarity';
-import { getEquippedTitle } from './profile';
+import { getEquippedTitle, getEquippedTitles } from './profile';
 
 /** A Solo Game counts as won when at least this share of its Questions was answered correctly. */
 export const SOLO_WIN_SHARE = 0.7;
@@ -141,6 +141,7 @@ export function createProgress(db: Db, rankedAccountSources: readonly RankedAcco
   return {
     computeRarity: () => computeRarity(db, rankedAccountSources),
     equippedTitle: (userId: string) => getEquippedTitle(db, userId),
+    equippedTitles: (userIds: readonly string[]) => getEquippedTitles(db, userIds),
     recordGame: (tx: DbExecutor, game: RecordedGame) => recordGame(tx, game),
     quizRecords: (userId: string, quizSlugs?: readonly string[]) => quizRecords(db, userId, quizSlugs),
     correctQuestionSlugs: (tx: DbExecutor, userId: string, quizSlug: string) => correctQuestionSlugs(tx, userId, quizSlug),

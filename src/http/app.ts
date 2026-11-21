@@ -7,6 +7,7 @@ import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
 import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from '../modules/accounts';
 import { createDailyService, dailyPlayerIds, dailyRoutes, deleteDailyUserData, isTodaySomewhere } from '../modules/daily';
 import { createProgress, deleteProgressUserData, playerRoutes, profileRoutes, type Progress, type RecordedGameResult } from '../modules/progress';
+import { createSocial, deleteSocialUserData, friendsRoutes, linkRoutes } from '../modules/social';
 import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
@@ -28,7 +29,7 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     { baseURL: DEFAULT_AUTH_URL, secret: DEV_AUTH_SECRET, ...auth, mailer: auth?.mailer ?? createDevMailer(logger) },
     logger,
     // Every module with per-player rows (FR-4).
-    [deleteDailyUserData, deleteQuizzesUserData, deleteProgressUserData],
+    [deleteDailyUserData, deleteQuizzesUserData, deleteProgressUserData, deleteSocialUserData],
     // `/me` shows the equipped Title (FR-18); progress is created below, so look it up lazily.
     { equippedTitle: (userId) => progress.equippedTitle(userId) },
   );
@@ -44,6 +45,14 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
       return { has: (slug: string) => !correct.has(slug) };
     },
     onGameEnded: (tx, game) => progress.recordGame(tx, game),
+  });
+  const social = createSocial(db, {
+    now,
+    directory: {
+      findPlayer: accounts.service.findPlayer,
+      findPlayers: accounts.service.findPlayers,
+      titlesOf: (ids) => progress.equippedTitles(ids),
+    },
   });
   const quizzesDeps = {
     db,
@@ -79,9 +88,13 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     findPlayer: accounts.service.findPlayer,
     streakOf: async (userId: string, today: string) =>
       isTodaySomewhere(today, now()) ? (await daily.getHistory(userId, today)).streak : undefined,
+    // Friends may see each other's Profiles (FR-20).
+    canViewProfile: (viewerId: string, playerId: string) => social.areFriends(viewerId, playerId),
   };
   app.route('/api/v1/profile', profileRoutes(profileDeps));
   app.route('/api/v1/players', playerRoutes(profileDeps));
+  app.route('/api/v1/friends', friendsRoutes({ social, requireUser: accounts.requireUser }));
+  app.route('/api/v1/links', linkRoutes({ social }));
 
   app.notFound((c) => problem(c, { status: 404, code: 'http.notFound', title: 'Not found' }));
   app.onError((error, c) => {
@@ -91,5 +104,5 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
     return problem(c, { status: 500, code: 'http.internal', title: 'Internal server error' });
   });
 
-  return Object.assign(app, { accounts, progress });
+  return Object.assign(app, { accounts, progress, social });
 }

@@ -1,4 +1,4 @@
-import { and, eq, ne, sql } from 'drizzle-orm';
+import { and, eq, inArray, ne, sql } from 'drizzle-orm';
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { ACCOUNTS_PROBLEM_CODES, AvatarIdSchema, type AvatarId, type MeResponse, type ProfileUpdate } from '@general-quiz/contracts';
@@ -73,6 +73,18 @@ export function createAccountsService(db: Db, auth: Auth, userDataDeleters: read
       const [row] = await db.select().from(user).where(where).limit(1);
       const me = row ? toMe(row) : undefined;
       return me?.profileComplete && me.username ? { id: me.id, username: me.username, avatar: me.avatar } : undefined;
+    },
+
+    /** Players with a finished profile step among `ids` (others are left out). */
+    async findPlayers(ids: readonly string[]): Promise<Map<string, PublicPlayer>> {
+      const result = new Map<string, PublicPlayer>();
+      if (ids.length === 0) return result;
+      const rows = await db.select().from(user).where(inArray(user.id, [...new Set(ids)]));
+      for (const row of rows) {
+        const me = toMe(row);
+        if (me.profileComplete && me.username) result.set(me.id, { id: me.id, username: me.username, avatar: me.avatar });
+      }
+      return result;
     },
 
     async getMe(userId: string): Promise<MeResponse | undefined> {

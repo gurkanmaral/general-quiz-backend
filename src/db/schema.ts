@@ -3,3 +3,4 @@ export { knoQuizzes, contentStatus, quizKind, questionDifficulty, quiz, question
 export { knoDaily, rotation, scheduleEntry, answer } from '../modules/daily/schema';
 export { knoAccounts, user, session, account, verification } from '../modules/accounts/schema';
 export { knoProgress, quizRecord, correctQuestion, userAward, rarity, equippedTitle } from '../modules/progress/schema';
+export { knoSocial, playerLink, friendRequest, friendship } from '../modules/social/schema';

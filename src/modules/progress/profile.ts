@@ -1,4 +1,4 @@
-import { and, asc, eq } from 'drizzle-orm';
+import { and, asc, eq, inArray } from 'drizzle-orm';
 import type { EquippedTitle, ProfileAward, ProfileQuiz } from '@general-quiz/contracts';
 import type { DbExecutor } from '../../db/client';
 import { awardDefinitions, quizAwards, quizTitles, type AwardDefinition } from '../quizzes';
@@ -16,6 +16,19 @@ export async function getEquippedTitle(db: DbExecutor, userId: string): Promise<
   if (!row) return null;
   const definition = (await awardDefinitions(db, [row.awardSlug])).get(row.awardSlug);
   return definition ? toEquipped(definition) : null;
+}
+
+/** The equipped Titles of several players (players without one are left out). */
+export async function getEquippedTitles(db: DbExecutor, userIds: readonly string[]): Promise<Map<string, EquippedTitle>> {
+  const result = new Map<string, EquippedTitle>();
+  if (userIds.length === 0) return result;
+  const rows = await db.select().from(equippedTitle).where(inArray(equippedTitle.userId, [...new Set(userIds)]));
+  const definitions = await awardDefinitions(db, [...new Set(rows.map((row) => row.awardSlug))]);
+  for (const row of rows) {
+    const definition = definitions.get(row.awardSlug);
+    if (definition) result.set(row.userId, toEquipped(definition));
+  }
+  return result;
 }
 
 export type EquipResult = { ok: true; title: EquippedTitle | null } | { ok: false };

@@ -64,6 +64,13 @@
       "when": 1795209742186,
       "tag": "0008_equipped_title",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1795210542261,
+      "tag": "0009_social_friends",
+      "breakpoints": true
     }
   ]
 }

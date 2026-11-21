@@ -116,7 +116,16 @@ describe('equipped Title (Story 3.3, FR-18)', () => {
 });
 
 describe("another player's Profile (FR-20)", () => {
-  it('is refused to strangers until Friends and Lobbies exist', async () => {
+  it('is refused to strangers and shown to Friends', async () => {
+    await expectProblem(await app.request('/api/v1/players/ada?today=2026-11-16', jsonRequest('GET', undefined, bob)), 403, 'progress.profileForbidden');
+    expect((await app.request('/api/v1/friends/requests', jsonRequest('POST', { username: 'ada' }, bob))).status).toBe(201);
+    await expectProblem(await app.request('/api/v1/players/ada?today=2026-11-16', jsonRequest('GET', undefined, bob)), 403, 'progress.profileForbidden');
+    expect((await app.request('/api/v1/friends/requests', jsonRequest('POST', { username: 'bob' }, ada))).status).toBe(200);
+    const res = await app.request('/api/v1/players/ada?today=2026-11-16', jsonRequest('GET', undefined, bob));
+    expect(res.status).toBe(200);
+    expect(ProfileResponseSchema.parse(await res.json())).toMatchObject({ username: 'Ada', own: false });
+    const bobId = (await me(bob)).id;
+    expect((await app.request(`/api/v1/friends/${bobId}`, jsonRequest('DELETE', undefined, ada))).status).toBe(204);
     await expectProblem(await app.request('/api/v1/players/ada?today=2026-11-16', jsonRequest('GET', undefined, bob)), 403, 'progress.profileForbidden');
     await expectProblem(await app.request('/api/v1/players/ada?today=2026-11-16'), 401, 'accounts.unauthorized');
     await expectProblem(await app.request('/api/v1/players/nobody?today=2026-11-16', jsonRequest('GET', undefined, bob)), 404, 'progress.playerNotFound');
