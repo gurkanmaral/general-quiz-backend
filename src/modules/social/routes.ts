@@ -5,6 +5,7 @@ import {
   SendFriendRequestBodySchema,
   type FriendsResponse,
   type LinkOwnerResponse,
+  type NotificationsResponse,
   type SendFriendRequestResponse,
 } from '@general-quiz/contracts';
 import { problem } from '../../http/problem';
@@ -71,4 +72,18 @@ export function linkRoutes({ social }: Pick<SocialRouteDeps, 'social'>) {
     if (!owner) return problem(c, { status: 404, code: SOCIAL_PROBLEM_CODES.linkNotFound, title: 'Link not found' });
     return c.json({ player: { username: owner.username, avatar: owner.avatar } } satisfies LinkOwnerResponse);
   });
+}
+
+/** `/api/v1/notifications`: the in-app list with its unread count; opening it marks all read (FR-26). */
+export function notificationRoutes({ social, requireUser }: SocialRouteDeps) {
+  return new Hono()
+    .get('/', async (c) => {
+      const user = await requireUser(c);
+      return c.json((await social.notifications.list(user.id)) satisfies NotificationsResponse);
+    })
+    .post('/read', async (c) => {
+      const user = await requireUser(c);
+      await social.notifications.markAllRead(user.id);
+      return c.json({ unread: 0 as const });
+    });
 }

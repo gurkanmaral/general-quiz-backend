@@ -1,4 +1,4 @@
-import { index, pgSchema, primaryKey, text, timestamp, unique } from 'drizzle-orm/pg-core';
+import { index, jsonb, pgSchema, primaryKey, text, timestamp, unique } from 'drizzle-orm/pg-core';
 import { accountsUserTable } from '../accounts';
 
 export const knoSocial = pgSchema('kno_social');
@@ -39,4 +39,22 @@ export const friendship = knoSocial.table(
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [primaryKey({ columns: [table.userId, table.friendId] })],
+);
+
+/**
+ * An in-app notification (FR-26): a Friend Request, a Nudge or a Lobby Invite. `data` holds the
+ * kind's extra fields (e.g. the Lobby code); it is validated against the contract when read.
+ */
+export const notification = knoSocial.table(
+  'notification',
+  {
+    id: text('id').primaryKey(),
+    userId: userRef('user_id'),
+    kind: text('kind', { enum: ['friendRequest', 'nudge', 'lobbyInvite'] }).notNull(),
+    actorId: userRef('actor_id'),
+    data: jsonb('data').$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    readAt: timestamp('read_at', { withTimezone: true }),
+  },
+  (table) => [index('notification_user_idx').on(table.userId, table.createdAt)],
 );
