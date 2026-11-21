@@ -84,6 +84,7 @@ describe('Quiz Record (Story 2.4)', () => {
     const correct = await correctIndexes(game);
     // Answer only the first Question (right) then start another game, abandoning this one.
     const position = game.questions[0]!;
+    const knownBefore = (await db.select().from(correctQuestion).where(eq(correctQuestion.userId, adaId))).some((row) => row.questionSlug === position.slug);
     await app.request(
       `/api/v1/solo-games/${game.gameId}/answers`,
       jsonRequest('POST', { position: 0, selectedIndex: correct.get(position.slug)! }, ada),
@@ -97,7 +98,7 @@ describe('Quiz Record (Story 2.4)', () => {
     expect(lotr.gamesWon).toBe(before.gamesWon);
     const distinctBefore = before.correctStandard + before.correctExpert;
     const distinctAfter = lotr.correctStandard + lotr.correctExpert;
-    expect(distinctAfter - distinctBefore).toBe(firstCorrect.includes(position.slug) ? 0 : 1);
+    expect(distinctAfter - distinctBefore).toBe(knownBefore ? 0 : 1);
     expect(after.find((item) => item.slug === 'solar-system')!.record).toBeNull();
     const [abandoned] = await db.select().from(soloGame).where(eq(soloGame.id, empty.gameId));
     expect(abandoned?.status).toBe('abandoned');
