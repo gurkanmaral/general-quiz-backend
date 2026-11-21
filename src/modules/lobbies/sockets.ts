@@ -106,6 +106,11 @@ export function attachLobbySockets(nsp: Namespace, hub: LobbyHub): void {
       }),
     );
 
+    on(
+      LOBBY_COMMANDS.playAgain,
+      inLobby((actor) => actor.playAgain(userId)),
+    );
+
     socket.on('disconnect', () => {
       if (current) void current.disconnect(userId, socket.id);
     });

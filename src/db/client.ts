@@ -12,7 +12,7 @@ export type Database = { db: Db; pool: pg.Pool; close: () => Promise<void> };
 export const MIGRATIONS_FOLDER = fileURLToPath(new URL('./migrations', import.meta.url));
 
 /** Module schemas owned by the app; tests truncate every table in them. */
-export const MODULE_SCHEMAS = ['kno_accounts', 'kno_quizzes', 'kno_daily', 'kno_progress', 'kno_social'] as const;
+export const MODULE_SCHEMAS = ['kno_accounts', 'kno_quizzes', 'kno_daily', 'kno_progress', 'kno_social', 'kno_lobbies'] as const;
 
 export function createDatabase(url: string): Database {
   const pool = new pg.Pool({ connectionString: url, max: 10 });

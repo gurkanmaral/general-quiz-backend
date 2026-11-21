@@ -6,6 +6,7 @@ import {
   MeResponseSchema,
   NotificationsResponseSchema,
   ProblemSchema,
+  QuizListResponseSchema,
   type PlayerCard,
 } from '@general-quiz/contracts';
 import { eq } from 'drizzle-orm';
@@ -206,6 +207,66 @@ describe('a game over sockets (Story 5.2, FR-31, FR-32, AD-7)', () => {
     await until(() => expect(cyd.state.question?.index).toBe(1));
     cyd.close();
     dan.close();
+  });
+});
+
+describe('rejoin, podium and progress over sockets (Story 5.3, FR-33, FR-34)', () => {
+  it('a dropped player rejoins by link at the current Question; the podium shows unlocks; Quiz Records update', async () => {
+    const code = await createLobby('Ada');
+    const ada = await client('Ada');
+    let bob = await client('Bob');
+    await ada.ok(LOBBY_COMMANDS.join, { code });
+    await bob.ok(LOBBY_COMMANDS.join, { code });
+    await ada.ok(LOBBY_COMMANDS.settings, { timeLimitS: 10 });
+    await ada.ok(LOBBY_COMMANDS.start);
+    const rows = await db.select().from(question).where(eq(question.quizSlug, 'lord-of-the-rings'));
+    const answerOf = (text: string) => rows.find((row) => row.content.text.en === text)!.correctIndex;
+
+    for (let index = 0; index < 10; index += 1) {
+      await until(() => expect(ada.state.question?.index).toBe(index));
+      const right = answerOf(ada.state.question!.text.en);
+      if (index === 1) {
+        bob.close(); // drops before answering Question 2
+        await until(() => expect(ada.state.players.find((player) => player.id === ids.Bob)?.connected).toBe(false));
+      }
+      if (index === 3) {
+        bob = await client('Bob');
+        await bob.ok(LOBBY_COMMANDS.join, { code });
+        await until(() => expect(bob.state.question).toMatchObject({ index: 3, myAnswer: null }));
+      }
+      await ada.ok(LOBBY_COMMANDS.answer, { index, selectedIndex: right });
+      if (index === 0 || index >= 3) await bob.ok(LOBBY_COMMANDS.answer, { index, selectedIndex: (right + 1) % 4 });
+      await until(() => expect(ada.state.phase).toBe('reveal'));
+      await clock.advance(REVEAL_MS);
+    }
+    await until(() => expect(bob.state.phase).toBe('podium'));
+    const ranking = bob.state.podium!.ranking;
+    expect(ranking.map((row) => [row.rank, row.player.username, row.score, row.correct])).toEqual([
+      [1, 'Ada', 10_000, 10],
+      [2, 'Bob', 0, 0],
+    ]);
+    expect(ranking[0]!.unlocks.map((award) => award.slug)).toContain('lotr-frodo');
+    expect(ranking[1]!.unlocks).toEqual([]);
+
+    const cards = async (name: string) =>
+      QuizListResponseSchema.parse(await (await app.request('/api/v1/quizzes', jsonRequest('GET', undefined, cookies[name]))).json()).quizzes.find((item) => item.slug === 'lord-of-the-rings')!.record;
+    expect(await cards('Ada')).toMatchObject({ gamesPlayed: 1, gamesWon: 1, correctShare: 0.5 });
+    // Bob answered 8 of 10 (2 missed while away), all wrong.
+    expect(await cards('Bob')).toMatchObject({ gamesPlayed: 1, gamesWon: 0, correctShare: 0 });
+
+    // Play again keeps everyone.
+    await ada.ok(LOBBY_COMMANDS.playAgain);
+    await until(() => expect(bob.state).toMatchObject({ phase: 'waiting', podium: null }));
+    expect(names(bob)).toEqual(['Ada', 'Bob']);
+
+    // Co-players of a finished game may still see each other's Profiles once the Lobby is gone.
+    await ada.ok(LOBBY_COMMANDS.leave);
+    await bob.ok(LOBBY_COMMANDS.leave);
+    expect(app.lobbies.get(code)).toBeUndefined();
+    expect((await app.request('/api/v1/players/ada?today=2026-11-16', jsonRequest('GET', undefined, cookies.Bob))).status).toBe(200);
+    expect((await app.request('/api/v1/players/ada?today=2026-11-16', jsonRequest('GET', undefined, cookies.Dan))).status).toBe(403);
+    ada.close();
+    bob.close();
   });
 });
 

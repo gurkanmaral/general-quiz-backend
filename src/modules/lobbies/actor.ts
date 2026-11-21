@@ -1,6 +1,8 @@
 import {
   lobbyPoints,
+  type LobbyPodium,
   type LobbyStanding,
+  type UnlockedAward,
   type QuestionDifficulty,
   LOBBY_MAX_PLAYERS,
   LOBBY_PROBLEM_CODES,
@@ -51,7 +53,17 @@ export type GameQuestion = {
 
 type Answer = { selectedIndex: number; elapsedMs: number };
 /** One player's game: points, correct count, and per-Question outcomes for Quiz Records. */
-type PlayerGame = { score: number; correct: number; outcomes: { questionSlug: string; correct: boolean }[] };
+type PlayerGame = { card: PlayerCard; score: number; correct: number; outcomes: { questionSlug: string; correct: boolean }[] };
+
+/** A finished game as the app records it: Quiz Records through `progress`, results in `lobbies`. */
+export type GameResult = {
+  code: string;
+  quizSlug: string;
+  questionCount: number;
+  standings: LobbyStanding[];
+  /** Each player's answered Questions (missed ones are not answers, FR-15). */
+  outcomes: Map<string, { questionSlug: string; correct: boolean }[]>;
+};
 
 type Game = {
   questions: GameQuestion[];
@@ -76,6 +88,10 @@ export type LobbyEnv = {
   playerCard: (userId: string) => Promise<PlayerCard | undefined>;
   /** A published Quiz that can be played, or undefined. */
   quiz: (slug: string) => Promise<LobbyQuiz | undefined>;
+  /** Records a finished game; resolves to each player's new Badges and Titles (FR-34). */
+  recordGame?: (result: GameResult) => Promise<Map<string, UnlockedAward[]>>;
+  /** Reports a failure the players should not see (e.g. recording failed). */
+  onError?: (error: unknown) => void;
   /** Draws up to `count` published Questions of a Quiz (from `quizzes`). */
   questions: (quizSlug: string, count: number) => Promise<GameQuestion[]>;
   /** Delivers a player's view to every socket of theirs in this Lobby. */
@@ -113,6 +129,7 @@ export class LobbyActor {
   phase: LobbyState['phase'] = 'waiting';
   isClosed = false;
   protected game: Game | undefined;
+  private podium: LobbyPodium | null = null;
 
   constructor(
     readonly code: string,
@@ -214,7 +231,8 @@ export class LobbyActor {
       if (this.phase !== 'waiting') return fail(LOBBY_PROBLEM_CODES.wrongPhase);
       const questions = await this.env.questions(this.quiz.slug, this.settings.questionCount);
       if (questions.length === 0) return fail(LOBBY_PROBLEM_CODES.noQuestions);
-      const players = new Map<string, PlayerGame>([...this.players.keys()].map((id) => [id, { score: 0, correct: 0, outcomes: [] }]));
+      const players = new Map<string, PlayerGame>([...this.players.entries()].map(([id, player]) => [id, { card: player.card, score: 0, correct: 0, outcomes: [] }]));
+      this.podium = null;
       this.game = { questions, index: -1, limitMs: this.settings.timeLimitS * 1000, startedAt: 0, deadline: 0, answers: new Map(), players, lastResults: new Map(), nextAt: 0, timer: undefined };
       this.beginQuestion(0);
       return OK;
@@ -291,10 +309,53 @@ export class LobbyActor {
     else await this.finish();
   }
 
-  /** The last Question ended: the podium (FR-34). */
+  /**
+   * The last Question ended (FR-34): records the game (Quiz Records, Badges and Titles through
+   * `progress`), then shows everyone the podium and full ranking with what each player unlocked.
+   */
   protected async finish(): Promise<void> {
+    const game = this.game!;
+    const standings = this.standings();
+    let unlocks = new Map<string, UnlockedAward[]>();
+    try {
+      if (this.env.recordGame) {
+        unlocks = await this.env.recordGame({
+          code: this.code,
+          quizSlug: this.quiz.slug,
+          questionCount: game.questions.length,
+          standings,
+          outcomes: new Map([...game.players.entries()].map(([id, record]) => [id, record.outcomes])),
+        });
+      }
+    } catch (error) {
+      // The podium still shows; only the progress update is lost.
+      this.env.onError?.(error);
+    }
+    this.podium = {
+      ranking: standings.map((standing) => ({ ...standing, player: game.players.get(standing.userId)!.card, unlocks: unlocks.get(standing.userId) ?? [] })),
+    };
     this.phase = 'podium';
+    // Players who never came back now leave after the usual grace period.
+    for (const [userId, player] of this.players) {
+      if (player.sockets.size === 0 && player.graceTimer === undefined) {
+        player.graceTimer = this.env.clock.setTimeout(() => void this.expire(userId), DISCONNECT_GRACE_MS);
+      }
+    }
     this.changed();
+  }
+
+  /** Host only, from the podium: back to the waiting room with the same players (FR-34). */
+  playAgain(userId: string): Promise<LobbyAck> {
+    return this.run(() => {
+      if (!this.players.has(userId)) return fail(LOBBY_PROBLEM_CODES.notInLobby);
+      if (userId !== this.hostId) return fail(LOBBY_PROBLEM_CODES.notHost);
+      if (this.phase !== 'podium') return fail(LOBBY_PROBLEM_CODES.wrongPhase);
+      this.game = undefined;
+      this.podium = null;
+      this.phase = 'waiting';
+      this.changed();
+      return OK;
+    });
   }
 
   /** Everyone in the current or last game, best first; equal scores share a rank. */
@@ -471,6 +532,7 @@ export class LobbyActor {
       question,
       reveal,
       leaderboard: this.phase === 'waiting' ? [] : this.standings(),
+      podium: this.phase === 'podium' ? this.podium : null,
     };
   }
 }

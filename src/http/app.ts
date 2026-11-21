@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import type { HealthResponse } from '@general-quiz/contracts';
+import type { HealthResponse, UnlockedAward } from '@general-quiz/contracts';
 import { pingDatabase, type Db } from '../db/client';
 import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
@@ -8,7 +8,7 @@ import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from
 import { createDailyService, dailyPlayerIds, dailyRoutes, deleteDailyUserData, isTodaySomewhere } from '../modules/daily';
 import { createProgress, deleteProgressUserData, playerRoutes, profileRoutes, type Progress, type RecordedGameResult } from '../modules/progress';
 import { createSocial, deleteSocialUserData, friendsRoutes, linkRoutes, notificationRoutes, socialSettingsRoutes } from '../modules/social';
-import { createLobbyHub, lobbyRoutes, type Clock } from '../modules/lobbies';
+import { createLobbyHub, deleteLobbiesUserData, lobbyPlayerIds, lobbyRoutes, playedTogether, saveLobbyGame, type Clock } from '../modules/lobbies';
 import { createSoloGames, deleteQuizzesUserData, drawQuestions, getPublishedQuestion, playableQuiz, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
@@ -32,13 +32,13 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
     { baseURL: DEFAULT_AUTH_URL, secret: DEV_AUTH_SECRET, ...auth, mailer: auth?.mailer ?? createDevMailer(logger) },
     logger,
     // Every module with per-player rows (FR-4).
-    [deleteDailyUserData, deleteQuizzesUserData, deleteProgressUserData, deleteSocialUserData],
+    [deleteDailyUserData, deleteQuizzesUserData, deleteProgressUserData, deleteSocialUserData, deleteLobbiesUserData],
     // `/me` shows the equipped Title (FR-18); progress is created below, so look it up lazily.
     { equippedTitle: (userId) => progress.equippedTitle(userId) },
   );
   const daily = createDailyService(db, (slug) => getPublishedQuestion(db, slug));
-  // Ranked Accounts: finished a Daily or a Solo Game (Lobby Games join in Epic 5).
-  const progress: Progress = createProgress(db, [dailyPlayerIds, soloPlayerIds]);
+  // Ranked Accounts: finished a Daily, a Solo Game or a Lobby Game.
+  const progress: Progress = createProgress(db, [dailyPlayerIds, soloPlayerIds, lobbyPlayerIds]);
   const games = createSoloGames(db, {
     now,
     random,
@@ -65,6 +65,35 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
     },
     quiz: (slug) => playableQuiz(db, slug),
     questions: (slug, count) => drawQuestions(db, slug, count, random),
+    // Lobby Games update Quiz Records, Badges and Titles through `progress` (AD-8, FR-34); one transaction.
+    recordGame: (result) =>
+      db.transaction(async (tx) => {
+        const endedAt = now();
+        await saveLobbyGame(tx, {
+          code: result.code,
+          quizSlug: result.quizSlug,
+          questionCount: result.questionCount,
+          endedAt,
+          players: result.standings.map(({ userId, score, correct, rank }) => ({ userId, score, correct, rank })),
+        });
+        const unlocks = new Map<string, UnlockedAward[]>();
+        for (const standing of result.standings) {
+          const answers = result.outcomes.get(standing.userId) ?? [];
+          if (answers.length === 0) continue;
+          const recorded = await progress.recordGame(tx, {
+            userId: standing.userId,
+            quizSlug: result.quizSlug,
+            status: 'finished',
+            score: standing.correct,
+            total: result.questionCount,
+            endedAt,
+            answers,
+          });
+          unlocks.set(standing.userId, recorded.unlocks);
+        }
+        return unlocks;
+      }),
+    onError: (error) => logger.error({ err: error }, 'lobby game could not be recorded'),
   });
   const quizzesDeps = {
     db,
@@ -101,7 +130,8 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
     streakOf: async (userId: string, today: string) =>
       isTodaySomewhere(today, now()) ? (await daily.getHistory(userId, today)).streak : undefined,
     // Friends and Lobby co-players may see each other's Profiles (FR-20).
-    canViewProfile: async (viewerId: string, playerId: string) => lobbies.together(viewerId, playerId) || social.areFriends(viewerId, playerId),
+    canViewProfile: async (viewerId: string, playerId: string) =>
+      lobbies.together(viewerId, playerId) || (await social.areFriends(viewerId, playerId)) || (await playedTogether(db, viewerId, playerId)),
   };
   app.route('/api/v1/profile', profileRoutes(profileDeps));
   app.route('/api/v1/players', playerRoutes(profileDeps));

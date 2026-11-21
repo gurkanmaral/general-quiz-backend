@@ -4,3 +4,4 @@ export { knoDaily, rotation, scheduleEntry, answer } from '../modules/daily/sche
 export { knoAccounts, user, session, account, verification } from '../modules/accounts/schema';
 export { knoProgress, quizRecord, correctQuestion, userAward, rarity, equippedTitle } from '../modules/progress/schema';
 export { knoSocial, playerLink, friendRequest, friendship, notification, nudge, socialSettings } from '../modules/social/schema';
+export { knoLobbies, lobbyGame, lobbyGamePlayer } from '../modules/lobbies/schema';
