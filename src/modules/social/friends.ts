@@ -57,7 +57,13 @@ async function befriend(tx: DbExecutor, a: string, b: string, at: Date): Promise
     .where(or(and(eq(friendRequest.fromUserId, a), eq(friendRequest.toUserId, b)), and(eq(friendRequest.fromUserId, b), eq(friendRequest.toUserId, a))));
 }
 
-export function createFriends(db: Db, directory: PlayerDirectory, now: () => Date = () => new Date()) {
+/** Nudge state the Friends list shows (Story 4.4), supplied by the nudges service. */
+export type NudgeView = {
+  nudgedBy: (senderId: string, dailyDate: string) => Promise<Set<string>>;
+  receivesNudges: (userIds: readonly string[]) => Promise<Map<string, boolean>>;
+};
+
+export function createFriends(db: Db, directory: PlayerDirectory, now: () => Date = () => new Date(), nudgeView?: NudgeView) {
   async function cards(ids: readonly string[]): Promise<Map<string, PlayerCard>> {
     const [players, titles] = await Promise.all([directory.findPlayers(ids), directory.titlesOf(ids)]);
     return new Map([...players.values()].map((player) => [player.id, { ...player, title: titles.get(player.id) ?? null }]));
@@ -99,7 +105,12 @@ export function createFriends(db: Db, directory: PlayerDirectory, now: () => Dat
         linkToken(userId),
       ]);
       const other = (row: (typeof requests)[number]) => (row.fromUserId === userId ? row.toUserId : row.fromUserId);
-      const [byId, status] = await Promise.all([cards([...ids, ...requests.map(other)]), dailyStatusOf(db, ids, today)]);
+      const [byId, status, nudged, receives] = await Promise.all([
+        cards([...ids, ...requests.map(other)]),
+        dailyStatusOf(db, ids, today),
+        nudgeView ? nudgeView.nudgedBy(userId, today) : new Set<string>(),
+        nudgeView ? nudgeView.receivesNudges(ids) : new Map<string, boolean>(),
+      ]);
       const toRequest = (row: (typeof requests)[number]): FriendRequest[] => {
         const player = byId.get(other(row));
         return player ? [{ id: row.id, player, createdAt: row.createdAt.toISOString() }] : [];
@@ -109,7 +120,10 @@ export function createFriends(db: Db, directory: PlayerDirectory, now: () => Dat
           .flatMap((id): Friend[] => {
             const card = byId.get(id);
             const daily = status.get(id);
-            return card ? [{ ...card, streak: daily?.streak.current ?? 0, playedToday: daily?.played ?? false }] : [];
+            if (!card) return [];
+            const playedToday = daily?.played ?? false;
+            const wasNudged = nudged.has(id);
+            return [{ ...card, streak: daily?.streak.current ?? 0, playedToday, nudged: wasNudged, canNudge: !playedToday && !wasNudged && (receives.get(id) ?? false) }];
           })
           .sort((a, b) => a.username.localeCompare(b.username, undefined, { sensitivity: 'base' })),
         incoming: requests.filter((row) => row.toUserId === userId).flatMap(toRequest).reverse(),

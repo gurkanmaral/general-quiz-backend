@@ -7,7 +7,7 @@ import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';
 import { AUTH_BASE_PATH, createAccounts, createDevMailer, type AuthConfig } from '../modules/accounts';
 import { createDailyService, dailyPlayerIds, dailyRoutes, deleteDailyUserData, isTodaySomewhere } from '../modules/daily';
 import { createProgress, deleteProgressUserData, playerRoutes, profileRoutes, type Progress, type RecordedGameResult } from '../modules/progress';
-import { createSocial, deleteSocialUserData, friendsRoutes, linkRoutes, notificationRoutes } from '../modules/social';
+import { createSocial, deleteSocialUserData, friendsRoutes, linkRoutes, notificationRoutes, socialSettingsRoutes } from '../modules/social';
 import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
@@ -94,7 +94,8 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
   app.route('/api/v1/profile', profileRoutes(profileDeps));
   app.route('/api/v1/players', playerRoutes(profileDeps));
   app.route('/api/v1/friends', friendsRoutes({ social, requireUser: accounts.requireUser, isToday: (date) => isTodaySomewhere(date, now()) }));
-  app.route('/api/v1/links', linkRoutes({ social }));
+  app.route('/api/v1/links', linkRoutes({ social, optionalUser: accounts.optionalUser }));
+  app.route('/api/v1/social', socialSettingsRoutes({ social, requireUser: accounts.requireUser }));
   app.route('/api/v1/notifications', notificationRoutes({ social, requireUser: accounts.requireUser }));
 
   app.notFound((c) => problem(c, { status: 404, code: 'http.notFound', title: 'Not found' }));

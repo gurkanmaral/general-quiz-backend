@@ -83,7 +83,7 @@ describe('Friend Requests (Story 4.1, FR-21)', () => {
     const token = (await list(cyd)).linkToken;
     expect((await list(cyd)).linkToken).toBe(token);
     const owner = await app.request(`/api/v1/links/${token}`);
-    expect(LinkOwnerResponseSchema.parse(await owner.json())).toEqual({ player: { username: 'Cyd', avatar: 'owl' } });
+    expect(LinkOwnerResponseSchema.parse(await owner.json())).toEqual({ player: { username: 'Cyd', avatar: 'owl' }, connected: false });
     await expectProblem(await app.request('/api/v1/links/nope'), 404, 'social.linkNotFound');
     expect((await send(ada, { token })).status).toBe(201);
     const id = (await list(cyd)).incoming[0]!.id;
@@ -117,7 +117,7 @@ describe('Friends list with Daily status (Story 4.3, FR-23)', () => {
     expect((await answer(bob, '2026-11-15')).status).toBe(200);
     expect((await answer(bob, '2026-11-16', 2)).status).toBe(200);
     const [bobRow] = (await list(ada)).friends;
-    expect(bobRow).toEqual({ id: ids.Bob, username: 'Bob', avatar: 'owl', title: null, streak: 2, playedToday: true });
+    expect(bobRow).toEqual({ id: ids.Bob, username: 'Bob', avatar: 'owl', title: null, streak: 2, playedToday: true, nudged: false, canNudge: false });
     const bobs = await list(bob);
     expect(bobs.friends.map((item) => [item.username, item.streak, item.playedToday])).toEqual([
       ['Ada', 0, false],

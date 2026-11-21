@@ -22,6 +22,12 @@ export class NotificationBus extends EventEmitter<{ notification: [string, Notif
 
 export function createNotifications(db: Db, directory: Pick<PlayerDirectory, 'findPlayers'>, now: () => Date) {
   const bus = new NotificationBus();
+  // Ids sort newest-last even within one millisecond, so the list order is the creation order.
+  let lastIdMs = 0;
+  const nextId = () => {
+    lastIdMs = Math.max(Date.now(), lastIdMs + 1);
+    return uuidv7(lastIdMs);
+  };
 
   async function unreadCount(userId: string): Promise<number> {
     const [row] = await db.select({ n: count() }).from(notification).where(and(eq(notification.userId, userId), isNull(notification.readAt)));
@@ -54,7 +60,7 @@ export function createNotifications(db: Db, directory: Pick<PlayerDirectory, 'fi
       const at = now();
       const [row] = await db
         .insert(notification)
-        .values({ id: uuidv7(at.getTime()), userId, kind, actorId, data: data as Record<string, unknown>, createdAt: at })
+        .values({ id: nextId(), userId, kind, actorId, data: data as Record<string, unknown>, createdAt: at })
         .returning();
       const [item] = await toNotifications([row!]);
       if (item) bus.emit('notification', userId, { notification: item, unread: await unreadCount(userId) });
@@ -65,7 +71,7 @@ export function createNotifications(db: Db, directory: Pick<PlayerDirectory, 'fi
         .select()
         .from(notification)
         .where(eq(notification.userId, userId))
-        .orderBy(desc(notification.createdAt), desc(notification.id))
+        .orderBy(desc(notification.id))
         .limit(NOTIFICATION_LIST_SIZE);
       return { notifications: await toNotifications(rows), unread: await unreadCount(userId) };
     },

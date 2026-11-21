@@ -2,20 +2,23 @@ import type { SendFriendRequestBody } from '@general-quiz/contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { createFriends, deleteFriendsUserData, type PlayerDirectory, type SendRequestResult } from './friends';
 import { createNotifications, deleteNotificationsUserData } from './notifications';
+import { createNudges, deleteNudgesUserData } from './nudges';
 
 export type SocialDeps = {
   directory: PlayerDirectory;
   now?: () => Date;
 };
 
-/** The social module: Friends (Story 4.1) and Notifications (Story 4.2). */
+/** The social module: Friends (4.1), Notifications (4.2), Nudges (4.4). */
 export function createSocial(db: Db, deps: SocialDeps) {
   const now = deps.now ?? (() => new Date());
-  const friends = createFriends(db, deps.directory, now);
   const notifications = createNotifications(db, deps.directory, now);
+  const nudges = createNudges(db, notifications, now);
+  const friends = createFriends(db, deps.directory, now, nudges);
   return {
     friends,
     notifications,
+    nudges,
     friendsList: (userId: string, today: string) => friends.list(userId, today),
     /** Sends a Friend Request; a new request notifies the recipient (FR-26). */
     async sendFriendRequest(fromId: string, target: SendFriendRequestBody): Promise<SendRequestResult> {
@@ -33,5 +36,6 @@ export type Social = ReturnType<typeof createSocial>;
 /** Account deletion (FR-4): every social row of the player. */
 export async function deleteSocialUserData(db: DbExecutor, userId: string): Promise<void> {
   await deleteNotificationsUserData(db, userId);
+  await deleteNudgesUserData(db, userId);
   await deleteFriendsUserData(db, userId);
 }

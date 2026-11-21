@@ -1,4 +1,4 @@
-import { index, jsonb, pgSchema, primaryKey, text, timestamp, unique } from 'drizzle-orm/pg-core';
+import { boolean, date, index, jsonb, pgSchema, primaryKey, text, timestamp, unique } from 'drizzle-orm/pg-core';
 import { accountsUserTable } from '../accounts';
 
 export const knoSocial = pgSchema('kno_social');
@@ -58,3 +58,22 @@ export const notification = knoSocial.table(
   },
   (table) => [index('notification_user_idx').on(table.userId, table.createdAt)],
 );
+
+/** One Nudge per sender, Friend and Daily Date (FR-24); the primary key enforces the limit. */
+export const nudge = knoSocial.table(
+  'nudge',
+  {
+    senderId: userRef('sender_id'),
+    recipientId: userRef('recipient_id'),
+    dailyDate: date('daily_date', { mode: 'string' }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [primaryKey({ columns: [table.senderId, table.recipientId, table.dailyDate] })],
+);
+
+/** Social preferences; no row means the defaults (Nudges on). */
+export const socialSettings = knoSocial.table('settings', {
+  userId: userRef('user_id').primaryKey(),
+  receiveNudges: boolean('receive_nudges').notNull().default(true),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
