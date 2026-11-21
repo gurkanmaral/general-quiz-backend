@@ -2,6 +2,8 @@
 export { quizzesRoutes, soloGameRoutes, type QuizzesRouteDeps } from './routes';
 export {
   createSoloGames,
+  drawQuestions,
+  type DrawnQuestion,
   deleteQuizzesUserData,
   pickQuestions,
   soloPlayerIds,

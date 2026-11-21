@@ -1,4 +1,7 @@
 import {
+  lobbyPoints,
+  type LobbyStanding,
+  type QuestionDifficulty,
   LOBBY_MAX_PLAYERS,
   LOBBY_PROBLEM_CODES,
   type LobbyAck,
@@ -29,7 +32,42 @@ export const DISCONNECT_GRACE_MS = 30_000;
 /** A Lobby with nobody connected closes after this long. */
 export const IDLE_CLOSE_MS = 10 * 60_000;
 
+/** How long the answer and leaderboard show before the next Question. */
+export const REVEAL_MS = 6_000;
+
 export type LobbyQuiz = { slug: string; title: LocalizedText };
+
+/** A drawn Question with its answer; only the server holds `correctIndex` until the reveal (AD-7). */
+export type GameQuestion = {
+  slug: string;
+  difficulty: QuestionDifficulty;
+  eyebrow: LocalizedText;
+  text: LocalizedText;
+  options: LocalizedText[];
+  correctIndex: number;
+  answerTitle: LocalizedText;
+  summary: LocalizedText;
+};
+
+type Answer = { selectedIndex: number; elapsedMs: number };
+/** One player's game: points, correct count, and per-Question outcomes for Quiz Records. */
+type PlayerGame = { score: number; correct: number; outcomes: { questionSlug: string; correct: boolean }[] };
+
+type Game = {
+  questions: GameQuestion[];
+  index: number;
+  limitMs: number;
+  startedAt: number;
+  deadline: number;
+  /** Answers to the current Question, by player. */
+  answers: Map<string, Answer>;
+  /** Everyone who plays this game (players present at Start). */
+  players: Map<string, PlayerGame>;
+  /** Points of the last ended Question, by player. */
+  lastResults: Map<string, { selectedIndex: number | null; correct: boolean; points: number }>;
+  nextAt: number;
+  timer: unknown;
+};
 
 /** What the actor needs from the rest of the app; all of it is injected (AD-2). */
 export type LobbyEnv = {
@@ -38,6 +76,8 @@ export type LobbyEnv = {
   playerCard: (userId: string) => Promise<PlayerCard | undefined>;
   /** A published Quiz that can be played, or undefined. */
   quiz: (slug: string) => Promise<LobbyQuiz | undefined>;
+  /** Draws up to `count` published Questions of a Quiz (from `quizzes`). */
+  questions: (quizSlug: string, count: number) => Promise<GameQuestion[]>;
   /** Delivers a player's view to every socket of theirs in this Lobby. */
   publish: (userId: string, state: LobbyState) => void;
   /** Tells a player they are no longer in the Lobby. */
@@ -72,6 +112,7 @@ export class LobbyActor {
   quiz: LobbyQuiz;
   phase: LobbyState['phase'] = 'waiting';
   isClosed = false;
+  protected game: Game | undefined;
 
   constructor(
     readonly code: string,
@@ -140,6 +181,8 @@ export class LobbyActor {
       if (!player || !player.sockets.delete(socketId) || player.sockets.size > 0) return;
       player.graceTimer = this.env.clock.setTimeout(() => void this.expire(userId), DISCONNECT_GRACE_MS);
       this.changed();
+      // Nobody waits for a player who dropped mid-Question.
+      this.endIfAllAnswered();
     });
   }
 
@@ -160,7 +203,111 @@ export class LobbyActor {
 
   /** Players leave for good only outside a running game (a running game keeps their place). */
   protected canDropPlayers(): boolean {
-    return this.phase === 'waiting';
+    return this.phase === 'waiting' || this.phase === 'podium';
+  }
+
+  /** Host only: draws the Questions and starts the game with everyone present (FR-31). */
+  start(userId: string): Promise<LobbyAck> {
+    return this.run(async () => {
+      if (!this.players.has(userId)) return fail(LOBBY_PROBLEM_CODES.notInLobby);
+      if (userId !== this.hostId) return fail(LOBBY_PROBLEM_CODES.notHost);
+      if (this.phase !== 'waiting') return fail(LOBBY_PROBLEM_CODES.wrongPhase);
+      const questions = await this.env.questions(this.quiz.slug, this.settings.questionCount);
+      if (questions.length === 0) return fail(LOBBY_PROBLEM_CODES.noQuestions);
+      const players = new Map<string, PlayerGame>([...this.players.keys()].map((id) => [id, { score: 0, correct: 0, outcomes: [] }]));
+      this.game = { questions, index: -1, limitMs: this.settings.timeLimitS * 1000, startedAt: 0, deadline: 0, answers: new Map(), players, lastResults: new Map(), nextAt: 0, timer: undefined };
+      this.beginQuestion(0);
+      return OK;
+    });
+  }
+
+  private beginQuestion(index: number): void {
+    const game = this.game!;
+    const now = this.env.clock.now();
+    game.index = index;
+    game.startedAt = now;
+    game.deadline = now + game.limitMs;
+    game.answers = new Map();
+    this.phase = 'question';
+    game.timer = this.env.clock.setTimeout(() => void this.run(() => this.endQuestion(index)), game.limitMs);
+    this.changed();
+  }
+
+  /**
+   * Locks a player's first answer (FR-31). Timing uses when the server received it, read before
+   * the command waits in the queue, so queueing never costs points (FR-32, AD-8).
+   */
+  answer(userId: string, index: number, selectedIndex: number): Promise<LobbyAck> {
+    const receivedAt = this.env.clock.now();
+    return this.run(() => {
+      const game = this.game;
+      if (!game?.players.has(userId) || !this.players.has(userId)) return fail(LOBBY_PROBLEM_CODES.notInLobby);
+      if (this.phase !== 'question' || index !== game.index) return fail(index < game.index || this.phase === 'reveal' ? LOBBY_PROBLEM_CODES.tooLate : LOBBY_PROBLEM_CODES.wrongPhase);
+      if (game.answers.has(userId)) return fail(LOBBY_PROBLEM_CODES.alreadyAnswered);
+      const elapsedMs = receivedAt - game.startedAt;
+      if (elapsedMs > game.limitMs) return fail(LOBBY_PROBLEM_CODES.tooLate);
+      game.answers.set(userId, { selectedIndex, elapsedMs: Math.max(0, elapsedMs) });
+      this.changed();
+      this.endIfAllAnswered();
+      return OK;
+    });
+  }
+
+  /** The Question ends as soon as every connected player in the game has answered (FR-31). */
+  private endIfAllAnswered(): void {
+    const game = this.game;
+    if (!game || this.phase !== 'question') return;
+    const waiting = [...game.players.keys()].some((id) => (this.players.get(id)?.sockets.size ?? 0) > 0 && !game.answers.has(id));
+    if (!waiting) this.endQuestion(game.index);
+  }
+
+  /** Scores the Question, reveals the answer and the leaderboard, then schedules what comes next (FR-32). */
+  private endQuestion(index: number): void {
+    const game = this.game;
+    if (!game || this.phase !== 'question' || game.index !== index) return;
+    this.env.clock.clearTimeout(game.timer);
+    const question = game.questions[index]!;
+    game.lastResults = new Map();
+    for (const [id, record] of game.players) {
+      const answer = game.answers.get(id);
+      const correct = answer?.selectedIndex === question.correctIndex;
+      const points = lobbyPoints(correct, answer?.elapsedMs ?? game.limitMs, game.limitMs);
+      record.score += points;
+      if (correct) record.correct += 1;
+      // Only answered Questions go into the Quiz Record (FR-15); a missed one just scores 0.
+      if (answer) record.outcomes.push({ questionSlug: question.slug, correct });
+      game.lastResults.set(id, { selectedIndex: answer?.selectedIndex ?? null, correct, points });
+    }
+    this.phase = 'reveal';
+    game.nextAt = this.env.clock.now() + REVEAL_MS;
+    game.timer = this.env.clock.setTimeout(() => void this.run(() => this.advance(index)), REVEAL_MS);
+    this.changed();
+  }
+
+  private async advance(index: number): Promise<void> {
+    const game = this.game;
+    if (!game || this.phase !== 'reveal' || game.index !== index) return;
+    if (index + 1 < game.questions.length) this.beginQuestion(index + 1);
+    else await this.finish();
+  }
+
+  /** The last Question ended: the podium (FR-34). */
+  protected async finish(): Promise<void> {
+    this.phase = 'podium';
+    this.changed();
+  }
+
+  /** Everyone in the current or last game, best first; equal scores share a rank. */
+  standings(): LobbyStanding[] {
+    const game = this.game;
+    if (!game) return [];
+    const seqOf = (id: string) => this.players.get(id)?.seq ?? Number.MAX_SAFE_INTEGER;
+    const sorted = [...game.players.entries()].sort((a, b) => b[1].score - a[1].score || b[1].correct - a[1].correct || seqOf(a[0]) - seqOf(b[0]));
+    let rank = 0;
+    return sorted.map(([userId, record], position) => {
+      if (position === 0 || sorted[position - 1]![1].score !== record.score) rank = position + 1;
+      return { userId, score: record.score, correct: record.correct, rank };
+    });
   }
 
   /** Leaves the Lobby by choice. */
@@ -213,8 +360,13 @@ export class LobbyActor {
     if (userId === this.hostId) this.passHost();
   }
 
-  /** Hook for game state when a player leaves for good. */
-  protected onPlayerRemoved(_userId: string): void {}
+  /** A player who leaves mid-game leaves the game too; nobody waits for them. */
+  protected onPlayerRemoved(userId: string): void {
+    if (!this.game || this.phase === 'podium') return;
+    this.game.players.delete(userId);
+    this.game.answers.delete(userId);
+    if (this.game.players.size > 0) this.endIfAllAnswered();
+  }
 
   /** Host passes to the longest-present player, preferring connected ones (FR-30). */
   protected passHost(): void {
@@ -254,15 +406,60 @@ export class LobbyActor {
     this.env.closed();
   }
 
-  /** Hook: game timers to cancel on close. */
-  protected clearTimers(): void {}
-
-  protected playerViews() {
-    return [...this.players.values()].sort((a, b) => a.seq - b.seq).map((player) => ({ ...player.card, connected: player.sockets.size > 0 }));
+  protected clearTimers(): void {
+    if (this.game) this.env.clock.clearTimeout(this.game.timer);
   }
 
-  /** What `userId` may see right now. */
+  protected playerViews() {
+    const game = this.game;
+    return [...this.players.values()]
+      .sort((a, b) => a.seq - b.seq)
+      .map((player) => ({
+        ...player.card,
+        connected: player.sockets.size > 0,
+        score: this.phase === 'waiting' ? 0 : (game?.players.get(player.card.id)?.score ?? 0),
+        answered: this.phase === 'question' && Boolean(game?.answers.has(player.card.id)),
+      }));
+  }
+
+  /** What `userId` may see right now: the running Question never carries its answer (AD-7). */
   view(userId: string): LobbyState {
+    const game = this.game;
+    const iso = (ms: number) => new Date(ms).toISOString();
+    const now = this.env.clock.now();
+    const current = game?.questions[game.index];
+    const question =
+      this.phase === 'question' && game && current
+        ? {
+            index: game.index,
+            total: game.questions.length,
+            difficulty: current.difficulty,
+            eyebrow: current.eyebrow,
+            text: current.text,
+            options: current.options,
+            startedAt: iso(game.startedAt),
+            deadline: iso(game.deadline),
+            serverNow: iso(now),
+            limitMs: game.limitMs,
+            myAnswer: game.answers.get(userId)?.selectedIndex ?? null,
+          }
+        : null;
+    const reveal =
+      this.phase === 'reveal' && game && current
+        ? {
+            index: game.index,
+            total: game.questions.length,
+            difficulty: current.difficulty,
+            text: current.text,
+            options: current.options,
+            correctIndex: current.correctIndex,
+            answerTitle: current.answerTitle,
+            summary: current.summary,
+            results: [...game.lastResults.entries()].map(([id, result]) => ({ userId: id, ...result })),
+            nextAt: iso(game.nextAt),
+            serverNow: iso(now),
+          }
+        : null;
     return {
       code: this.code,
       hostId: this.hostId,
@@ -271,6 +468,9 @@ export class LobbyActor {
       settings: this.settings,
       players: this.playerViews(),
       phase: this.phase,
+      question,
+      reveal,
+      leaderboard: this.phase === 'waiting' ? [] : this.standings(),
     };
   }
 }

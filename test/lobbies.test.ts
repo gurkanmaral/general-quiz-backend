@@ -8,8 +8,10 @@ import {
   ProblemSchema,
   type PlayerCard,
 } from '@general-quiz/contracts';
+import { eq } from 'drizzle-orm';
+import { question } from '../src/db/schema';
 import { importContent } from '../src/modules/content';
-import { DISCONNECT_GRACE_MS, IDLE_CLOSE_MS, LobbyActor, type LobbyEnv } from '../src/modules/lobbies';
+import { DISCONNECT_GRACE_MS, IDLE_CLOSE_MS, LobbyActor, REVEAL_MS, type LobbyEnv } from '../src/modules/lobbies';
 import { openTestDatabase } from './db';
 import { completeProfile, createSignedInUser, createTestApp, jsonRequest } from './auth';
 import { ManualClock, settle } from './clock';
@@ -77,7 +79,7 @@ describe('create a Lobby (Story 5.1, FR-27)', () => {
       quiz: { slug: 'lord-of-the-rings', title: { en: 'The Lord of the Rings' } },
       settings: { quizSlug: 'lord-of-the-rings', questionCount: 10, timeLimitS: 20 },
     });
-    expect(ada.state.players).toEqual([{ id: ids.Ada, username: 'Ada', avatar: 'owl', title: null, connected: true }]);
+    expect(ada.state.players).toEqual([{ id: ids.Ada, username: 'Ada', avatar: 'owl', title: null, connected: true, score: 0, answered: false }]);
     ada.close();
   });
 
@@ -170,6 +172,43 @@ describe('waiting room and Host controls (Story 5.1, FR-28, FR-30)', () => {
   });
 });
 
+describe('a game over sockets (Story 5.2, FR-31, FR-32, AD-7)', () => {
+  it('sends Questions without the answer, scores by server time and reveals to all', async () => {
+    const code = await createLobby('Cyd', 'solar-system');
+    const cyd = await client('Cyd');
+    const dan = await client('Dan');
+    await cyd.ok(LOBBY_COMMANDS.join, { code });
+    await dan.ok(LOBBY_COMMANDS.join, { code });
+    await cyd.ok(LOBBY_COMMANDS.settings, { questionCount: 5, timeLimitS: 10 });
+    expect(await dan.send(LOBBY_COMMANDS.start)).toEqual({ ok: false, code: 'lobby.notHost' });
+    await cyd.ok(LOBBY_COMMANDS.start);
+    await until(() => expect(dan.state.phase).toBe('question'));
+    const rows = await db.select().from(question).where(eq(question.quizSlug, 'solar-system'));
+    const answerOf = (text: string) => rows.find((row) => row.content.text.en === text)!.correctIndex;
+
+    const shown = dan.state.question!;
+    expect(shown).toMatchObject({ index: 0, total: 5, limitMs: 10_000 });
+    expect(JSON.stringify(dan.states)).not.toMatch(/correctIndex|answerTitle/);
+    const right = answerOf(shown.text.en);
+    await clock.advance(1_000);
+    await cyd.ok(LOBBY_COMMANDS.answer, { index: 0, selectedIndex: right });
+    expect(await cyd.send(LOBBY_COMMANDS.answer, { index: 0, selectedIndex: (right + 1) % 4 })).toEqual({ ok: false, code: 'lobby.alreadyAnswered' });
+    expect(await dan.send(LOBBY_COMMANDS.answer, { index: 0, selectedIndex: 9 })).toEqual({ ok: false, code: 'lobby.invalid' });
+    await clock.advance(4_000);
+    await dan.ok(LOBBY_COMMANDS.answer, { index: 0, selectedIndex: (right + 1) % 4 });
+    await until(() => expect(dan.state.phase).toBe('reveal'));
+    expect(dan.state.reveal).toMatchObject({ correctIndex: right });
+    expect(dan.state.leaderboard).toEqual([
+      { userId: ids.Cyd, score: 950, correct: 1, rank: 1 },
+      { userId: ids.Dan, score: 0, correct: 0, rank: 2 },
+    ]);
+    await clock.advance(REVEAL_MS);
+    await until(() => expect(cyd.state.question?.index).toBe(1));
+    cyd.close();
+    dan.close();
+  });
+});
+
 describe('Lobby actor limits (unit, AD-8)', () => {
   const card = (n: number): PlayerCard => ({ id: `p${n}`, username: `P${n}`, avatar: null, title: null });
   function actor(clock = new ManualClock()) {
@@ -178,6 +217,7 @@ describe('Lobby actor limits (unit, AD-8)', () => {
       clock,
       playerCard: async (id) => card(Number(id.slice(1))),
       quiz: async (slug) => ({ slug, title: { en: slug } }),
+      questions: async () => [],
       publish: () => {},
       removed: () => {},
       closed: () => closed.push('closed'),

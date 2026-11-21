@@ -1,11 +1,12 @@
 import { randomInt } from 'node:crypto';
 import { LOBBY_CODE_ALPHABET, LOBBY_QUESTION_COUNT, LOBBY_TIME_LIMIT_S, type LobbyRemoved, type LobbyState, type PlayerCard } from '@general-quiz/contracts';
-import { LobbyActor, systemClock, type Clock, type LobbyEnv, type LobbyQuiz } from './actor';
+import { LobbyActor, systemClock, type Clock, type GameQuestion, type LobbyEnv, type LobbyQuiz } from './actor';
 
 export type HubDeps = {
   clock?: Clock;
   playerCard: (userId: string) => Promise<PlayerCard | undefined>;
   quiz: (slug: string) => Promise<LobbyQuiz | undefined>;
+  questions: (quizSlug: string, count: number) => Promise<GameQuestion[]>;
   /** Random code characters; injectable for tests. */
   randomIndex?: (max: number) => number;
 };
@@ -37,6 +38,7 @@ export function createLobbyHub(deps: HubDeps) {
       clock,
       playerCard: deps.playerCard,
       quiz: deps.quiz,
+      questions: deps.questions,
       publish: (userId, state) => transport.publish(code, userId, state),
       removed: (userId, event) => transport.removed(code, userId, event),
       closed: () => lobbies.delete(code),

@@ -2,6 +2,7 @@ import { and, eq, inArray, sql } from 'drizzle-orm';
 import {
   SOLO_GAME_SIZE,
   type BestResult,
+  type LocalizedText,
   type QuestionCategory,
   type QuestionDifficulty,
   type QuestionTheme,
@@ -228,4 +229,45 @@ export async function deleteQuizzesUserData(db: DbExecutor, userId: string): Pro
 export async function soloPlayerIds(db: DbExecutor): Promise<string[]> {
   const rows = await db.selectDistinct({ userId: soloGame.userId }).from(soloGame).where(eq(soloGame.status, 'finished'));
   return rows.map((row) => row.userId);
+}
+
+/** A Lobby Question with its answer, for the Lobby actor only (AD-7: sent to players without it). */
+export type DrawnQuestion = {
+  slug: string;
+  difficulty: QuestionDifficulty;
+  eyebrow: LocalizedText;
+  text: LocalizedText;
+  options: LocalizedText[];
+  correctIndex: number;
+  answerTitle: LocalizedText;
+  summary: LocalizedText;
+};
+
+/** Draws up to `count` published Questions of a Quiz with its Expert share, for a Lobby Game (FR-31). */
+export async function drawQuestions(db: DbExecutor, quizSlug: string, count: number, random: Random = Math.random): Promise<DrawnQuestion[]> {
+  const [found] = await db
+    .select({ expertShare: quiz.expertShare })
+    .from(quiz)
+    .where(and(eq(quiz.slug, quizSlug), eq(quiz.status, 'published'), eq(quiz.kind, 'quiz')))
+    .limit(1);
+  if (!found) return [];
+  const rows = await db
+    .select()
+    .from(question)
+    .where(and(eq(question.quizSlug, quizSlug), eq(question.status, 'published')));
+  const bySlug = new Map(rows.map((row) => [row.slug, row]));
+  const slugs = pickQuestions(rows, found.expertShare, random, undefined, count);
+  return slugs.map((slug) => {
+    const row = bySlug.get(slug)!;
+    return {
+      slug,
+      difficulty: row.difficulty,
+      eyebrow: row.content.eyebrow,
+      text: row.content.text,
+      options: row.content.options,
+      correctIndex: row.correctIndex,
+      answerTitle: row.content.answerTitle,
+      summary: row.content.summary,
+    };
+  });
 }

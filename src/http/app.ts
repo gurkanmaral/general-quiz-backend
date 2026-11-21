@@ -9,7 +9,7 @@ import { createDailyService, dailyPlayerIds, dailyRoutes, deleteDailyUserData, i
 import { createProgress, deleteProgressUserData, playerRoutes, profileRoutes, type Progress, type RecordedGameResult } from '../modules/progress';
 import { createSocial, deleteSocialUserData, friendsRoutes, linkRoutes, notificationRoutes, socialSettingsRoutes } from '../modules/social';
 import { createLobbyHub, lobbyRoutes, type Clock } from '../modules/lobbies';
-import { createSoloGames, deleteQuizzesUserData, getPublishedQuestion, playableQuiz, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
+import { createSoloGames, deleteQuizzesUserData, drawQuestions, getPublishedQuestion, playableQuiz, quizzesRoutes, soloGameRoutes, soloPlayerIds, type Random } from '../modules/quizzes';
 import { problem } from './problem';
 
 export type AppDeps = {
@@ -64,6 +64,7 @@ export function createApp({ db, logger, now = () => new Date(), random, auth, lo
       return player ? { ...player, title: await progress.equippedTitle(userId) } : undefined;
     },
     quiz: (slug) => playableQuiz(db, slug),
+    questions: (slug, count) => drawQuestions(db, slug, count, random),
   });
   const quizzesDeps = {
     db,

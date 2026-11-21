@@ -3,6 +3,7 @@ import {
   LOBBY_COMMANDS,
   LOBBY_EVENTS,
   LOBBY_PROBLEM_CODES,
+  LobbyAnswerSchema,
   LobbyJoinSchema,
   LobbyKickSchema,
   LobbySettingsUpdateSchema,
@@ -89,6 +90,19 @@ export function attachLobbySockets(nsp: Namespace, hub: LobbyHub): void {
       inLobby(async (actor, payload) => {
         const parsed = LobbyKickSchema.safeParse(payload);
         return parsed.success ? actor.kick(userId, parsed.data.userId) : { ok: false, code: LOBBY_PROBLEM_CODES.invalid };
+      }),
+    );
+
+    on(
+      LOBBY_COMMANDS.start,
+      inLobby((actor) => actor.start(userId)),
+    );
+
+    on(
+      LOBBY_COMMANDS.answer,
+      inLobby(async (actor, payload) => {
+        const parsed = LobbyAnswerSchema.safeParse(payload);
+        return parsed.success ? actor.answer(userId, parsed.data.index, parsed.data.selectedIndex) : { ok: false, code: LOBBY_PROBLEM_CODES.invalid };
       }),
     );
 
