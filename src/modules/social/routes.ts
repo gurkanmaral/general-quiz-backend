@@ -1,5 +1,6 @@
 import { Hono, type Context } from 'hono';
 import {
+  FriendsQuerySchema,
   LinkTokenSchema,
   SOCIAL_PROBLEM_CODES,
   SendFriendRequestBodySchema,
@@ -14,6 +15,8 @@ import type { Social } from './service';
 export type SocialRouteDeps = {
   social: Social;
   requireUser: (c: Context) => Promise<{ id: string }>;
+  /** True when `date` is a valid local "today" somewhere (AD-5, from `daily`). */
+  isToday: (date: string) => boolean;
 };
 
 const REASONS = {
@@ -26,11 +29,15 @@ const REASONS = {
 const requestNotFound = (c: Context) => problem(c, { status: 404, code: SOCIAL_PROBLEM_CODES.requestNotFound, title: 'Friend Request not found' });
 
 /** `/api/v1/friends`: the Friends list, Friend Requests and removing a Friend (FR-21, FR-22). */
-export function friendsRoutes({ social, requireUser }: SocialRouteDeps) {
+export function friendsRoutes({ social, requireUser, isToday }: SocialRouteDeps) {
   return new Hono()
     .get('/', async (c) => {
       const user = await requireUser(c);
-      return c.json((await social.friendsList(user.id)) satisfies FriendsResponse);
+      const query = FriendsQuerySchema.safeParse(c.req.query());
+      if (!query.success || !isToday(query.data.today)) {
+        return problem(c, { status: 400, code: SOCIAL_PROBLEM_CODES.invalidToday, title: 'Invalid local date', detail: 'today must be your local date as YYYY-MM-DD.' });
+      }
+      return c.json((await social.friendsList(user.id, query.data.today)) satisfies FriendsResponse);
     })
     .post('/requests', async (c) => {
       const user = await requireUser(c);
@@ -75,7 +82,7 @@ export function linkRoutes({ social }: Pick<SocialRouteDeps, 'social'>) {
 }
 
 /** `/api/v1/notifications`: the in-app list with its unread count; opening it marks all read (FR-26). */
-export function notificationRoutes({ social, requireUser }: SocialRouteDeps) {
+export function notificationRoutes({ social, requireUser }: Omit<SocialRouteDeps, 'isToday'>) {
   return new Hono()
     .get('/', async (c) => {
       const user = await requireUser(c);

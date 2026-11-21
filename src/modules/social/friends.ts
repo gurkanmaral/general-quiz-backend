@@ -1,9 +1,10 @@
 import { randomBytes } from 'node:crypto';
 import { and, asc, eq, or } from 'drizzle-orm';
-import type { EquippedTitle, FriendRequest, FriendsResponse, PlayerCard, SendFriendRequestBody } from '@general-quiz/contracts';
+import type { EquippedTitle, Friend, FriendRequest, FriendsResponse, PlayerCard, SendFriendRequestBody } from '@general-quiz/contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { uuidv7 } from '../../db/ids';
 import type { PublicPlayer } from '../accounts';
+import { dailyStatusOf } from '../daily';
 import { friendRequest, friendship, playerLink } from './schema';
 
 const TOKEN_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
@@ -83,8 +84,11 @@ export function createFriends(db: Db, directory: PlayerDirectory, now: () => Dat
     areFriends: (userId: string, otherId: string) => areFriends(db, userId, otherId),
     friendIds: (userId: string) => friendIds(db, userId),
 
-    /** Friends, pending requests both ways (newest first) and the friend-link token (FR-21). */
-    async list(userId: string): Promise<FriendsResponse> {
+    /**
+     * Friends with their Daily status as of the viewer's `today` (FR-23), pending requests both
+     * ways (newest first) and the friend-link token (FR-21).
+     */
+    async list(userId: string, today: string): Promise<FriendsResponse> {
       const [ids, requests, token] = await Promise.all([
         friendIds(db, userId),
         db
@@ -95,13 +99,19 @@ export function createFriends(db: Db, directory: PlayerDirectory, now: () => Dat
         linkToken(userId),
       ]);
       const other = (row: (typeof requests)[number]) => (row.fromUserId === userId ? row.toUserId : row.fromUserId);
-      const byId = await cards([...ids, ...requests.map(other)]);
+      const [byId, status] = await Promise.all([cards([...ids, ...requests.map(other)]), dailyStatusOf(db, ids, today)]);
       const toRequest = (row: (typeof requests)[number]): FriendRequest[] => {
         const player = byId.get(other(row));
         return player ? [{ id: row.id, player, createdAt: row.createdAt.toISOString() }] : [];
       };
       return {
-        friends: ids.flatMap((id) => byId.get(id) ?? []).sort((a, b) => a.username.localeCompare(b.username, undefined, { sensitivity: 'base' })),
+        friends: ids
+          .flatMap((id): Friend[] => {
+            const card = byId.get(id);
+            const daily = status.get(id);
+            return card ? [{ ...card, streak: daily?.streak.current ?? 0, playedToday: daily?.played ?? false }] : [];
+          })
+          .sort((a, b) => a.username.localeCompare(b.username, undefined, { sensitivity: 'base' })),
         incoming: requests.filter((row) => row.toUserId === userId).flatMap(toRequest).reverse(),
         outgoing: requests.filter((row) => row.fromUserId === userId).flatMap(toRequest).reverse(),
         linkToken: token,

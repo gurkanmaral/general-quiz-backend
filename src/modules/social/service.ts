@@ -16,7 +16,7 @@ export function createSocial(db: Db, deps: SocialDeps) {
   return {
     friends,
     notifications,
-    friendsList: (userId: string) => friends.list(userId),
+    friendsList: (userId: string, today: string) => friends.list(userId, today),
     /** Sends a Friend Request; a new request notifies the recipient (FR-26). */
     async sendFriendRequest(fromId: string, target: SendFriendRequestBody): Promise<SendRequestResult> {
       const result = await friends.sendRequest(fromId, target);

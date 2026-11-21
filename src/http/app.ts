@@ -93,7 +93,7 @@ export function createApp({ db, logger, now = () => new Date(), random, auth }: 
   };
   app.route('/api/v1/profile', profileRoutes(profileDeps));
   app.route('/api/v1/players', playerRoutes(profileDeps));
-  app.route('/api/v1/friends', friendsRoutes({ social, requireUser: accounts.requireUser }));
+  app.route('/api/v1/friends', friendsRoutes({ social, requireUser: accounts.requireUser, isToday: (date) => isTodaySomewhere(date, now()) }));
   app.route('/api/v1/links', linkRoutes({ social }));
   app.route('/api/v1/notifications', notificationRoutes({ social, requireUser: accounts.requireUser }));
 

@@ -3,6 +3,8 @@ export { dailyRoutes, type RequireUser } from './routes';
 export {
   createDailyService,
   dailyPlayerIds,
+  dailyStatusOf,
+  type DailyStatus,
   deleteDailyUserData,
   isAcceptableDailyDate,
   isAnswerable,

@@ -1,12 +1,15 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { FriendsResponseSchema, LinkOwnerResponseSchema, MeResponseSchema, ProblemSchema, SendFriendRequestResponseSchema } from '@general-quiz/contracts';
 import { friendRequest, friendship, playerLink } from '../src/db/schema';
+import { importContent } from '../src/modules/content';
 import { openTestDatabase } from './db';
 import { completeProfile, createSignedInUser, createTestApp, jsonRequest } from './auth';
 
 const database = openTestDatabase();
 const db = database.db;
-const { app, mailer } = createTestApp(db);
+const clock = new Date('2026-11-16T12:00:00Z');
+const { app, mailer } = createTestApp(db, { now: () => clock });
+const CONTENT_DIR = new URL('../../../content', import.meta.url).pathname;
 let ada = '';
 let bob = '';
 let cyd = '';
@@ -14,6 +17,7 @@ let newbie = '';
 const ids: Record<string, string> = {};
 
 beforeAll(async () => {
+  await importContent(db, CONTENT_DIR);
   ada = await createSignedInUser(app, mailer, 'ada@example.com');
   bob = await createSignedInUser(app, mailer, 'bob@example.com');
   cyd = await createSignedInUser(app, mailer, 'cyd@example.com');
@@ -31,14 +35,14 @@ async function expectProblem(res: Response, status: number, code: string) {
 }
 const send = (cookie: string, body: unknown) => app.request('/api/v1/friends/requests', jsonRequest('POST', body, cookie));
 async function list(cookie: string) {
-  const res = await app.request('/api/v1/friends', jsonRequest('GET', undefined, cookie));
+  const res = await app.request('/api/v1/friends?today=2026-11-16', jsonRequest('GET', undefined, cookie));
   expect(res.status).toBe(200);
   return FriendsResponseSchema.parse(await res.json());
 }
 
 describe('Friend Requests (Story 4.1, FR-21)', () => {
   it('needs a signed-in player with a finished profile', async () => {
-    await expectProblem(await app.request('/api/v1/friends'), 401, 'accounts.unauthorized');
+    await expectProblem(await app.request('/api/v1/friends?today=2026-11-16'), 401, 'accounts.unauthorized');
     await expectProblem(await send('', { username: 'bob' }), 401, 'accounts.unauthorized');
     await expectProblem(await send(newbie, { username: 'bob' }), 409, 'social.profileIncomplete');
   });
@@ -99,11 +103,45 @@ describe('Friend Requests (Story 4.1, FR-21)', () => {
   });
 });
 
+describe('Friends list with Daily status (Story 4.3, FR-23)', () => {
+  const answer = (cookie: string, date: string, selectedIndex = 1) =>
+    app.request(`/api/v1/daily/${date}/answer`, jsonRequest('POST', { selectedIndex, playedOn: '2026-11-16' }, cookie));
+
+  it("needs the viewer's local today", async () => {
+    await expectProblem(await app.request('/api/v1/friends', jsonRequest('GET', undefined, ada)), 400, 'social.invalidToday');
+    await expectProblem(await app.request('/api/v1/friends?today=2026-11-10', jsonRequest('GET', undefined, ada)), 400, 'social.invalidToday');
+  });
+
+  it('shows avatar, equipped Title, Streak and played / not yet — never the answer', async () => {
+    // Ada and Bob are Friends; Bob has a 2-day streak and played today, Cyd (Bob's Friend) has not.
+    expect((await answer(bob, '2026-11-15')).status).toBe(200);
+    expect((await answer(bob, '2026-11-16', 2)).status).toBe(200);
+    const [bobRow] = (await list(ada)).friends;
+    expect(bobRow).toEqual({ id: ids.Bob, username: 'Bob', avatar: 'owl', title: null, streak: 2, playedToday: true });
+    const bobs = await list(bob);
+    expect(bobs.friends.map((item) => [item.username, item.streak, item.playedToday])).toEqual([
+      ['Ada', 0, false],
+      ['Cyd', 0, false],
+    ]);
+    const raw = JSON.stringify(await list(ada));
+    expect(raw).not.toMatch(/selectedIndex|correct|questionSlug/);
+  });
+
+  it("uses the viewer's today: yesterday's play is not today's", async () => {
+    clock.setTime(Date.parse('2026-11-17T12:00:00Z'));
+    const res = await app.request('/api/v1/friends?today=2026-11-17', jsonRequest('GET', undefined, ada));
+    const [bobRow] = FriendsResponseSchema.parse(await res.json()).friends;
+    expect(bobRow).toMatchObject({ streak: 2, playedToday: false });
+    clock.setTime(Date.parse('2026-11-16T12:00:00Z'));
+  });
+});
+
 describe('removing a Friend (FR-22)', () => {
   it('either side removes silently, for both', async () => {
     expect((await app.request(`/api/v1/friends/${ids.Ada}`, jsonRequest('DELETE', undefined, bob))).status).toBe(204);
     expect((await list(ada)).friends).toEqual([]);
     expect((await list(bob)).friends.map((item) => item.username)).toEqual(['Cyd']);
+    expect((await app.request(`/api/v1/players/bob?today=2026-11-16`, jsonRequest('GET', undefined, ada))).status).toBe(403);
     expect((await app.request(`/api/v1/friends/${ids.Ada}`, jsonRequest('DELETE', undefined, bob))).status).toBe(204);
   });
 

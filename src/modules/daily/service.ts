@@ -1,4 +1,4 @@
-import { asc, eq, gte, notInArray, sql } from 'drizzle-orm';
+import { asc, eq, gte, inArray, notInArray, sql } from 'drizzle-orm';
 import { isCalendarDate, type DailyPlay, type DailyQuestion, type DailyResponse, type Streak } from '@general-quiz/contracts';
 import { computeStreak, daysBetween, rotationSlug, type DailyRotation } from '@general-quiz/shared';
 import type { DbExecutor } from '../../db/client';
@@ -249,6 +249,20 @@ export async function syncSchedule(db: DbExecutor, input: ScheduleInput): Promis
     .returning({ dailyDate: scheduleEntry.dailyDate });
   report.entries.removed = removedEntries.length;
   return report;
+}
+
+/** What Friends may see of a player's Daily (FR-23): the Streak and whether `today` is played — never the answer. */
+export type DailyStatus = { streak: Streak; played: boolean };
+
+/** Daily status of several players as of the viewer's local `today` (AD-5). */
+export async function dailyStatusOf(db: DbExecutor, userIds: readonly string[], today: string): Promise<Map<string, DailyStatus>> {
+  const result = new Map<string, DailyStatus>();
+  if (userIds.length === 0) return result;
+  const rows = await db.select().from(answer).where(inArray(answer.userId, [...new Set(userIds)])).orderBy(asc(answer.dailyDate));
+  const plays = new Map<string, DailyPlay[]>(userIds.map((id) => [id, []]));
+  for (const row of rows) plays.get(row.userId)?.push(toPlay(row));
+  for (const [id, list] of plays) result.set(id, { streak: streakOf(list, today), played: list.some((play) => play.dailyDate === today) });
+  return result;
 }
 
 /** Removes every Daily answer of a player; runs inside the account-deletion transaction (FR-4). */
