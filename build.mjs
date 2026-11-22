@@ -26,4 +26,4 @@ await build({
 });
 // Migrations are read at runtime next to the bundle (`./migrations`).
 await cp(new URL('./src/db/migrations/', import.meta.url), new URL('./migrations/', dist), { recursive: true });
-console.log('API built to apps/api/dist');
+console.log('API built to dist');

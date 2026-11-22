@@ -8,7 +8,7 @@ const database = openTestDatabase();
 const db = database.db;
 const clock = new Date('2026-11-16T12:00:00Z');
 const { app, mailer } = createTestApp(db, { now: () => clock });
-const CONTENT_DIR = new URL('../../../content', import.meta.url).pathname;
+const CONTENT_DIR = new URL('../content', import.meta.url).pathname;
 let ada = '';
 let bob = '';
 let cyd = '';

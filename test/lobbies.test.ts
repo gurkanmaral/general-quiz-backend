@@ -23,7 +23,7 @@ const database = openTestDatabase();
 const db = database.db;
 const clock = new ManualClock();
 const { app, mailer } = createTestApp(db, { lobbyClock: clock, now: () => new Date(clock.now()) });
-const CONTENT_DIR = new URL('../../../content', import.meta.url).pathname;
+const CONTENT_DIR = new URL('../content', import.meta.url).pathname;
 const cookies: Record<string, string> = {};
 const ids: Record<string, string> = {};
 let server: Awaited<ReturnType<typeof listen>>;

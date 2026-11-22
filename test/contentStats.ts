@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 
 /** Counts derived from the repo's content/ files, so tests keep passing as weekly content is added. */
-const QUIZ_DIR = new URL('../../../content/quizzes', import.meta.url).pathname;
+const QUIZ_DIR = new URL('../content/quizzes', import.meta.url).pathname;
 
 type Item = { status: string };
 type QuizFile = Item & { slug: string; kind?: string; title: { en: string }; questions: Item[]; badges?: Item[]; titles?: Item[] };

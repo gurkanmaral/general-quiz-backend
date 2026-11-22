@@ -9,7 +9,7 @@ import { createSignedInUser, createTestApp, jsonRequest } from './auth';
 const database = openTestDatabase();
 const db = database.db;
 const { app, mailer } = createTestApp(db);
-const CONTENT_DIR = new URL('../../../content', import.meta.url).pathname;
+const CONTENT_DIR = new URL('../content', import.meta.url).pathname;
 let ada = '';
 
 beforeAll(async () => {

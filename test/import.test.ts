@@ -10,7 +10,7 @@ import { repoContent } from './contentStats';
 
 const database = openTestDatabase();
 const db = database.db;
-const REPO_CONTENT = new URL('../../../content', import.meta.url).pathname;
+const REPO_CONTENT = new URL('../content', import.meta.url).pathname;
 let dir: string;
 
 async function editJson(path: string, edit: (value: any) => void) {

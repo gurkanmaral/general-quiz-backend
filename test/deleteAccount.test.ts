@@ -8,7 +8,7 @@ import { completeProfile, cookiesFrom, createSignedInUser, createTestApp, jsonRe
 const database = openTestDatabase();
 const NOW = new Date('2026-11-16T12:00:00Z');
 const { app, mailer } = createTestApp(database.db, { now: () => NOW });
-const CONTENT_DIR = new URL('../../../content', import.meta.url).pathname;
+const CONTENT_DIR = new URL('../content', import.meta.url).pathname;
 afterAll(() => database.close());
 beforeAll(() => importContent(database.db, CONTENT_DIR));
 

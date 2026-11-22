@@ -1,0 +1,677 @@
+{
+  "slug": "ancient-rome",
+  "status": "published",
+  "kind": "quiz",
+  "category": "History",
+  "theme": "amber",
+  "title": {
+    "en": "Ancient Rome"
+  },
+  "description": {
+    "en": "Emperors, legions and the city that ruled the Mediterranean."
+  },
+  "expertShare": 0.3,
+  "badges": [
+    {
+      "slug": "rome-citizen",
+      "status": "published",
+      "name": {
+        "en": "Roman Citizen"
+      },
+      "description": {
+        "en": "Answered 80% of the Ancient Rome quiz correctly."
+      },
+      "icon": "🏛️",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.8
+      }
+    }
+  ],
+  "titles": [
+    {
+      "slug": "rome-caesar",
+      "status": "published",
+      "name": {
+        "en": "Caesar"
+      },
+      "description": {
+        "en": "Every Expert question answered correctly."
+      },
+      "icon": "🦅",
+      "unlock": {
+        "type": "allCorrect",
+        "difficulty": "expert"
+      }
+    },
+    {
+      "slug": "rome-centurion",
+      "status": "published",
+      "name": {
+        "en": "Centurion"
+      },
+      "description": {
+        "en": "Half of the quiz answered correctly."
+      },
+      "icon": "🛡️",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.5
+      }
+    }
+  ],
+  "questions": [
+    {
+      "slug": "rome-founding",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Ab urbe condita"
+      },
+      "text": {
+        "en": "In which year was Rome traditionally founded?"
+      },
+      "options": [
+        {
+          "en": "1000 BC"
+        },
+        {
+          "en": "753 BC"
+        },
+        {
+          "en": "509 BC"
+        },
+        {
+          "en": "44 BC"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Tradition dates it to 753 BC."
+      },
+      "summary": {
+        "en": "Roman writers counted years \"from the founding of the city\", which they placed on 21 April 753 BC."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Date"
+          },
+          "value": {
+            "en": "21 April"
+          },
+          "detail": {
+            "en": "Still celebrated in Rome as its birthday."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Founding of Rome"
+        },
+        "url": "https://en.wikipedia.org/wiki/Founding_of_Rome"
+      }
+    },
+    {
+      "slug": "rome-twins",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Legend"
+      },
+      "text": {
+        "en": "Which twins are said to have founded Rome?"
+      },
+      "options": [
+        {
+          "en": "Castor and Pollux"
+        },
+        {
+          "en": "Romulus and Remus"
+        },
+        {
+          "en": "Cain and Abel"
+        },
+        {
+          "en": "Apollo and Artemis"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Romulus and Remus."
+      },
+      "summary": {
+        "en": "In the legend a she-wolf nursed the abandoned twins. Romulus later killed Remus and named the city after himself."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Symbol"
+          },
+          "value": {
+            "en": "She-wolf"
+          },
+          "detail": {
+            "en": "The Capitoline Wolf statue shows her with the twins."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Founding of Rome"
+        },
+        "url": "https://en.wikipedia.org/wiki/Founding_of_Rome"
+      }
+    },
+    {
+      "slug": "rome-language",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Words"
+      },
+      "text": {
+        "en": "What language did the ancient Romans speak?"
+      },
+      "options": [
+        {
+          "en": "Greek"
+        },
+        {
+          "en": "Etruscan"
+        },
+        {
+          "en": "Latin"
+        },
+        {
+          "en": "Aramaic"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Latin."
+      },
+      "summary": {
+        "en": "Latin is the ancestor of Italian, Spanish, French, Portuguese and Romanian, and it gave English thousands of words."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Descendants"
+          },
+          "value": {
+            "en": "Romance languages"
+          },
+          "detail": {
+            "en": "Spoken by hundreds of millions today."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Latin"
+        },
+        "url": "https://en.wikipedia.org/wiki/Latin"
+      }
+    },
+    {
+      "slug": "rome-first-emperor",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Emperors"
+      },
+      "text": {
+        "en": "Who was the first Roman emperor?"
+      },
+      "options": [
+        {
+          "en": "Julius Caesar"
+        },
+        {
+          "en": "Nero"
+        },
+        {
+          "en": "Augustus"
+        },
+        {
+          "en": "Trajan"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Augustus."
+      },
+      "summary": {
+        "en": "Born Octavian, he became the first emperor in 27 BC. Julius Caesar, his great-uncle, was a dictator but never an emperor."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Ruled"
+          },
+          "value": {
+            "en": "27 BC – AD 14"
+          },
+          "detail": {
+            "en": "Over forty years."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Augustus"
+        },
+        "url": "https://en.wikipedia.org/wiki/Augustus"
+      }
+    },
+    {
+      "slug": "rome-vesuvius",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Pompeii"
+      },
+      "text": {
+        "en": "Which volcano buried Pompeii in AD 79?"
+      },
+      "options": [
+        {
+          "en": "Etna"
+        },
+        {
+          "en": "Stromboli"
+        },
+        {
+          "en": "Vesuvius"
+        },
+        {
+          "en": "Vulcano"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Mount Vesuvius."
+      },
+      "summary": {
+        "en": "The eruption covered Pompeii and Herculaneum in ash, preserving streets, houses and even graffiti for centuries."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Rediscovered"
+          },
+          "value": {
+            "en": "1700s"
+          },
+          "detail": {
+            "en": "Excavations continue today."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Pompeii"
+        },
+        "url": "https://en.wikipedia.org/wiki/Pompeii"
+      }
+    },
+    {
+      "slug": "rome-colosseum",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Games"
+      },
+      "text": {
+        "en": "In which Roman amphitheatre did gladiators fight before tens of thousands of spectators?"
+      },
+      "options": [
+        {
+          "en": "Pantheon"
+        },
+        {
+          "en": "Circus Maximus"
+        },
+        {
+          "en": "Colosseum"
+        },
+        {
+          "en": "Forum"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "The Colosseum."
+      },
+      "summary": {
+        "en": "Completed in AD 80, it held an estimated 50,000 or more spectators for gladiator fights and animal hunts."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Opened"
+          },
+          "value": {
+            "en": "AD 80"
+          },
+          "detail": {
+            "en": "Under Emperor Titus."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Colosseum"
+        },
+        "url": "https://en.wikipedia.org/wiki/Colosseum"
+      }
+    },
+    {
+      "slug": "rome-ides",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Beware"
+      },
+      "text": {
+        "en": "On which date was Julius Caesar assassinated?"
+      },
+      "options": [
+        {
+          "en": "1 January 49 BC"
+        },
+        {
+          "en": "15 March 44 BC"
+        },
+        {
+          "en": "2 September 31 BC"
+        },
+        {
+          "en": "21 April 27 BC"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "The Ides of March, 44 BC."
+      },
+      "summary": {
+        "en": "A group of senators stabbed him during a Senate meeting, fearing he would make himself king."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Conspirators"
+          },
+          "value": {
+            "en": "60+"
+          },
+          "detail": {
+            "en": "Led by Brutus and Cassius."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Assassination of Julius Caesar"
+        },
+        "url": "https://en.wikipedia.org/wiki/Assassination_of_Julius_Caesar"
+      }
+    },
+    {
+      "slug": "rome-tiber",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The city"
+      },
+      "text": {
+        "en": "Which river flows through Rome?"
+      },
+      "options": [
+        {
+          "en": "Po"
+        },
+        {
+          "en": "Arno"
+        },
+        {
+          "en": "Tiber"
+        },
+        {
+          "en": "Danube"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "The Tiber."
+      },
+      "summary": {
+        "en": "Rome grew on the hills beside a crossing point of the Tiber, which also linked the city to the sea at Ostia."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Hills"
+          },
+          "value": {
+            "en": "Seven"
+          },
+          "detail": {
+            "en": "Rome is the city of seven hills."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Tiber"
+        },
+        "url": "https://en.wikipedia.org/wiki/Tiber"
+      }
+    },
+    {
+      "slug": "rome-fall",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "The end"
+      },
+      "text": {
+        "en": "In which year is the Western Roman Empire traditionally said to have fallen?"
+      },
+      "options": [
+        {
+          "en": "410"
+        },
+        {
+          "en": "455"
+        },
+        {
+          "en": "476"
+        },
+        {
+          "en": "1453"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "AD 476."
+      },
+      "summary": {
+        "en": "That year Odoacer deposed the young emperor Romulus Augustulus. The Eastern Empire lasted until 1453."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Last emperor"
+          },
+          "value": {
+            "en": "Romulus Augustulus"
+          },
+          "detail": {
+            "en": "In the West."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Fall of the Western Roman Empire"
+        },
+        "url": "https://en.wikipedia.org/wiki/Fall_of_the_Western_Roman_Empire"
+      }
+    },
+    {
+      "slug": "rome-hannibal",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Rome's enemies"
+      },
+      "text": {
+        "en": "Which Carthaginian general crossed the Alps with war elephants to invade Italy?"
+      },
+      "options": [
+        {
+          "en": "Hamilcar"
+        },
+        {
+          "en": "Hannibal"
+        },
+        {
+          "en": "Hasdrubal"
+        },
+        {
+          "en": "Scipio"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Hannibal."
+      },
+      "summary": {
+        "en": "In 218 BC, during the Second Punic War, he crossed the Alps and won great victories, including Cannae in 216 BC."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Defeated"
+          },
+          "value": {
+            "en": "202 BC"
+          },
+          "detail": {
+            "en": "By Scipio Africanus at Zama."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Hannibal"
+        },
+        "url": "https://en.wikipedia.org/wiki/Hannibal"
+      }
+    },
+    {
+      "slug": "rome-milan",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Faith"
+      },
+      "text": {
+        "en": "Which emperor, together with Licinius, issued the Edict of Milan in 313?"
+      },
+      "options": [
+        {
+          "en": "Diocletian"
+        },
+        {
+          "en": "Constantine"
+        },
+        {
+          "en": "Theodosius"
+        },
+        {
+          "en": "Hadrian"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Constantine."
+      },
+      "summary": {
+        "en": "The agreement granted religious tolerance across the empire and ended the persecution of Christians."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Year"
+          },
+          "value": {
+            "en": "313"
+          },
+          "detail": {
+            "en": "Constantine later founded Constantinople."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Edict of Milan"
+        },
+        "url": "https://en.wikipedia.org/wiki/Edict_of_Milan"
+      }
+    },
+    {
+      "slug": "rome-londinium",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Provinces"
+      },
+      "text": {
+        "en": "What did the Romans call the city that is now London?"
+      },
+      "options": [
+        {
+          "en": "Eboracum"
+        },
+        {
+          "en": "Londinium"
+        },
+        {
+          "en": "Aquae Sulis"
+        },
+        {
+          "en": "Lutetia"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Londinium."
+      },
+      "summary": {
+        "en": "Founded around AD 47–50, it became the largest town of Roman Britain. Eboracum is York and Lutetia is Paris."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Founded"
+          },
+          "value": {
+            "en": "c. AD 50"
+          },
+          "detail": {
+            "en": "Beside a bridge over the Thames."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Londinium"
+        },
+        "url": "https://en.wikipedia.org/wiki/Londinium"
+      }
+    }
+  ]
+}

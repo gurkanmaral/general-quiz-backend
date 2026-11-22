@@ -1,0 +1,1305 @@
+{
+  "slug": "lord-of-the-rings",
+  "status": "published",
+  "kind": "quiz",
+  "category": "Movies",
+  "theme": "emerald",
+  "title": {
+    "en": "The Lord of the Rings"
+  },
+  "description": {
+    "en": "Peter Jackson's trilogy, from the Shire to Mount Doom."
+  },
+  "expertShare": 0.3,
+  "questions": [
+    {
+      "slug": "lotr-director",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Behind the camera"
+      },
+      "text": {
+        "en": "Who directed The Lord of the Rings film trilogy?"
+      },
+      "options": [
+        {
+          "en": "Guillermo del Toro"
+        },
+        {
+          "en": "Peter Jackson"
+        },
+        {
+          "en": "Steven Spielberg"
+        },
+        {
+          "en": "James Cameron"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Peter Jackson directed all three films."
+      },
+      "summary": {
+        "en": "The New Zealand director shot the three films back to back and released them a year apart, from 2001 to 2003. He later returned to Middle-earth with The Hobbit trilogy."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Released"
+          },
+          "value": {
+            "en": "2001–2003"
+          },
+          "detail": {
+            "en": "One film each December."
+          }
+        },
+        {
+          "label": {
+            "en": "Shot"
+          },
+          "value": {
+            "en": "Back to back"
+          },
+          "detail": {
+            "en": "All three films were filmed in one long production."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — The Lord of the Rings (film series)"
+        },
+        "url": "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings_(film_series)"
+      }
+    },
+    {
+      "slug": "lotr-filming-country",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Middle-earth on Earth"
+      },
+      "text": {
+        "en": "In which country were the films mainly shot?"
+      },
+      "options": [
+        {
+          "en": "Ireland"
+        },
+        {
+          "en": "Scotland"
+        },
+        {
+          "en": "New Zealand"
+        },
+        {
+          "en": "Canada"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Middle-earth was filmed in New Zealand."
+      },
+      "summary": {
+        "en": "Peter Jackson's home country supplied mountains, plains and rolling farmland for every corner of Middle-earth. The Hobbiton set near Matamata is still a tourist attraction."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Hobbiton"
+          },
+          "value": {
+            "en": "Matamata"
+          },
+          "detail": {
+            "en": "The Shire set on a farm on the North Island."
+          }
+        },
+        {
+          "label": {
+            "en": "Director's home"
+          },
+          "value": {
+            "en": "New Zealand"
+          },
+          "detail": {
+            "en": "Jackson is from Pukerua Bay, near Wellington."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — The Lord of the Rings (film series)"
+        },
+        "url": "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings_(film_series)"
+      }
+    },
+    {
+      "slug": "lotr-best-picture",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Oscar night"
+      },
+      "text": {
+        "en": "Which film of the trilogy won the Academy Award for Best Picture?"
+      },
+      "options": [
+        {
+          "en": "The Fellowship of the Ring"
+        },
+        {
+          "en": "The Two Towers"
+        },
+        {
+          "en": "The Return of the King"
+        },
+        {
+          "en": "None of them"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "The Return of the King won Best Picture."
+      },
+      "summary": {
+        "en": "The final film won every one of the 11 Academy Awards it was nominated for, including Best Picture and Best Director, at the 2004 ceremony."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Oscars"
+          },
+          "value": {
+            "en": "11 of 11"
+          },
+          "detail": {
+            "en": "It won every category it was nominated in."
+          }
+        },
+        {
+          "label": {
+            "en": "Ceremony"
+          },
+          "value": {
+            "en": "2004"
+          },
+          "detail": {
+            "en": "The 76th Academy Awards."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — The Lord of the Rings: The Return of the King"
+        },
+        "url": "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Return_of_the_King"
+      }
+    },
+    {
+      "slug": "lotr-gandalf-actor",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "You shall not pass"
+      },
+      "text": {
+        "en": "Which actor played Gandalf?"
+      },
+      "options": [
+        {
+          "en": "Ian McKellen"
+        },
+        {
+          "en": "Christopher Lee"
+        },
+        {
+          "en": "Patrick Stewart"
+        },
+        {
+          "en": "Michael Gambon"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "Sir Ian McKellen played Gandalf."
+      },
+      "summary": {
+        "en": "McKellen played Gandalf the Grey and Gandalf the White and was nominated for an Academy Award for The Fellowship of the Ring."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Oscar nomination"
+          },
+          "value": {
+            "en": "Best Supporting Actor"
+          },
+          "detail": {
+            "en": "For The Fellowship of the Ring."
+          }
+        },
+        {
+          "label": {
+            "en": "Returned"
+          },
+          "value": {
+            "en": "The Hobbit"
+          },
+          "detail": {
+            "en": "He played Gandalf again in the prequel trilogy."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Ian McKellen"
+        },
+        "url": "https://en.wikipedia.org/wiki/Ian_McKellen"
+      }
+    },
+    {
+      "slug": "lotr-frodo-actor",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The Ring-bearer"
+      },
+      "text": {
+        "en": "Which actor played Frodo Baggins?"
+      },
+      "options": [
+        {
+          "en": "Sean Astin"
+        },
+        {
+          "en": "Elijah Wood"
+        },
+        {
+          "en": "Dominic Monaghan"
+        },
+        {
+          "en": "Billy Boyd"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Elijah Wood played Frodo."
+      },
+      "summary": {
+        "en": "Wood was cast after sending in a self-made audition tape in costume. Sean Astin played Sam, Dominic Monaghan played Merry and Billy Boyd played Pippin."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Audition"
+          },
+          "value": {
+            "en": "Self-made tape"
+          },
+          "detail": {
+            "en": "Filmed in a hobbit costume."
+          }
+        },
+        {
+          "label": {
+            "en": "The four hobbits"
+          },
+          "value": {
+            "en": "Wood, Astin, Monaghan, Boyd"
+          },
+          "detail": {
+            "en": "Frodo, Sam, Merry and Pippin."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Elijah Wood"
+        },
+        "url": "https://en.wikipedia.org/wiki/Elijah_Wood"
+      }
+    },
+    {
+      "slug": "lotr-sam",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "A loyal friend"
+      },
+      "text": {
+        "en": "What is the name of Frodo's loyal gardener and companion?"
+      },
+      "options": [
+        {
+          "en": "Meriadoc Brandybuck"
+        },
+        {
+          "en": "Peregrin Took"
+        },
+        {
+          "en": "Samwise Gamgee"
+        },
+        {
+          "en": "Bilbo Baggins"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Samwise Gamgee goes with Frodo all the way to Mount Doom."
+      },
+      "summary": {
+        "en": "Sam is Frodo's gardener in the Shire. He follows him to Mordor and even carries him up the slopes of Mount Doom."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Job"
+          },
+          "value": {
+            "en": "Gardener"
+          },
+          "detail": {
+            "en": "He tends Bag End's garden."
+          }
+        },
+        {
+          "label": {
+            "en": "Played by"
+          },
+          "value": {
+            "en": "Sean Astin"
+          },
+          "detail": {
+            "en": "In all three films."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Samwise Gamgee"
+        },
+        "url": "https://en.wikipedia.org/wiki/Samwise_Gamgee"
+      }
+    },
+    {
+      "slug": "lotr-mount-doom",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The only way"
+      },
+      "text": {
+        "en": "Where must the One Ring be destroyed?"
+      },
+      "options": [
+        {
+          "en": "In the fires of Mount Doom"
+        },
+        {
+          "en": "At the bottom of the sea"
+        },
+        {
+          "en": "In Rivendell"
+        },
+        {
+          "en": "In Isengard"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "Only the fires of Mount Doom can destroy the Ring."
+      },
+      "summary": {
+        "en": "The Ring was forged by Sauron in the fires of Mount Doom (Orodruin) in Mordor, and only there can it be unmade."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Elvish name"
+          },
+          "value": {
+            "en": "Orodruin"
+          },
+          "detail": {
+            "en": "Mount Doom's name in Sindarin."
+          }
+        },
+        {
+          "label": {
+            "en": "Location"
+          },
+          "value": {
+            "en": "Mordor"
+          },
+          "detail": {
+            "en": "Sauron's land in the east."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Mount Doom"
+        },
+        "url": "https://en.wikipedia.org/wiki/Mount_Doom"
+      }
+    },
+    {
+      "slug": "lotr-balrog",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The Bridge of Khazad-dûm"
+      },
+      "text": {
+        "en": "What creature does Gandalf face on the bridge in Moria?"
+      },
+      "options": [
+        {
+          "en": "A dragon"
+        },
+        {
+          "en": "A Balrog"
+        },
+        {
+          "en": "A cave troll"
+        },
+        {
+          "en": "A Nazgûl"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Gandalf faces a Balrog."
+      },
+      "summary": {
+        "en": "The Balrog, a demon of fire and shadow, attacks the Fellowship in the Mines of Moria. Gandalf holds the bridge and falls with it into the abyss."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Line"
+          },
+          "value": {
+            "en": "\"You shall not pass!\""
+          },
+          "detail": {
+            "en": "Gandalf's challenge to the Balrog."
+          }
+        },
+        {
+          "label": {
+            "en": "Where"
+          },
+          "value": {
+            "en": "Moria"
+          },
+          "detail": {
+            "en": "The ancient Dwarf city of Khazad-dûm."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Balrog"
+        },
+        "url": "https://en.wikipedia.org/wiki/Balrog"
+      }
+    },
+    {
+      "slug": "lotr-composer",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Music of Middle-earth"
+      },
+      "text": {
+        "en": "Who composed the music for the trilogy?"
+      },
+      "options": [
+        {
+          "en": "John Williams"
+        },
+        {
+          "en": "Hans Zimmer"
+        },
+        {
+          "en": "Howard Shore"
+        },
+        {
+          "en": "Danny Elfman"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Howard Shore wrote the score."
+      },
+      "summary": {
+        "en": "Shore's score won Academy Awards for The Fellowship of the Ring and The Return of the King, and Into the West won Best Original Song."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Oscars"
+          },
+          "value": {
+            "en": "3"
+          },
+          "detail": {
+            "en": "Two for the score, one for the song Into the West."
+          }
+        },
+        {
+          "label": {
+            "en": "Nationality"
+          },
+          "value": {
+            "en": "Canadian"
+          },
+          "detail": {
+            "en": "Shore was born in Toronto."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Howard Shore"
+        },
+        "url": "https://en.wikipedia.org/wiki/Howard_Shore"
+      }
+    },
+    {
+      "slug": "lotr-fellowship-size",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The Company of the Ring"
+      },
+      "text": {
+        "en": "How many members make up the Fellowship of the Ring?"
+      },
+      "options": [
+        {
+          "en": "Seven"
+        },
+        {
+          "en": "Eight"
+        },
+        {
+          "en": "Nine"
+        },
+        {
+          "en": "Twelve"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "There are nine members."
+      },
+      "summary": {
+        "en": "Four hobbits, Gandalf, Aragorn, Boromir, Legolas and Gimli: nine walkers set against the Nine Riders of Sauron."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Hobbits"
+          },
+          "value": {
+            "en": "4"
+          },
+          "detail": {
+            "en": "Frodo, Sam, Merry and Pippin."
+          }
+        },
+        {
+          "label": {
+            "en": "Formed at"
+          },
+          "value": {
+            "en": "Rivendell"
+          },
+          "detail": {
+            "en": "At the Council of Elrond."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — The Lord of the Rings: The Fellowship of the Ring"
+        },
+        "url": "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Fellowship_of_the_Ring"
+      }
+    },
+    {
+      "slug": "lotr-gollum-actor",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "My precious"
+      },
+      "text": {
+        "en": "Which actor performed Gollum through motion capture?"
+      },
+      "options": [
+        {
+          "en": "Andy Serkis"
+        },
+        {
+          "en": "Hugo Weaving"
+        },
+        {
+          "en": "Bernard Hill"
+        },
+        {
+          "en": "Karl Urban"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "Andy Serkis played Gollum."
+      },
+      "summary": {
+        "en": "Serkis's motion-capture performance, animated by Weta Digital, changed how digital characters are made. He played Gollum in The Hobbit as well."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Technique"
+          },
+          "value": {
+            "en": "Motion capture"
+          },
+          "detail": {
+            "en": "Serkis acted on set and his moves drove the digital Gollum."
+          }
+        },
+        {
+          "label": {
+            "en": "Studio"
+          },
+          "value": {
+            "en": "Weta Digital"
+          },
+          "detail": {
+            "en": "The New Zealand effects company."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Andy Serkis"
+        },
+        "url": "https://en.wikipedia.org/wiki/Andy_Serkis"
+      }
+    },
+    {
+      "slug": "lotr-shire",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Home sweet hole"
+      },
+      "text": {
+        "en": "What is the name of the hobbits' homeland?"
+      },
+      "options": [
+        {
+          "en": "The Shire"
+        },
+        {
+          "en": "Gondor"
+        },
+        {
+          "en": "Rohan"
+        },
+        {
+          "en": "Lothlórien"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "The hobbits live in the Shire."
+      },
+      "summary": {
+        "en": "The Shire is a green, quiet farming land in the north-west of Middle-earth. Frodo and Bilbo live at Bag End in Hobbiton."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Home of Frodo"
+          },
+          "value": {
+            "en": "Bag End"
+          },
+          "detail": {
+            "en": "A hobbit-hole in Hobbiton."
+          }
+        },
+        {
+          "label": {
+            "en": "Film set"
+          },
+          "value": {
+            "en": "Matamata"
+          },
+          "detail": {
+            "en": "Built on a New Zealand farm."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Shire (Middle-earth)"
+        },
+        "url": "https://en.wikipedia.org/wiki/Shire_(Middle-earth)"
+      }
+    },
+    {
+      "slug": "lotr-author",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Where it began"
+      },
+      "text": {
+        "en": "Who wrote the novel The Lord of the Rings?"
+      },
+      "options": [
+        {
+          "en": "C. S. Lewis"
+        },
+        {
+          "en": "J. R. R. Tolkien"
+        },
+        {
+          "en": "George R. R. Martin"
+        },
+        {
+          "en": "Terry Pratchett"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "J. R. R. Tolkien wrote it."
+      },
+      "summary": {
+        "en": "Tolkien, an Oxford professor of English language, published The Lord of the Rings in three volumes in 1954 and 1955 as a sequel to The Hobbit."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Published"
+          },
+          "value": {
+            "en": "1954–1955"
+          },
+          "detail": {
+            "en": "In three volumes."
+          }
+        },
+        {
+          "label": {
+            "en": "Day job"
+          },
+          "value": {
+            "en": "Oxford professor"
+          },
+          "detail": {
+            "en": "He studied old languages."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — J. R. R. Tolkien"
+        },
+        "url": "https://en.wikipedia.org/wiki/J._R._R._Tolkien"
+      }
+    },
+    {
+      "slug": "lotr-smeagol",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Before the Ring"
+      },
+      "text": {
+        "en": "What was Gollum's name before the Ring changed him?"
+      },
+      "options": [
+        {
+          "en": "Déagol"
+        },
+        {
+          "en": "Sméagol"
+        },
+        {
+          "en": "Grishnákh"
+        },
+        {
+          "en": "Gríma"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "He was called Sméagol."
+      },
+      "summary": {
+        "en": "Sméagol took the Ring from his friend Déagol, who had found it in a river. Over centuries the Ring twisted him into Gollum."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Found by"
+          },
+          "value": {
+            "en": "Déagol"
+          },
+          "detail": {
+            "en": "Sméagol's friend found the Ring while fishing."
+          }
+        },
+        {
+          "label": {
+            "en": "Name origin"
+          },
+          "value": {
+            "en": "Gollum"
+          },
+          "detail": {
+            "en": "From the gulping noise he makes."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Gollum"
+        },
+        "url": "https://en.wikipedia.org/wiki/Gollum"
+      }
+    },
+    {
+      "slug": "lotr-ring-language",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Fire-writing"
+      },
+      "text": {
+        "en": "The One Ring's inscription is in Elvish letters, but in which language?"
+      },
+      "options": [
+        {
+          "en": "Sindarin"
+        },
+        {
+          "en": "Quenya"
+        },
+        {
+          "en": "The Black Speech of Mordor"
+        },
+        {
+          "en": "Westron"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "The words are in the Black Speech of Mordor."
+      },
+      "summary": {
+        "en": "The inscription uses Elvish Tengwar letters, but the language is Sauron's Black Speech: \"One Ring to rule them all, One Ring to find them…\". It appears when the Ring is heated."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Letters"
+          },
+          "value": {
+            "en": "Tengwar"
+          },
+          "detail": {
+            "en": "Tolkien's Elvish script."
+          }
+        },
+        {
+          "label": {
+            "en": "Shows when"
+          },
+          "value": {
+            "en": "Heated"
+          },
+          "detail": {
+            "en": "Gandalf throws the Ring into Frodo's fire."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — One Ring"
+        },
+        "url": "https://en.wikipedia.org/wiki/One_Ring"
+      }
+    },
+    {
+      "slug": "lotr-shadowfax",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Lord of all horses"
+      },
+      "text": {
+        "en": "What is the name of Gandalf's horse?"
+      },
+      "options": [
+        {
+          "en": "Brego"
+        },
+        {
+          "en": "Bill"
+        },
+        {
+          "en": "Shadowfax"
+        },
+        {
+          "en": "Hasufel"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Gandalf rides Shadowfax."
+      },
+      "summary": {
+        "en": "Shadowfax is the chief of the Mearas, the horses of Rohan. Brego is Aragorn's horse in the films and Bill is the pony from Bree."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Breed"
+          },
+          "value": {
+            "en": "Mearas"
+          },
+          "detail": {
+            "en": "The noble horses of Rohan."
+          }
+        },
+        {
+          "label": {
+            "en": "Aragorn's horse"
+          },
+          "value": {
+            "en": "Brego"
+          },
+          "detail": {
+            "en": "In the films."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Shadowfax"
+        },
+        "url": "https://en.wikipedia.org/wiki/Shadowfax"
+      }
+    },
+    {
+      "slug": "lotr-total-oscars",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "A golden haul"
+      },
+      "text": {
+        "en": "How many Academy Awards did the three films win in total?"
+      },
+      "options": [
+        {
+          "en": "11"
+        },
+        {
+          "en": "13"
+        },
+        {
+          "en": "15"
+        },
+        {
+          "en": "17"
+        }
+      ],
+      "correctIndex": 3,
+      "answerTitle": {
+        "en": "The trilogy won 17 Academy Awards."
+      },
+      "summary": {
+        "en": "The Fellowship of the Ring won 4, The Two Towers 2 and The Return of the King 11, from 30 nominations in total."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Fellowship"
+          },
+          "value": {
+            "en": "4"
+          },
+          "detail": {
+            "en": "Including Best Visual Effects."
+          }
+        },
+        {
+          "label": {
+            "en": "Two Towers"
+          },
+          "value": {
+            "en": "2"
+          },
+          "detail": {
+            "en": "Visual Effects and Sound Editing."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — List of accolades received by The Lord of the Rings film series"
+        },
+        "url": "https://en.wikipedia.org/wiki/List_of_accolades_received_by_The_Lord_of_the_Rings_film_series"
+      }
+    },
+    {
+      "slug": "lotr-met-tolkien",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "A real meeting"
+      },
+      "text": {
+        "en": "Which member of the cast had met J. R. R. Tolkien in person?"
+      },
+      "options": [
+        {
+          "en": "Ian Holm"
+        },
+        {
+          "en": "Christopher Lee"
+        },
+        {
+          "en": "Ian McKellen"
+        },
+        {
+          "en": "John Rhys-Davies"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Christopher Lee had met Tolkien."
+      },
+      "summary": {
+        "en": "Lee, who played Saruman, was the only cast member to have met Tolkien. He reread The Lord of the Rings every year."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Role"
+          },
+          "value": {
+            "en": "Saruman"
+          },
+          "detail": {
+            "en": "The White Wizard who turns to Sauron."
+          }
+        },
+        {
+          "label": {
+            "en": "Habit"
+          },
+          "value": {
+            "en": "Yearly reread"
+          },
+          "detail": {
+            "en": "Lee read the book once a year."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Christopher Lee"
+        },
+        "url": "https://en.wikipedia.org/wiki/Christopher_Lee"
+      }
+    },
+    {
+      "slug": "lotr-first-aragorn",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Recast"
+      },
+      "text": {
+        "en": "Which actor was first cast as Aragorn before Viggo Mortensen?"
+      },
+      "options": [
+        {
+          "en": "Stuart Townsend"
+        },
+        {
+          "en": "Russell Crowe"
+        },
+        {
+          "en": "Orlando Bloom"
+        },
+        {
+          "en": "Karl Urban"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "Stuart Townsend was the first Aragorn."
+      },
+      "summary": {
+        "en": "Townsend was replaced shortly after filming began when the filmmakers decided Aragorn should be older. Viggo Mortensen took over the role."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Replaced by"
+          },
+          "value": {
+            "en": "Viggo Mortensen"
+          },
+          "detail": {
+            "en": "Who played Aragorn in all three films."
+          }
+        },
+        {
+          "label": {
+            "en": "Why"
+          },
+          "value": {
+            "en": "Age"
+          },
+          "detail": {
+            "en": "The role needed an older actor."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Stuart Townsend"
+        },
+        "url": "https://en.wikipedia.org/wiki/Stuart_Townsend"
+      }
+    },
+    {
+      "slug": "lotr-rings-of-men",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Rings of Power"
+      },
+      "text": {
+        "en": "How many Rings of Power were given to the race of Men?"
+      },
+      "options": [
+        {
+          "en": "Three"
+        },
+        {
+          "en": "Seven"
+        },
+        {
+          "en": "Nine"
+        },
+        {
+          "en": "Twelve"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Men received nine rings."
+      },
+      "summary": {
+        "en": "Three rings went to the Elves, seven to the Dwarves and nine to Men. The nine kings who wore them became the Nazgûl, the Ringwraiths."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Elves"
+          },
+          "value": {
+            "en": "3"
+          },
+          "detail": {
+            "en": "The Three were never touched by Sauron."
+          }
+        },
+        {
+          "label": {
+            "en": "Dwarves"
+          },
+          "value": {
+            "en": "7"
+          },
+          "detail": {
+            "en": "Most were lost or taken by dragons."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Rings of Power"
+        },
+        "url": "https://en.wikipedia.org/wiki/Rings_of_Power"
+      }
+    }
+  ],
+  "badges": [
+    {
+      "slug": "lotr-middle-earth-fan",
+      "status": "published",
+      "name": {
+        "en": "Middle-earth Fan"
+      },
+      "description": {
+        "en": "Answered 80% of The Lord of the Rings quiz correctly."
+      },
+      "icon": "🏅",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.8
+      }
+    }
+  ],
+  "titles": [
+    {
+      "slug": "lotr-gandalf",
+      "status": "published",
+      "name": {
+        "en": "Gandalf"
+      },
+      "description": {
+        "en": "Every Expert question answered correctly. A wizard is never late, nor wrong."
+      },
+      "icon": "🧙",
+      "unlock": {
+        "type": "allCorrect",
+        "difficulty": "expert"
+      }
+    },
+    {
+      "slug": "lotr-frodo",
+      "status": "published",
+      "name": {
+        "en": "Frodo"
+      },
+      "description": {
+        "en": "Half of the quiz answered correctly: the journey has begun."
+      },
+      "icon": "💍",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.5
+      }
+    }
+  ]
+}

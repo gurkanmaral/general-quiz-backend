@@ -1,0 +1,1399 @@
+{
+ "af": {
+  "capital": {
+   "en": "Kabul",
+   "tr": "Kabil"
+  },
+  "population": 41454761
+ },
+ "al": {
+  "capital": {
+   "en": "Tirana",
+   "tr": "Tiran"
+  },
+  "population": 2811655
+ },
+ "dz": {
+  "capital": {
+   "en": "Algiers",
+   "tr": "Cezayir"
+  },
+  "population": 45600000
+ },
+ "ad": {
+  "capital": {
+   "en": "Andorra la Vella",
+   "tr": "Andorra la Vella"
+  },
+  "population": 89752
+ },
+ "ao": {
+  "capital": {
+   "en": "Luanda",
+   "tr": "Luanda"
+  },
+  "population": 36749906
+ },
+ "ag": {
+  "capital": {
+   "en": "St. John's",
+   "tr": "St. John's"
+  },
+  "population": 101489
+ },
+ "ar": {
+  "capital": {
+   "en": "Buenos Aires",
+   "tr": "Buenos Aires"
+  },
+  "population": 47327407
+ },
+ "am": {
+  "capital": {
+   "en": "Yerevan",
+   "tr": "Erivan"
+  },
+  "population": 2930450
+ },
+ "au": {
+  "capital": {
+   "en": "Canberra",
+   "tr": "Canberra"
+  },
+  "population": 27614411
+ },
+ "at": {
+  "capital": {
+   "en": "Vienna",
+   "tr": "Viyana"
+  },
+  "population": 8979894
+ },
+ "az": {
+  "capital": {
+   "en": "Baku",
+   "tr": "Bakü"
+  },
+  "population": 10180770
+ },
+ "bs": {
+  "capital": {
+   "en": "Nassau",
+   "tr": "Nassau"
+  },
+  "population": 399440
+ },
+ "bh": {
+  "capital": {
+   "en": "Manama",
+   "tr": "Mename"
+  },
+  "population": 2700000
+ },
+ "bd": {
+  "capital": {
+   "en": "Dhaka",
+   "tr": "Dakka"
+  },
+  "population": 175686899
+ },
+ "bb": {
+  "capital": {
+   "en": "Bridgetown",
+   "tr": "Bridgetown"
+  },
+  "population": 303431
+ },
+ "by": {
+  "capital": {
+   "en": "Minsk",
+   "tr": "Minsk"
+  },
+  "population": 9056080
+ },
+ "be": {
+  "capital": {
+   "en": "Brussels",
+   "tr": "Brüksel Şehri"
+  },
+  "population": 11825551
+ },
+ "bz": {
+  "capital": {
+   "en": "Belmopan",
+   "tr": "Belmopán"
+  },
+  "population": 411106
+ },
+ "bj": {
+  "capital": {
+   "en": "Porto-Novo",
+   "tr": "Porto-Novo"
+  },
+  "population": 14111034,
+  "also": [
+   {
+    "en": "Cotonou",
+    "tr": "Cotonou"
+   }
+  ]
+ },
+ "bt": {
+  "capital": {
+   "en": "Thimphu",
+   "tr": "Thimphu"
+  },
+  "population": 796682
+ },
+ "bo": {
+  "capital": {
+   "en": "Sucre",
+   "tr": "Sucre"
+  },
+  "population": 12244159,
+  "also": [
+   {
+    "en": "La Paz",
+    "tr": "La Paz"
+   }
+  ]
+ },
+ "ba": {
+  "capital": {
+   "en": "Sarajevo",
+   "tr": "Saraybosna"
+  },
+  "population": 3816459
+ },
+ "bw": {
+  "capital": {
+   "en": "Gaborone",
+   "tr": "Gaborone"
+  },
+  "population": 2480244
+ },
+ "br": {
+  "capital": {
+   "en": "Brasília",
+   "tr": "Brasília"
+  },
+  "population": 214211951
+ },
+ "bn": {
+  "capital": {
+   "en": "Bandar Seri Begawan",
+   "tr": "Bandar Seri Begavan"
+  },
+  "population": 458949
+ },
+ "bg": {
+  "capital": {
+   "en": "Sofia",
+   "tr": "Sofya"
+  },
+  "population": 6423207
+ },
+ "bf": {
+  "capital": {
+   "en": "Ouagadougou",
+   "tr": "Ouagadougou"
+  },
+  "population": 23025776
+ },
+ "bi": {
+  "capital": {
+   "en": "Gitega",
+   "tr": "Gietaga"
+  },
+  "population": 13689450
+ },
+ "cv": {
+  "capital": {
+   "en": "Praia",
+   "tr": "Praia"
+  },
+  "population": 555988
+ },
+ "kh": {
+  "capital": {
+   "en": "Phnom Penh",
+   "tr": "Phnom Penh"
+  },
+  "population": 17423880
+ },
+ "cm": {
+  "capital": {
+   "en": "Yaoundé",
+   "tr": "Yaunde"
+  },
+  "population": 28372687
+ },
+ "ca": {
+  "capital": {
+   "en": "Ottawa",
+   "tr": "Ottawa"
+  },
+  "population": 41798407
+ },
+ "cf": {
+  "capital": {
+   "en": "Bangui",
+   "tr": "Bangui"
+  },
+  "population": 5152421
+ },
+ "td": {
+  "capital": {
+   "en": "N'Djamena",
+   "tr": "Encemine"
+  },
+  "population": 19319064
+ },
+ "cl": {
+  "capital": {
+   "en": "Santiago",
+   "tr": "Santiago"
+  },
+  "population": 19458000
+ },
+ "cn": {
+  "capital": {
+   "en": "Beijing",
+   "tr": "Pekin"
+  },
+  "population": 1419321278
+ },
+ "co": {
+  "capital": {
+   "en": "Bogotá",
+   "tr": "Bogotá"
+  },
+  "population": 52321152
+ },
+ "km": {
+  "capital": {
+   "en": "Moroni",
+   "tr": "Moroni"
+  },
+  "population": 900000
+ },
+ "cg": {
+  "capital": {
+   "en": "Brazzaville",
+   "tr": "Brazzaville"
+  },
+  "population": 6278845
+ },
+ "cd": {
+  "capital": {
+   "en": "Kinshasa",
+   "tr": "Kinşasa"
+  },
+  "population": 105789731
+ },
+ "cr": {
+  "capital": {
+   "en": "San José",
+   "tr": "San José"
+  },
+  "population": 5265575
+ },
+ "ci": {
+  "capital": {
+   "en": "Yamoussoukro",
+   "tr": "Yamoussoukro"
+  },
+  "population": 31165654
+ },
+ "hr": {
+  "capital": {
+   "en": "Zagreb",
+   "tr": "Zagreb"
+  },
+  "population": 3871833
+ },
+ "cu": {
+  "capital": {
+   "en": "Havana",
+   "tr": "Havana"
+  },
+  "population": 10985974
+ },
+ "cy": {
+  "capital": {
+   "en": "Nicosia",
+   "tr": "Lefkoşa"
+  },
+  "population": 1344976
+ },
+ "cz": {
+  "capital": {
+   "en": "Prague",
+   "tr": "Prag"
+  },
+  "population": 10909500
+ },
+ "dk": {
+  "capital": {
+   "en": "Copenhagen",
+   "tr": "Kopenhag"
+  },
+  "population": 5822863
+ },
+ "dj": {
+  "capital": {
+   "en": "Djibouti",
+   "tr": "Cibuti"
+  },
+  "population": 1000000
+ },
+ "dm": {
+  "capital": {
+   "en": "Roseau",
+   "tr": "Roseau"
+  },
+  "population": 74656
+ },
+ "do": {
+  "capital": {
+   "en": "Santo Domingo",
+   "tr": "Santo Domingo"
+  },
+  "population": 10760028
+ },
+ "ec": {
+  "capital": {
+   "en": "Quito",
+   "tr": "Quito"
+  },
+  "population": 16938986
+ },
+ "eg": {
+  "capital": {
+   "en": "Cairo",
+   "tr": "Kahire"
+  },
+  "population": 114500000
+ },
+ "sv": {
+  "capital": {
+   "en": "San Salvador",
+   "tr": "San Salvador"
+  },
+  "population": 6029976
+ },
+ "gq": {
+  "capital": {
+   "en": "Ciudad de la Paz",
+   "tr": "Ciudad de la Paz"
+  },
+  "population": 1847549
+ },
+ "er": {
+  "capital": {
+   "en": "Asmara",
+   "tr": "Asmara"
+  },
+  "population": 3497000
+ },
+ "ee": {
+  "capital": {
+   "en": "Tallinn",
+   "tr": "Tallinn"
+  },
+  "population": 1369995
+ },
+ "sz": {
+  "capital": {
+   "en": "Mbabane",
+   "tr": "Mbabane"
+  },
+  "population": 1230506,
+  "also": [
+   {
+    "en": "Lobamba",
+    "tr": "Lobamba"
+   }
+  ]
+ },
+ "et": {
+  "capital": {
+   "en": "Addis Ababa",
+   "tr": "Addis Ababa"
+  },
+  "population": 128691692
+ },
+ "fj": {
+  "capital": {
+   "en": "Suva",
+   "tr": "Suva"
+  },
+  "population": 926276
+ },
+ "fi": {
+  "capital": {
+   "en": "Helsinki",
+   "tr": "Helsinki"
+  },
+  "population": 5652881
+ },
+ "fr": {
+  "capital": {
+   "en": "Paris",
+   "tr": "Paris"
+  },
+  "population": 68605616
+ },
+ "ga": {
+  "capital": {
+   "en": "Libreville",
+   "tr": "Libreville"
+  },
+  "population": 2300000
+ },
+ "gm": {
+  "capital": {
+   "en": "Banjul",
+   "tr": "Banjul"
+  },
+  "population": 2639916
+ },
+ "ge": {
+  "capital": {
+   "en": "Tbilisi",
+   "tr": "Tiflis"
+  },
+  "population": 3929581
+ },
+ "de": {
+  "capital": {
+   "en": "Berlin",
+   "tr": "Berlin"
+  },
+  "population": 83467117
+ },
+ "gh": {
+  "capital": {
+   "en": "Accra",
+   "tr": "Akra"
+  },
+  "population": 32833031
+ },
+ "gr": {
+  "capital": {
+   "en": "Athens",
+   "tr": "Atina"
+  },
+  "population": 10566531
+ },
+ "gd": {
+  "capital": {
+   "en": "St. George's",
+   "tr": "Saint George's"
+  },
+  "population": 114299
+ },
+ "gt": {
+  "capital": {
+   "en": "Guatemala City",
+   "tr": "Guatemala"
+  },
+  "population": 17263239
+ },
+ "gn": {
+  "capital": {
+   "en": "Conakry",
+   "tr": "Konakri"
+  },
+  "population": 17521167
+ },
+ "gw": {
+  "capital": {
+   "en": "Bissau",
+   "tr": "Bissau"
+  },
+  "population": 1861283
+ },
+ "gy": {
+  "capital": {
+   "en": "Georgetown",
+   "tr": "Georgetown"
+  },
+  "population": 878674
+ },
+ "ht": {
+  "capital": {
+   "en": "Port-au-Prince",
+   "tr": "Port-au-Prince"
+  },
+  "population": 10981229
+ },
+ "hn": {
+  "capital": {
+   "en": "Tegucigalpa",
+   "tr": "Tegucigalpa"
+  },
+  "population": 11002356
+ },
+ "hu": {
+  "capital": {
+   "en": "Budapest",
+   "tr": "Budapeşte"
+  },
+  "population": 9489000
+ },
+ "is": {
+  "capital": {
+   "en": "Reykjavík",
+   "tr": "Reykjavík"
+  },
+  "population": 376248
+ },
+ "in": {
+  "capital": {
+   "en": "New Delhi",
+   "tr": "Yeni Delhi"
+  },
+  "population": 1450935791
+ },
+ "id": {
+  "capital": {
+   "en": "Jakarta",
+   "tr": "Cakarta"
+  },
+  "population": 283487931
+ },
+ "ir": {
+  "capital": {
+   "en": "Tehran",
+   "tr": "Tahran"
+  },
+  "population": 92417700
+ },
+ "iq": {
+  "capital": {
+   "en": "Baghdad",
+   "tr": "Bağdat"
+  },
+  "population": 43500000
+ },
+ "ie": {
+  "capital": {
+   "en": "Dublin",
+   "tr": "Dublin"
+  },
+  "population": 5149139
+ },
+ "il": {
+  "capital": {
+   "en": "Jerusalem",
+   "tr": "Kudüs"
+  },
+  "population": 9840000
+ },
+ "it": {
+  "capital": {
+   "en": "Rome",
+   "tr": "Roma"
+  },
+  "population": 58850717
+ },
+ "jm": {
+  "capital": {
+   "en": "Kingston",
+   "tr": "Kingston"
+  },
+  "population": 2734093
+ },
+ "jp": {
+  "capital": {
+   "en": "Tokyo",
+   "tr": "Tokyo"
+  },
+  "population": 123802000
+ },
+ "jo": {
+  "capital": {
+   "en": "Amman",
+   "tr": "Amman"
+  },
+  "population": 11300000
+ },
+ "kz": {
+  "capital": {
+   "en": "Astana",
+   "tr": "Astana"
+  },
+  "population": 20139914
+ },
+ "ke": {
+  "capital": {
+   "en": "Nairobi",
+   "tr": "Nairobi"
+  },
+  "population": 47564296
+ },
+ "ki": {
+  "capital": {
+   "en": "South Tarawa",
+   "tr": "Güney Tarava"
+  },
+  "population": 134518
+ },
+ "kp": {
+  "capital": {
+   "en": "Pyongyang",
+   "tr": "Pyongyang"
+  },
+  "population": 26418204
+ },
+ "kr": {
+  "capital": {
+   "en": "Seoul",
+   "tr": "Seul"
+  },
+  "population": 51628117
+ },
+ "kw": {
+  "capital": {
+   "en": "Kuwait City",
+   "tr": "Kuveyt"
+  },
+  "population": 4300000
+ },
+ "kg": {
+  "capital": {
+   "en": "Bishkek",
+   "tr": "Bişkek"
+  },
+  "population": 7281800
+ },
+ "la": {
+  "capital": {
+   "en": "Vientiane",
+   "tr": "Vientiane"
+  },
+  "population": 6858160
+ },
+ "lv": {
+  "capital": {
+   "en": "Riga",
+   "tr": "Riga"
+  },
+  "population": 1845096
+ },
+ "lb": {
+  "capital": {
+   "en": "Beirut",
+   "tr": "Beyrut"
+  },
+  "population": 5300000
+ },
+ "ls": {
+  "capital": {
+   "en": "Maseru",
+   "tr": "Maseru"
+  },
+  "population": 2233339
+ },
+ "lr": {
+  "capital": {
+   "en": "Monrovia",
+   "tr": "Monrovia"
+  },
+  "population": 5214030
+ },
+ "ly": {
+  "capital": {
+   "en": "Tripoli",
+   "tr": "Trablus"
+  },
+  "population": 7100000
+ },
+ "li": {
+  "capital": {
+   "en": "Vaduz",
+   "tr": "Vaduz"
+  },
+  "population": 38020
+ },
+ "lt": {
+  "capital": {
+   "en": "Vilnius",
+   "tr": "Vilnius"
+  },
+  "population": 2860002
+ },
+ "lu": {
+  "capital": {
+   "en": "Luxembourg",
+   "tr": "Lüksemburg"
+  },
+  "population": 690959
+ },
+ "mg": {
+  "capital": {
+   "en": "Antananarivo",
+   "tr": "Antananarivo"
+  },
+  "population": 31964956
+ },
+ "mw": {
+  "capital": {
+   "en": "Lilongwe",
+   "tr": "Lilongwe"
+  },
+  "population": 17563749
+ },
+ "my": {
+  "capital": {
+   "en": "Kuala Lumpur",
+   "tr": "Kuala Lumpur"
+  },
+  "population": 34231700,
+  "also": [
+   {
+    "en": "Putrajaya",
+    "tr": "Putrajaya"
+   }
+  ]
+ },
+ "mv": {
+  "capital": {
+   "en": "Malé",
+   "tr": "Malé"
+  },
+  "population": 436330
+ },
+ "ml": {
+  "capital": {
+   "en": "Bamako",
+   "tr": "Bamako"
+  },
+  "population": 22395489
+ },
+ "mt": {
+  "capital": {
+   "en": "Valletta",
+   "tr": "Valletta"
+  },
+  "population": 553214
+ },
+ "mh": {
+  "capital": {
+   "en": "Majuro",
+   "tr": "Majuro"
+  },
+  "population": 54366
+ },
+ "mr": {
+  "capital": {
+   "en": "Nouakchott",
+   "tr": "Nuakşot"
+  },
+  "population": 4900000
+ },
+ "mu": {
+  "capital": {
+   "en": "Port Louis",
+   "tr": "Port Louis"
+  },
+  "population": 1264613
+ },
+ "mx": {
+  "capital": {
+   "en": "Mexico City",
+   "tr": "Meksiko"
+  },
+  "population": 132274416
+ },
+ "fm": {
+  "capital": {
+   "en": "Palikir",
+   "tr": "Palikir"
+  },
+  "population": 75817
+ },
+ "md": {
+  "capital": {
+   "en": "Chișinău",
+   "tr": "Kişinev"
+  },
+  "population": 2409207
+ },
+ "mc": {
+  "capital": {
+   "en": "Monaco",
+   "tr": "Monako"
+  },
+  "population": 38857
+ },
+ "mn": {
+  "capital": {
+   "en": "Ulaanbaatar",
+   "tr": "Ulan Batur"
+  },
+  "population": 3409939
+ },
+ "me": {
+  "capital": {
+   "en": "Podgorica",
+   "tr": "Podgorica"
+  },
+  "population": 617213
+ },
+ "ma": {
+  "capital": {
+   "en": "Rabat",
+   "tr": "Rabat"
+  },
+  "population": 38300000
+ },
+ "mz": {
+  "capital": {
+   "en": "Maputo",
+   "tr": "Maputo"
+  },
+  "population": 29668834
+ },
+ "mm": {
+  "capital": {
+   "en": "Naypyidaw",
+   "tr": "Naypyidaw"
+  },
+  "population": 53370609
+ },
+ "na": {
+  "capital": {
+   "en": "Windhoek",
+   "tr": "Windhoek"
+  },
+  "population": 2533794
+ },
+ "nr": {
+  "capital": {
+   "en": "Yaren District",
+   "tr": "Yaren"
+  },
+  "population": 13650
+ },
+ "np": {
+  "capital": {
+   "en": "Kathmandu",
+   "tr": "Katmandu"
+  },
+  "population": 29164578
+ },
+ "nl": {
+  "capital": {
+   "en": "Amsterdam",
+   "tr": "Amsterdam"
+  },
+  "population": 17100715
+ },
+ "nz": {
+  "capital": {
+   "en": "Wellington",
+   "tr": "Wellington"
+  },
+  "population": 5307800
+ },
+ "ni": {
+  "capital": {
+   "en": "Managua",
+   "tr": "Managua"
+  },
+  "population": 7005764
+ },
+ "ne": {
+  "capital": {
+   "en": "Niamey",
+   "tr": "Niamey"
+  },
+  "population": 21477348
+ },
+ "ng": {
+  "capital": {
+   "en": "Abuja",
+   "tr": "Abuja"
+  },
+  "population": 227882945
+ },
+ "mk": {
+  "capital": {
+   "en": "Skopje",
+   "tr": "Üsküp"
+  },
+  "population": 1836713
+ },
+ "no": {
+  "capital": {
+   "en": "Oslo",
+   "tr": "Oslo"
+  },
+  "population": 5627400
+ },
+ "om": {
+  "capital": {
+   "en": "Muscat",
+   "tr": "Maskat"
+  },
+  "population": 5100000
+ },
+ "pk": {
+  "capital": {
+   "en": "Islamabad",
+   "tr": "İslamabad"
+  },
+  "population": 251269164
+ },
+ "pw": {
+  "capital": {
+   "en": "Ngerulmud",
+   "tr": "Ngerulmud"
+  },
+  "population": 21729
+ },
+ "pa": {
+  "capital": {
+   "en": "Panama City",
+   "tr": "Panama"
+  },
+  "population": 4570133
+ },
+ "pg": {
+  "capital": {
+   "en": "Port Moresby",
+   "tr": "Port Moresby"
+  },
+  "population": 8935000
+ },
+ "py": {
+  "capital": {
+   "en": "Asunción",
+   "tr": "Asunción"
+  },
+  "population": 6811297
+ },
+ "pe": {
+  "capital": {
+   "en": "Lima",
+   "tr": "Lima"
+  },
+  "population": 34157732
+ },
+ "ph": {
+  "capital": {
+   "en": "Manila",
+   "tr": "Manila"
+  },
+  "population": 112729484
+ },
+ "pl": {
+  "capital": {
+   "en": "Warsaw",
+   "tr": "Varşova"
+  },
+  "population": 37563071
+ },
+ "pt": {
+  "capital": {
+   "en": "Lisbon",
+   "tr": "Lizbon"
+  },
+  "population": 10347892
+ },
+ "qa": {
+  "capital": {
+   "en": "Doha",
+   "tr": "Doha"
+  },
+  "population": 2639211
+ },
+ "ro": {
+  "capital": {
+   "en": "Bucharest",
+   "tr": "Bükreş"
+  },
+  "population": 19053815
+ },
+ "ru": {
+  "capital": {
+   "en": "Moscow",
+   "tr": "Moskova"
+  },
+  "population": 146119928
+ },
+ "rw": {
+  "capital": {
+   "en": "Kigali",
+   "tr": "Kigali"
+  },
+  "population": 14569341
+ },
+ "kn": {
+  "capital": {
+   "en": "Basseterre",
+   "tr": "Basseterre"
+  },
+  "population": 46922
+ },
+ "lc": {
+  "capital": {
+   "en": "Castries",
+   "tr": "Castries"
+  },
+  "population": 167591
+ },
+ "vc": {
+  "capital": {
+   "en": "Kingstown",
+   "tr": "Kingstown"
+  },
+  "population": 109296
+ },
+ "ws": {
+  "capital": {
+   "en": "Apia",
+   "tr": "Apia"
+  },
+  "population": 200010
+ },
+ "sm": {
+  "capital": {
+   "en": "San Marino",
+   "tr": "San Marino"
+  },
+  "population": 34167
+ },
+ "st": {
+  "capital": {
+   "en": "São Tomé",
+   "tr": "São Tomé"
+  },
+  "population": 204327
+ },
+ "sa": {
+  "capital": {
+   "en": "Riyadh",
+   "tr": "Riyad"
+  },
+  "population": 33000000
+ },
+ "sn": {
+  "capital": {
+   "en": "Dakar",
+   "tr": "Dakar"
+  },
+  "population": 18100000
+ },
+ "rs": {
+  "capital": {
+   "en": "Belgrade",
+   "tr": "Belgrad"
+  },
+  "population": 6605168
+ },
+ "sc": {
+  "capital": {
+   "en": "Victoria",
+   "tr": "Victoria"
+  },
+  "population": 119773
+ },
+ "sl": {
+  "capital": {
+   "en": "Freetown",
+   "tr": "Freetown"
+  },
+  "population": 7557212
+ },
+ "sg": {
+  "capital": {
+   "en": "Singapore",
+   "tr": "Singapur"
+  },
+  "population": 5866139
+ },
+ "sk": {
+  "capital": {
+   "en": "Bratislava",
+   "tr": "Bratislava"
+  },
+  "population": 5409407
+ },
+ "si": {
+  "capital": {
+   "en": "Ljubljana",
+   "tr": "Ljubljana"
+  },
+  "population": 2116972
+ },
+ "sb": {
+  "capital": {
+   "en": "Honiara",
+   "tr": "Honiara"
+  },
+  "population": 611343
+ },
+ "so": {
+  "capital": {
+   "en": "Mogadishu",
+   "tr": "Mogadişu"
+  },
+  "population": 18100000
+ },
+ "za": {
+  "capital": {
+   "en": "Pretoria",
+   "tr": "Pretoria"
+  },
+  "population": 62027503,
+  "also": [
+   {
+    "en": "Cape Town",
+    "tr": "Kap Şehri"
+   },
+   {
+    "en": "Bloemfontein",
+    "tr": "Bloemfontein"
+   }
+  ]
+ },
+ "ss": {
+  "capital": {
+   "en": "Juba",
+   "tr": "Cuba"
+  },
+  "population": 12575714
+ },
+ "es": {
+  "capital": {
+   "en": "Madrid",
+   "tr": "Madrid"
+  },
+  "population": 48592909
+ },
+ "lk": {
+  "capital": {
+   "en": "Sri Jayawardenepura Kotte",
+   "tr": "Sri Jayawardenapura-Kotte"
+  },
+  "population": 22037000,
+  "also": [
+   {
+    "en": "Colombo",
+    "tr": "Kolombo"
+   }
+  ]
+ },
+ "sd": {
+  "capital": {
+   "en": "Khartoum",
+   "tr": "Hartum"
+  },
+  "population": 48945000
+ },
+ "sr": {
+  "capital": {
+   "en": "Paramaribo",
+   "tr": "Paramaribo"
+  },
+  "population": 563402
+ },
+ "se": {
+  "capital": {
+   "en": "Stockholm",
+   "tr": "Stockholm"
+  },
+  "population": 10609460
+ },
+ "ch": {
+  "capital": {
+   "en": "Bern",
+   "tr": "Bern"
+  },
+  "population": 9104063
+ },
+ "sy": {
+  "capital": {
+   "en": "Damascus",
+   "tr": "Şam"
+  },
+  "population": 23000000
+ },
+ "tj": {
+  "capital": {
+   "en": "Dushanbe",
+   "tr": "Duşanbe"
+  },
+  "population": 9504000
+ },
+ "tz": {
+  "capital": {
+   "en": "Dodoma",
+   "tr": "Dodoma"
+  },
+  "population": 61741120
+ },
+ "th": {
+  "capital": {
+   "en": "Bangkok",
+   "tr": "Bangkok"
+  },
+  "population": 66188503
+ },
+ "tl": {
+  "capital": {
+   "en": "Dili",
+   "tr": "Dili"
+  },
+  "population": 1400638
+ },
+ "tg": {
+  "capital": {
+   "en": "Lomé",
+   "tr": "Lomé"
+  },
+  "population": 12400000
+ },
+ "to": {
+  "capital": {
+   "en": "Nukuʻalofa",
+   "tr": "Nuku'alofa"
+  },
+  "population": 105697
+ },
+ "tt": {
+  "capital": {
+   "en": "Port of Spain",
+   "tr": "Port of Spain"
+  },
+  "population": 1369125
+ },
+ "tn": {
+  "capital": {
+   "en": "Tunis",
+   "tr": "Tunus"
+  },
+  "population": 37100000
+ },
+ "tr": {
+  "capital": {
+   "en": "Ankara",
+   "tr": "Ankara"
+  },
+  "population": 85372377
+ },
+ "tm": {
+  "capital": {
+   "en": "Ashgabat",
+   "tr": "Aşkabat"
+  },
+  "population": 6117933
+ },
+ "tv": {
+  "capital": {
+   "en": "Funafuti",
+   "tr": "Funafuti"
+  },
+  "population": 10643
+ },
+ "ug": {
+  "capital": {
+   "en": "Kampala",
+   "tr": "Kampala"
+  },
+  "population": 47123531
+ },
+ "ua": {
+  "capital": {
+   "en": "Kyiv",
+   "tr": "Kiev"
+  },
+  "population": 41167335
+ },
+ "ae": {
+  "capital": {
+   "en": "Abu Dhabi",
+   "tr": "Abu Dabi"
+  },
+  "population": 10100000
+ },
+ "gb": {
+  "capital": {
+   "en": "London",
+   "tr": "Londra"
+  },
+  "population": 67326569
+ },
+ "us": {
+  "capital": {
+   "en": "Washington, D.C.",
+   "tr": "Washington"
+  },
+  "population": 345426571
+ },
+ "uy": {
+  "capital": {
+   "en": "Montevideo",
+   "tr": "Montevideo"
+  },
+  "population": 3444263
+ },
+ "uz": {
+  "capital": {
+   "en": "Tashkent",
+   "tr": "Taşkent"
+  },
+  "population": 34915100
+ },
+ "vu": {
+  "capital": {
+   "en": "Port Vila",
+   "tr": "Port Vila"
+  },
+  "population": 300019
+ },
+ "ve": {
+  "capital": {
+   "en": "Caracas",
+   "tr": "Caracas"
+  },
+  "population": 31250306
+ },
+ "vn": {
+  "capital": {
+   "en": "Hanoi",
+   "tr": "Hanoi"
+  },
+  "population": 96208984
+ },
+ "ye": {
+  "capital": {
+   "en": "Sanaa",
+   "tr": "Sana'a"
+  },
+  "population": 34400000,
+  "also": [
+   {
+    "en": "Aden",
+    "tr": "Aden"
+   }
+  ]
+ },
+ "zm": {
+  "capital": {
+   "en": "Lusaka",
+   "tr": "Lusaka"
+  },
+  "population": 19610769
+ },
+ "zw": {
+  "capital": {
+   "en": "Harare",
+   "tr": "Harare"
+  },
+  "population": 15178979
+ }
+}

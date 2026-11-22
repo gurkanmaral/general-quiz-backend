@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { DailyMergeResponseSchema, ProblemSchema, type DailyPlay } from '@general-quiz/contracts';
 import { rotationSlug } from '@general-quiz/shared';
-import schedule from '../../../content/daily/schedule.json';
+import schedule from '../content/daily/schedule.json';
 import { importContent } from '../src/modules/content';
 import { openTestDatabase } from './db';
 import { createSignedInUser, createTestApp, jsonRequest } from './auth';
@@ -9,7 +9,7 @@ import { createSignedInUser, createTestApp, jsonRequest } from './auth';
 const database = openTestDatabase();
 const NOW = new Date('2026-11-16T12:00:00Z');
 const { app, mailer } = createTestApp(database.db, { now: () => NOW });
-const CONTENT_DIR = new URL('../../../content', import.meta.url).pathname;
+const CONTENT_DIR = new URL('../content', import.meta.url).pathname;
 let cookie = '';
 
 beforeAll(async () => {

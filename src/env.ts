@@ -5,9 +5,7 @@ import { z } from 'zod';
 const API_ROOT = fileURLToPath(new URL('..', import.meta.url));
 /** Local dev default, so a fresh clone runs without a `.env`; production must set DATABASE_URL. */
 export const DEFAULT_DATABASE_URL = 'postgres://postgres@localhost:5432/kno';
-export const DEFAULT_CONTENT_DIR = fileURLToPath(new URL('../../../content', import.meta.url));
-/** The built web app (`apps/web/dist`), served by the API in production. Same depth from src/ and dist/. */
-export const DEFAULT_WEB_DIR = fileURLToPath(new URL('../../web/dist', import.meta.url));
+export const DEFAULT_CONTENT_DIR = fileURLToPath(new URL('../content', import.meta.url));
 
 /** The Vite dev server (same origin as the API through its `/api` proxy). */
 export const DEFAULT_AUTH_URL = 'http://localhost:5180';
@@ -35,7 +33,7 @@ const EnvSchema = z.object({
   /** Sends sign-in emails through Resend when set; otherwise links are only logged (dev). */
   RESEND_API_KEY: optionalText,
   MAIL_FROM: z.string().min(3).default('KNO. <no-reply@kno.example>'),
-  /** Serve the built web app from this folder; defaults to apps/web/dist in production. */
+  /** Optionally serve a built web app (the general-quiz repo's apps/web/dist) from this folder on the same origin. */
   WEB_DIR: optionalText,
   /** Run migrations and `kno import` on start (behind an advisory lock); defaults to on in production. */
   IMPORT_ON_START: z.enum(['true', 'false']).optional(),
@@ -71,7 +69,7 @@ export function parseEnv(source: Record<string, string | undefined>): Env {
 
 let cached: Env | undefined;
 
-/** Reads `apps/api/.env` (if present) into process.env, then validates. Variables already set win. */
+/** Reads `.env` (if present) into process.env, then validates. Variables already set win. */
 export function loadEnv(): Env {
   if (cached) return cached;
   const file = `${API_ROOT}.env`;

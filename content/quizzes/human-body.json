@@ -1,0 +1,677 @@
+{
+  "slug": "human-body",
+  "status": "published",
+  "kind": "quiz",
+  "category": "Science",
+  "theme": "cyan",
+  "title": {
+    "en": "The Human Body"
+  },
+  "description": {
+    "en": "Bones, blood and the brain: how you work."
+  },
+  "expertShare": 0.3,
+  "badges": [
+    {
+      "slug": "body-anatomy-ace",
+      "status": "published",
+      "name": {
+        "en": "Anatomy Ace"
+      },
+      "description": {
+        "en": "Answered 80% of The Human Body quiz correctly."
+      },
+      "icon": "🫀",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.8
+      }
+    }
+  ],
+  "titles": [
+    {
+      "slug": "body-surgeon",
+      "status": "published",
+      "name": {
+        "en": "Surgeon"
+      },
+      "description": {
+        "en": "Every Expert question answered correctly."
+      },
+      "icon": "🩺",
+      "unlock": {
+        "type": "allCorrect",
+        "difficulty": "expert"
+      }
+    },
+    {
+      "slug": "body-medic",
+      "status": "published",
+      "name": {
+        "en": "Medic"
+      },
+      "description": {
+        "en": "Half of the quiz answered correctly."
+      },
+      "icon": "🩹",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.5
+      }
+    }
+  ],
+  "questions": [
+    {
+      "slug": "body-largest-organ",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Organs"
+      },
+      "text": {
+        "en": "What is the largest organ of the human body?"
+      },
+      "options": [
+        {
+          "en": "Liver"
+        },
+        {
+          "en": "Skin"
+        },
+        {
+          "en": "Brain"
+        },
+        {
+          "en": "Lungs"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "The skin."
+      },
+      "summary": {
+        "en": "It covers about two square metres in an adult and protects the body from water loss, germs and sunlight."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Layers"
+          },
+          "value": {
+            "en": "3"
+          },
+          "detail": {
+            "en": "Epidermis, dermis and hypodermis."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Skin"
+        },
+        "url": "https://en.wikipedia.org/wiki/Skin"
+      }
+    },
+    {
+      "slug": "body-heart-chambers",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The heart"
+      },
+      "text": {
+        "en": "How many chambers does the human heart have?"
+      },
+      "options": [
+        {
+          "en": "2"
+        },
+        {
+          "en": "3"
+        },
+        {
+          "en": "4"
+        },
+        {
+          "en": "6"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Four."
+      },
+      "summary": {
+        "en": "Two atria receive blood and two ventricles pump it out, to the lungs and to the rest of the body."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Beats"
+          },
+          "value": {
+            "en": "~100,000 a day"
+          },
+          "detail": {
+            "en": "At a resting rate of about 70 per minute."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Heart"
+        },
+        "url": "https://en.wikipedia.org/wiki/Heart"
+      }
+    },
+    {
+      "slug": "body-oxygen-cells",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Blood"
+      },
+      "text": {
+        "en": "Which blood cells carry oxygen around the body?"
+      },
+      "options": [
+        {
+          "en": "White blood cells"
+        },
+        {
+          "en": "Platelets"
+        },
+        {
+          "en": "Red blood cells"
+        },
+        {
+          "en": "Plasma cells"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Red blood cells."
+      },
+      "summary": {
+        "en": "They are packed with haemoglobin, a protein that binds oxygen in the lungs and releases it in the tissues."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Colour"
+          },
+          "value": {
+            "en": "Haemoglobin"
+          },
+          "detail": {
+            "en": "Its iron makes blood red."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Red blood cell"
+        },
+        "url": "https://en.wikipedia.org/wiki/Red_blood_cell"
+      }
+    },
+    {
+      "slug": "body-bones",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Skeleton"
+      },
+      "text": {
+        "en": "How many bones does a typical adult human have?"
+      },
+      "options": [
+        {
+          "en": "106"
+        },
+        {
+          "en": "206"
+        },
+        {
+          "en": "306"
+        },
+        {
+          "en": "406"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "206."
+      },
+      "summary": {
+        "en": "Babies are born with around 270 bones; many fuse together as they grow."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "At birth"
+          },
+          "value": {
+            "en": "~270"
+          },
+          "detail": {
+            "en": "Some fuse during growth."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Human skeleton"
+        },
+        "url": "https://en.wikipedia.org/wiki/Human_skeleton"
+      }
+    },
+    {
+      "slug": "body-insulin",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Hormones"
+      },
+      "text": {
+        "en": "Which organ produces insulin?"
+      },
+      "options": [
+        {
+          "en": "Liver"
+        },
+        {
+          "en": "Kidney"
+        },
+        {
+          "en": "Pancreas"
+        },
+        {
+          "en": "Stomach"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "The pancreas."
+      },
+      "summary": {
+        "en": "Beta cells in the pancreas release insulin, which lets cells take up sugar from the blood."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Cells"
+          },
+          "value": {
+            "en": "Beta cells"
+          },
+          "detail": {
+            "en": "In the islets of Langerhans."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Insulin"
+        },
+        "url": "https://en.wikipedia.org/wiki/Insulin"
+      }
+    },
+    {
+      "slug": "body-smallest-bone",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Tiny parts"
+      },
+      "text": {
+        "en": "Where is the smallest bone in the human body?"
+      },
+      "options": [
+        {
+          "en": "In the finger"
+        },
+        {
+          "en": "In the ear"
+        },
+        {
+          "en": "In the nose"
+        },
+        {
+          "en": "In the toe"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "In the middle ear."
+      },
+      "summary": {
+        "en": "The stapes, or stirrup, is about 3 mm long and passes sound vibrations to the inner ear."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Name"
+          },
+          "value": {
+            "en": "Stapes"
+          },
+          "detail": {
+            "en": "Shaped like a stirrup."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Stapes"
+        },
+        "url": "https://en.wikipedia.org/wiki/Stapes"
+      }
+    },
+    {
+      "slug": "body-alveoli",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Breathing"
+      },
+      "text": {
+        "en": "In which organ are the alveoli found?"
+      },
+      "options": [
+        {
+          "en": "Heart"
+        },
+        {
+          "en": "Lungs"
+        },
+        {
+          "en": "Kidneys"
+        },
+        {
+          "en": "Intestines"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "The lungs."
+      },
+      "summary": {
+        "en": "Alveoli are tiny air sacs where oxygen passes into the blood and carbon dioxide passes out."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Number"
+          },
+          "value": {
+            "en": "Hundreds of millions"
+          },
+          "detail": {
+            "en": "In a pair of adult lungs."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Pulmonary alveolus"
+        },
+        "url": "https://en.wikipedia.org/wiki/Pulmonary_alveolus"
+      }
+    },
+    {
+      "slug": "body-longest-bone",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Skeleton"
+      },
+      "text": {
+        "en": "What is the longest bone in the human body?"
+      },
+      "options": [
+        {
+          "en": "Humerus"
+        },
+        {
+          "en": "Tibia"
+        },
+        {
+          "en": "Femur"
+        },
+        {
+          "en": "Spine"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "The femur."
+      },
+      "summary": {
+        "en": "The thigh bone is also the strongest bone in the body, about a quarter of a person's height."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Location"
+          },
+          "value": {
+            "en": "Thigh"
+          },
+          "detail": {
+            "en": "From hip to knee."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Femur"
+        },
+        "url": "https://en.wikipedia.org/wiki/Femur"
+      }
+    },
+    {
+      "slug": "body-cerebellum",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "The brain"
+      },
+      "text": {
+        "en": "Which part of the brain mainly coordinates balance and fine movement?"
+      },
+      "options": [
+        {
+          "en": "Cerebrum"
+        },
+        {
+          "en": "Cerebellum"
+        },
+        {
+          "en": "Hypothalamus"
+        },
+        {
+          "en": "Medulla"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "The cerebellum."
+      },
+      "summary": {
+        "en": "Sitting at the back of the brain, it fine-tunes movement and posture and helps with learning motor skills."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Meaning"
+          },
+          "value": {
+            "en": "\"Little brain\""
+          },
+          "detail": {
+            "en": "In Latin."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Cerebellum"
+        },
+        "url": "https://en.wikipedia.org/wiki/Cerebellum"
+      }
+    },
+    {
+      "slug": "body-rbc-life",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Blood"
+      },
+      "text": {
+        "en": "About how long does a human red blood cell live?"
+      },
+      "options": [
+        {
+          "en": "12 days"
+        },
+        {
+          "en": "40 days"
+        },
+        {
+          "en": "120 days"
+        },
+        {
+          "en": "2 years"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "About 120 days."
+      },
+      "summary": {
+        "en": "Worn-out red cells are removed mainly by the spleen and liver, and the bone marrow makes millions of new ones every second."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Made in"
+          },
+          "value": {
+            "en": "Bone marrow"
+          },
+          "detail": {
+            "en": "Red marrow inside bones."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Red blood cell"
+        },
+        "url": "https://en.wikipedia.org/wiki/Red_blood_cell"
+      }
+    },
+    {
+      "slug": "body-vitamin-d",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Sunlight"
+      },
+      "text": {
+        "en": "Which vitamin does the skin make when exposed to sunlight?"
+      },
+      "options": [
+        {
+          "en": "Vitamin A"
+        },
+        {
+          "en": "Vitamin C"
+        },
+        {
+          "en": "Vitamin D"
+        },
+        {
+          "en": "Vitamin K"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Vitamin D."
+      },
+      "summary": {
+        "en": "Ultraviolet B light starts its production in the skin. It helps the body absorb calcium for healthy bones."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Needed for"
+          },
+          "value": {
+            "en": "Calcium"
+          },
+          "detail": {
+            "en": "Absorbing it from food."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Vitamin D"
+        },
+        "url": "https://en.wikipedia.org/wiki/Vitamin_D"
+      }
+    },
+    {
+      "slug": "body-pacemaker",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "The heart"
+      },
+      "text": {
+        "en": "What is the heart's natural pacemaker called?"
+      },
+      "options": [
+        {
+          "en": "Sinoatrial node"
+        },
+        {
+          "en": "Aortic valve"
+        },
+        {
+          "en": "Bundle of His"
+        },
+        {
+          "en": "Pericardium"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "The sinoatrial node."
+      },
+      "summary": {
+        "en": "This small cluster of cells in the right atrium sends the electrical signal that starts each heartbeat."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Location"
+          },
+          "value": {
+            "en": "Right atrium"
+          },
+          "detail": {
+            "en": "Near the top of the heart."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Sinoatrial node"
+        },
+        "url": "https://en.wikipedia.org/wiki/Sinoatrial_node"
+      }
+    }
+  ]
+}

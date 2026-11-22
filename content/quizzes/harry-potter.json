@@ -1,0 +1,677 @@
+{
+  "slug": "harry-potter",
+  "status": "published",
+  "kind": "quiz",
+  "category": "Books",
+  "theme": "crimson",
+  "title": {
+    "en": "Harry Potter"
+  },
+  "description": {
+    "en": "From the cupboard under the stairs to the Battle of Hogwarts."
+  },
+  "expertShare": 0.3,
+  "badges": [
+    {
+      "slug": "hp-hogwarts-graduate",
+      "status": "published",
+      "name": {
+        "en": "Hogwarts Graduate"
+      },
+      "description": {
+        "en": "Answered 80% of the Harry Potter quiz correctly."
+      },
+      "icon": "🎓",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.8
+      }
+    }
+  ],
+  "titles": [
+    {
+      "slug": "hp-dumbledore",
+      "status": "published",
+      "name": {
+        "en": "Dumbledore"
+      },
+      "description": {
+        "en": "Every Expert question answered correctly."
+      },
+      "icon": "🧙",
+      "unlock": {
+        "type": "allCorrect",
+        "difficulty": "expert"
+      }
+    },
+    {
+      "slug": "hp-hermione",
+      "status": "published",
+      "name": {
+        "en": "Hermione"
+      },
+      "description": {
+        "en": "Half of the quiz answered correctly."
+      },
+      "icon": "📚",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.5
+      }
+    }
+  ],
+  "questions": [
+    {
+      "slug": "hp-house",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The Sorting Hat"
+      },
+      "text": {
+        "en": "Which Hogwarts house is Harry sorted into?"
+      },
+      "options": [
+        {
+          "en": "Slytherin"
+        },
+        {
+          "en": "Gryffindor"
+        },
+        {
+          "en": "Ravenclaw"
+        },
+        {
+          "en": "Hufflepuff"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Harry is sorted into Gryffindor."
+      },
+      "summary": {
+        "en": "The Sorting Hat considers Slytherin, but Harry asks not to be put there and joins Gryffindor, the house known for courage."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Houses"
+          },
+          "value": {
+            "en": "4"
+          },
+          "detail": {
+            "en": "Gryffindor, Hufflepuff, Ravenclaw and Slytherin."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Hogwarts"
+        },
+        "url": "https://en.wikipedia.org/wiki/Hogwarts"
+      }
+    },
+    {
+      "slug": "hp-author",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The writer"
+      },
+      "text": {
+        "en": "Who wrote the Harry Potter books?"
+      },
+      "options": [
+        {
+          "en": "J. R. R. Tolkien"
+        },
+        {
+          "en": "Roald Dahl"
+        },
+        {
+          "en": "J. K. Rowling"
+        },
+        {
+          "en": "Philip Pullman"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "J. K. Rowling wrote the series."
+      },
+      "summary": {
+        "en": "Rowling began planning the story in 1990, on a delayed train from Manchester to London."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Main books"
+          },
+          "value": {
+            "en": "7"
+          },
+          "detail": {
+            "en": "Published from 1997 to 2007."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — J. K. Rowling"
+        },
+        "url": "https://en.wikipedia.org/wiki/J._K._Rowling"
+      }
+    },
+    {
+      "slug": "hp-seeker",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "On the pitch"
+      },
+      "text": {
+        "en": "Which position does Harry play in Quidditch?"
+      },
+      "options": [
+        {
+          "en": "Keeper"
+        },
+        {
+          "en": "Beater"
+        },
+        {
+          "en": "Chaser"
+        },
+        {
+          "en": "Seeker"
+        }
+      ],
+      "correctIndex": 3,
+      "answerTitle": {
+        "en": "Harry plays Seeker."
+      },
+      "summary": {
+        "en": "The Seeker's job is to catch the Golden Snitch, which ends the game. Harry becomes the youngest house player in a century."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Snitch"
+          },
+          "value": {
+            "en": "150 points"
+          },
+          "detail": {
+            "en": "Catching it usually decides the match."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Quidditch"
+        },
+        "url": "https://en.wikipedia.org/wiki/Quidditch"
+      }
+    },
+    {
+      "slug": "hp-platform",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "King's Cross"
+      },
+      "text": {
+        "en": "From which platform does the Hogwarts Express leave London?"
+      },
+      "options": [
+        {
+          "en": "Platform 7½"
+        },
+        {
+          "en": "Platform 9¾"
+        },
+        {
+          "en": "Platform 10"
+        },
+        {
+          "en": "Platform 11⅓"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Platform nine and three-quarters."
+      },
+      "summary": {
+        "en": "Students reach it by walking straight through the barrier between platforms 9 and 10 at King's Cross."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Station"
+          },
+          "value": {
+            "en": "King's Cross"
+          },
+          "detail": {
+            "en": "A sign for the platform now stands in the real station."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — King's Cross station"
+        },
+        "url": "https://en.wikipedia.org/wiki/King%27s_Cross_railway_station"
+      }
+    },
+    {
+      "slug": "hp-owl",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Post"
+      },
+      "text": {
+        "en": "What is the name of Harry's owl?"
+      },
+      "options": [
+        {
+          "en": "Errol"
+        },
+        {
+          "en": "Pigwidgeon"
+        },
+        {
+          "en": "Hedwig"
+        },
+        {
+          "en": "Hermes"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Harry's owl is Hedwig."
+      },
+      "summary": {
+        "en": "Hagrid buys the snowy owl for Harry as an eleventh-birthday present in Diagon Alley."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Species"
+          },
+          "value": {
+            "en": "Snowy owl"
+          },
+          "detail": {
+            "en": "A white Arctic owl."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Harry Potter (character)"
+        },
+        "url": "https://en.wikipedia.org/wiki/Harry_Potter_(character)"
+      }
+    },
+    {
+      "slug": "hp-books",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The series"
+      },
+      "text": {
+        "en": "How many books are in the main Harry Potter series?"
+      },
+      "options": [
+        {
+          "en": "5"
+        },
+        {
+          "en": "6"
+        },
+        {
+          "en": "7"
+        },
+        {
+          "en": "8"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "There are seven books."
+      },
+      "summary": {
+        "en": "The series runs from Philosopher's Stone (1997) to Deathly Hallows (2007), one book per school year."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Last book"
+          },
+          "value": {
+            "en": "2007"
+          },
+          "detail": {
+            "en": "Harry Potter and the Deathly Hallows."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Harry Potter"
+        },
+        "url": "https://en.wikipedia.org/wiki/Harry_Potter"
+      }
+    },
+    {
+      "slug": "hp-burrow",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "The Weasleys"
+      },
+      "text": {
+        "en": "What is the Weasley family's home called?"
+      },
+      "options": [
+        {
+          "en": "The Burrow"
+        },
+        {
+          "en": "Shell Cottage"
+        },
+        {
+          "en": "Grimmauld Place"
+        },
+        {
+          "en": "Spinner's End"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "The Weasleys live at the Burrow."
+      },
+      "summary": {
+        "en": "The crooked, magically held-up house stands near the village of Ottery St Catchpole."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Rooms"
+          },
+          "value": {
+            "en": "Many"
+          },
+          "detail": {
+            "en": "Extra floors were added as the family grew."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Places in Harry Potter"
+        },
+        "url": "https://en.wikipedia.org/wiki/Places_in_Harry_Potter"
+      }
+    },
+    {
+      "slug": "hp-expelliarmus",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Spells"
+      },
+      "text": {
+        "en": "Which spell knocks the wand out of an opponent's hand?"
+      },
+      "options": [
+        {
+          "en": "Lumos"
+        },
+        {
+          "en": "Expelliarmus"
+        },
+        {
+          "en": "Wingardium Leviosa"
+        },
+        {
+          "en": "Alohomora"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Expelliarmus is the Disarming Charm."
+      },
+      "summary": {
+        "en": "It becomes Harry's signature spell, and he uses it in his final duel with Voldemort."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Type"
+          },
+          "value": {
+            "en": "Charm"
+          },
+          "detail": {
+            "en": "Taught in the Duelling Club."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Magic in Harry Potter"
+        },
+        "url": "https://en.wikipedia.org/wiki/Magic_in_Harry_Potter"
+      }
+    },
+    {
+      "slug": "hp-first-published",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Publishing"
+      },
+      "text": {
+        "en": "In which year was Harry Potter and the Philosopher's Stone first published in the UK?"
+      },
+      "options": [
+        {
+          "en": "1995"
+        },
+        {
+          "en": "1997"
+        },
+        {
+          "en": "1999"
+        },
+        {
+          "en": "2001"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "It was published in June 1997."
+      },
+      "summary": {
+        "en": "Bloomsbury published it after several other publishers had turned the book down. The first print run was small."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Publisher"
+          },
+          "value": {
+            "en": "Bloomsbury"
+          },
+          "detail": {
+            "en": "The UK publisher of the series."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Harry Potter and the Philosopher's Stone"
+        },
+        "url": "https://en.wikipedia.org/wiki/Harry_Potter_and_the_Philosopher%27s_Stone"
+      }
+    },
+    {
+      "slug": "hp-wand-core",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Wandlore"
+      },
+      "text": {
+        "en": "What is the core of Harry's wand?"
+      },
+      "options": [
+        {
+          "en": "Dragon heartstring"
+        },
+        {
+          "en": "Unicorn hair"
+        },
+        {
+          "en": "Phoenix feather"
+        },
+        {
+          "en": "Thestral hair"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "A phoenix feather."
+      },
+      "summary": {
+        "en": "The feather came from Fawkes, Dumbledore's phoenix, who gave one other feather: to Voldemort's wand."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Wood"
+          },
+          "value": {
+            "en": "Holly"
+          },
+          "detail": {
+            "en": "Eleven inches long."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Harry Potter (character)"
+        },
+        "url": "https://en.wikipedia.org/wiki/Harry_Potter_(character)"
+      }
+    },
+    {
+      "slug": "hp-voldemort-name",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Names"
+      },
+      "text": {
+        "en": "What is Lord Voldemort's birth name?"
+      },
+      "options": [
+        {
+          "en": "Tom Marvolo Riddle"
+        },
+        {
+          "en": "Marvolo Gaunt"
+        },
+        {
+          "en": "Tom Gaunt"
+        },
+        {
+          "en": "Thomas Slytherin"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "Tom Marvolo Riddle."
+      },
+      "summary": {
+        "en": "\"I am Lord Voldemort\" is an anagram of his full birth name, revealed in Chamber of Secrets."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Revealed"
+          },
+          "value": {
+            "en": "Book 2"
+          },
+          "detail": {
+            "en": "Chamber of Secrets."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Lord Voldemort"
+        },
+        "url": "https://en.wikipedia.org/wiki/Lord_Voldemort"
+      }
+    },
+    {
+      "slug": "hp-patronus",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Expecto Patronum"
+      },
+      "text": {
+        "en": "What form does Harry's Patronus take?"
+      },
+      "options": [
+        {
+          "en": "A stag"
+        },
+        {
+          "en": "An otter"
+        },
+        {
+          "en": "A doe"
+        },
+        {
+          "en": "A phoenix"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "A stag."
+      },
+      "summary": {
+        "en": "It matches the Animagus form of his father, James, whose friends called him Prongs."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Learned"
+          },
+          "value": {
+            "en": "Book 3"
+          },
+          "detail": {
+            "en": "Taught by Remus Lupin."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Harry Potter (character)"
+        },
+        "url": "https://en.wikipedia.org/wiki/Harry_Potter_(character)"
+      }
+    }
+  ]
+}

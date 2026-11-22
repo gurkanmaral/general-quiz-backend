@@ -1,0 +1,980 @@
+{
+  "slug": "solar-system",
+  "status": "published",
+  "kind": "quiz",
+  "category": "Science",
+  "theme": "blue",
+  "title": {
+    "en": "The Solar System"
+  },
+  "description": {
+    "en": "Planets, moons and records from our corner of space."
+  },
+  "expertShare": 0.3,
+  "questions": [
+    {
+      "slug": "solar-largest-planet",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "King of the planets"
+      },
+      "text": {
+        "en": "Which is the largest planet in the Solar System?"
+      },
+      "options": [
+        {
+          "en": "Saturn"
+        },
+        {
+          "en": "Jupiter"
+        },
+        {
+          "en": "Neptune"
+        },
+        {
+          "en": "Earth"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Jupiter is the largest planet."
+      },
+      "summary": {
+        "en": "Jupiter is more than twice as massive as all the other planets combined, and about 11 Earths would fit across its equator."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Width"
+          },
+          "value": {
+            "en": "≈ 11 Earths"
+          },
+          "detail": {
+            "en": "Across Jupiter's equator."
+          }
+        },
+        {
+          "label": {
+            "en": "Type"
+          },
+          "value": {
+            "en": "Gas giant"
+          },
+          "detail": {
+            "en": "Mostly hydrogen and helium."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "NASA Science — Jupiter"
+        },
+        "url": "https://science.nasa.gov/jupiter/"
+      }
+    },
+    {
+      "slug": "solar-closest-planet",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Closest to the Sun"
+      },
+      "text": {
+        "en": "Which planet orbits closest to the Sun?"
+      },
+      "options": [
+        {
+          "en": "Venus"
+        },
+        {
+          "en": "Mars"
+        },
+        {
+          "en": "Mercury"
+        },
+        {
+          "en": "Earth"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Mercury is the closest planet to the Sun."
+      },
+      "summary": {
+        "en": "Mercury is also the smallest planet. It races around the Sun in just 88 Earth days."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Year"
+          },
+          "value": {
+            "en": "88 days"
+          },
+          "detail": {
+            "en": "Its orbit around the Sun."
+          }
+        },
+        {
+          "label": {
+            "en": "Size"
+          },
+          "value": {
+            "en": "Smallest"
+          },
+          "detail": {
+            "en": "Only slightly larger than Earth's Moon."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "NASA Science — Mercury"
+        },
+        "url": "https://science.nasa.gov/mercury/"
+      }
+    },
+    {
+      "slug": "solar-red-planet",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Rusty world"
+      },
+      "text": {
+        "en": "Which planet is known as the Red Planet?"
+      },
+      "options": [
+        {
+          "en": "Mars"
+        },
+        {
+          "en": "Jupiter"
+        },
+        {
+          "en": "Mercury"
+        },
+        {
+          "en": "Venus"
+        }
+      ],
+      "correctIndex": 0,
+      "answerTitle": {
+        "en": "Mars is the Red Planet."
+      },
+      "summary": {
+        "en": "Iron minerals in Martian dust and rock have oxidized, or rusted, giving the surface and sky their reddish colour."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Colour from"
+          },
+          "value": {
+            "en": "Iron oxide"
+          },
+          "detail": {
+            "en": "Rust in the soil."
+          }
+        },
+        {
+          "label": {
+            "en": "Moons"
+          },
+          "value": {
+            "en": "2"
+          },
+          "detail": {
+            "en": "Phobos and Deimos."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "NASA Science — Mars"
+        },
+        "url": "https://science.nasa.gov/mars/"
+      }
+    },
+    {
+      "slug": "solar-hottest-planet",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Greenhouse world"
+      },
+      "text": {
+        "en": "Which planet has the hottest surface?"
+      },
+      "options": [
+        {
+          "en": "Mercury"
+        },
+        {
+          "en": "Venus"
+        },
+        {
+          "en": "Mars"
+        },
+        {
+          "en": "Jupiter"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Venus is the hottest planet."
+      },
+      "summary": {
+        "en": "Although Mercury is closer to the Sun, Venus's thick carbon dioxide atmosphere traps heat, keeping its surface around 465 °C — hot enough to melt lead."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Surface"
+          },
+          "value": {
+            "en": "≈ 465 °C"
+          },
+          "detail": {
+            "en": "Hotter than Mercury."
+          }
+        },
+        {
+          "label": {
+            "en": "Atmosphere"
+          },
+          "value": {
+            "en": "Carbon dioxide"
+          },
+          "detail": {
+            "en": "A runaway greenhouse effect."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "NASA Science — Venus"
+        },
+        "url": "https://science.nasa.gov/venus/"
+      }
+    },
+    {
+      "slug": "solar-sunlight-time",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Light on its way"
+      },
+      "text": {
+        "en": "About how long does sunlight take to reach Earth?"
+      },
+      "options": [
+        {
+          "en": "8 seconds"
+        },
+        {
+          "en": "8 minutes"
+        },
+        {
+          "en": "8 hours"
+        },
+        {
+          "en": "8 days"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Sunlight takes about 8 minutes."
+      },
+      "summary": {
+        "en": "Light travels about 300,000 km every second, and the Sun is about 150 million km away, so its light takes roughly 8 minutes and 20 seconds to arrive."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Distance"
+          },
+          "value": {
+            "en": "≈ 150 million km"
+          },
+          "detail": {
+            "en": "One astronomical unit."
+          }
+        },
+        {
+          "label": {
+            "en": "Speed of light"
+          },
+          "value": {
+            "en": "≈ 300,000 km/s"
+          },
+          "detail": {
+            "en": "In a vacuum."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Sunlight"
+        },
+        "url": "https://en.wikipedia.org/wiki/Sunlight"
+      }
+    },
+    {
+      "slug": "solar-rings",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Lord of the rings"
+      },
+      "text": {
+        "en": "Which planet has the largest and brightest ring system?"
+      },
+      "options": [
+        {
+          "en": "Uranus"
+        },
+        {
+          "en": "Neptune"
+        },
+        {
+          "en": "Saturn"
+        },
+        {
+          "en": "Jupiter"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Saturn's rings are the most spectacular."
+      },
+      "summary": {
+        "en": "All four giant planets have rings, but Saturn's are by far the largest and brightest. They are made of countless pieces of ice and rock."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Made of"
+          },
+          "value": {
+            "en": "Ice and rock"
+          },
+          "detail": {
+            "en": "From dust grains to house-sized chunks."
+          }
+        },
+        {
+          "label": {
+            "en": "Ringed planets"
+          },
+          "value": {
+            "en": "4"
+          },
+          "detail": {
+            "en": "Jupiter, Saturn, Uranus and Neptune."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "NASA Science — Saturn"
+        },
+        "url": "https://science.nasa.gov/saturn/"
+      }
+    },
+    {
+      "slug": "solar-planet-count",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Roll call"
+      },
+      "text": {
+        "en": "How many planets are in the Solar System?"
+      },
+      "options": [
+        {
+          "en": "Seven"
+        },
+        {
+          "en": "Eight"
+        },
+        {
+          "en": "Nine"
+        },
+        {
+          "en": "Ten"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "There are eight planets."
+      },
+      "summary": {
+        "en": "Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus and Neptune. Pluto was counted as the ninth until 2006."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Rocky"
+          },
+          "value": {
+            "en": "4"
+          },
+          "detail": {
+            "en": "Mercury, Venus, Earth, Mars."
+          }
+        },
+        {
+          "label": {
+            "en": "Giants"
+          },
+          "value": {
+            "en": "4"
+          },
+          "detail": {
+            "en": "Jupiter, Saturn, Uranus, Neptune."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "NASA Science — Our Solar System"
+        },
+        "url": "https://science.nasa.gov/solar-system/"
+      }
+    },
+    {
+      "slug": "solar-pluto-year",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Demoted"
+      },
+      "text": {
+        "en": "In which year was Pluto reclassified as a dwarf planet?"
+      },
+      "options": [
+        {
+          "en": "1998"
+        },
+        {
+          "en": "2002"
+        },
+        {
+          "en": "2006"
+        },
+        {
+          "en": "2012"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Pluto became a dwarf planet in 2006."
+      },
+      "summary": {
+        "en": "The International Astronomical Union defined \"planet\" in 2006. Pluto had not cleared its orbit of other objects, so it became a dwarf planet."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Decided by"
+          },
+          "value": {
+            "en": "IAU"
+          },
+          "detail": {
+            "en": "The International Astronomical Union."
+          }
+        },
+        {
+          "label": {
+            "en": "Discovered"
+          },
+          "value": {
+            "en": "1930"
+          },
+          "detail": {
+            "en": "By Clyde Tombaugh."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — IAU definition of planet"
+        },
+        "url": "https://en.wikipedia.org/wiki/IAU_definition_of_planet"
+      }
+    },
+    {
+      "slug": "solar-great-red-spot",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "A famous spot"
+      },
+      "text": {
+        "en": "What is Jupiter's Great Red Spot?"
+      },
+      "options": [
+        {
+          "en": "A volcano"
+        },
+        {
+          "en": "A giant storm"
+        },
+        {
+          "en": "An impact crater"
+        },
+        {
+          "en": "A frozen ocean"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "It is a giant storm."
+      },
+      "summary": {
+        "en": "The Great Red Spot is a storm wider than Earth that has been raging for at least 150 years — and probably much longer."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Size"
+          },
+          "value": {
+            "en": "Wider than Earth"
+          },
+          "detail": {
+            "en": "Though it has been shrinking."
+          }
+        },
+        {
+          "label": {
+            "en": "Age"
+          },
+          "value": {
+            "en": "150+ years"
+          },
+          "detail": {
+            "en": "Watched since the 1800s."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "NASA Science — Jupiter"
+        },
+        "url": "https://science.nasa.gov/jupiter/"
+      }
+    },
+    {
+      "slug": "solar-first-moonwalker",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "One small step"
+      },
+      "text": {
+        "en": "Who was the first person to walk on the Moon?"
+      },
+      "options": [
+        {
+          "en": "Buzz Aldrin"
+        },
+        {
+          "en": "Yuri Gagarin"
+        },
+        {
+          "en": "Neil Armstrong"
+        },
+        {
+          "en": "Michael Collins"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Neil Armstrong, in July 1969."
+      },
+      "summary": {
+        "en": "Armstrong stepped onto the Moon on 20 July 1969 (US time; 21 July UTC) during Apollo 11, followed by Buzz Aldrin. Michael Collins stayed in lunar orbit."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Mission"
+          },
+          "value": {
+            "en": "Apollo 11"
+          },
+          "detail": {
+            "en": "Launched 16 July 1969."
+          }
+        },
+        {
+          "label": {
+            "en": "Second on the Moon"
+          },
+          "value": {
+            "en": "Buzz Aldrin"
+          },
+          "detail": {
+            "en": "About 20 minutes later."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Apollo 11"
+        },
+        "url": "https://en.wikipedia.org/wiki/Apollo_11"
+      }
+    },
+    {
+      "slug": "solar-largest-moon",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Moon of moons"
+      },
+      "text": {
+        "en": "Which is the largest moon in the Solar System?"
+      },
+      "options": [
+        {
+          "en": "Titan"
+        },
+        {
+          "en": "Ganymede"
+        },
+        {
+          "en": "Callisto"
+        },
+        {
+          "en": "Earth's Moon"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Jupiter's Ganymede is the largest moon."
+      },
+      "summary": {
+        "en": "Ganymede is bigger than the planet Mercury and is the only moon known to have its own magnetic field."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Orbits"
+          },
+          "value": {
+            "en": "Jupiter"
+          },
+          "detail": {
+            "en": "One of the four Galilean moons."
+          }
+        },
+        {
+          "label": {
+            "en": "Bigger than"
+          },
+          "value": {
+            "en": "Mercury"
+          },
+          "detail": {
+            "en": "In diameter, though less massive."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Ganymede (moon)"
+        },
+        "url": "https://en.wikipedia.org/wiki/Ganymede_(moon)"
+      }
+    },
+    {
+      "slug": "solar-sideways-planet",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Rolling along"
+      },
+      "text": {
+        "en": "Which planet spins on its side, tilted about 98 degrees?"
+      },
+      "options": [
+        {
+          "en": "Neptune"
+        },
+        {
+          "en": "Saturn"
+        },
+        {
+          "en": "Uranus"
+        },
+        {
+          "en": "Venus"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Uranus rotates on its side."
+      },
+      "summary": {
+        "en": "Uranus's axis is tilted about 98°, so it rolls around the Sun like a ball. A giant collision long ago may have knocked it over."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Tilt"
+          },
+          "value": {
+            "en": "≈ 98°"
+          },
+          "detail": {
+            "en": "Earth's is about 23.4°."
+          }
+        },
+        {
+          "label": {
+            "en": "Seasons"
+          },
+          "value": {
+            "en": "≈ 21 years"
+          },
+          "detail": {
+            "en": "Each pole gets decades of sunlight, then darkness."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "NASA Science — Uranus"
+        },
+        "url": "https://science.nasa.gov/uranus/"
+      }
+    },
+    {
+      "slug": "solar-tallest-volcano",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Sky-high"
+      },
+      "text": {
+        "en": "Where is Olympus Mons, the tallest volcano in the Solar System?"
+      },
+      "options": [
+        {
+          "en": "Venus"
+        },
+        {
+          "en": "Io"
+        },
+        {
+          "en": "Mars"
+        },
+        {
+          "en": "Earth"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Olympus Mons is on Mars."
+      },
+      "summary": {
+        "en": "Olympus Mons is a shield volcano more than 20 km high — about two and a half times the height of Mount Everest."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Height"
+          },
+          "value": {
+            "en": "≈ 22 km"
+          },
+          "detail": {
+            "en": "About 2.5 Everests."
+          }
+        },
+        {
+          "label": {
+            "en": "Type"
+          },
+          "value": {
+            "en": "Shield volcano"
+          },
+          "detail": {
+            "en": "Like Hawaii's, but far larger."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Olympus Mons"
+        },
+        "url": "https://en.wikipedia.org/wiki/Olympus_Mons"
+      }
+    },
+    {
+      "slug": "solar-long-day",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "A very long day"
+      },
+      "text": {
+        "en": "On which planet is a day (one rotation) longer than its year?"
+      },
+      "options": [
+        {
+          "en": "Mercury"
+        },
+        {
+          "en": "Venus"
+        },
+        {
+          "en": "Mars"
+        },
+        {
+          "en": "Neptune"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "On Venus, a day outlasts a year."
+      },
+      "summary": {
+        "en": "Venus takes about 243 Earth days to spin once but only about 225 Earth days to orbit the Sun. It also spins backwards compared with most planets."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Rotation"
+          },
+          "value": {
+            "en": "≈ 243 days"
+          },
+          "detail": {
+            "en": "Retrograde, east to west."
+          }
+        },
+        {
+          "label": {
+            "en": "Orbit"
+          },
+          "value": {
+            "en": "≈ 225 days"
+          },
+          "detail": {
+            "en": "One Venusian year."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "NASA Science — Venus"
+        },
+        "url": "https://science.nasa.gov/venus/"
+      }
+    },
+    {
+      "slug": "solar-titan",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Methane seas"
+      },
+      "text": {
+        "en": "Which moon has a thick atmosphere and lakes of liquid methane?"
+      },
+      "options": [
+        {
+          "en": "Europa"
+        },
+        {
+          "en": "Enceladus"
+        },
+        {
+          "en": "Triton"
+        },
+        {
+          "en": "Titan"
+        }
+      ],
+      "correctIndex": 3,
+      "answerTitle": {
+        "en": "Saturn's moon Titan."
+      },
+      "summary": {
+        "en": "Titan's thick nitrogen atmosphere and its lakes and seas of liquid methane and ethane make it the only place besides Earth known to have stable liquid on its surface."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Atmosphere"
+          },
+          "value": {
+            "en": "Mostly nitrogen"
+          },
+          "detail": {
+            "en": "Thicker than Earth's."
+          }
+        },
+        {
+          "label": {
+            "en": "Visited by"
+          },
+          "value": {
+            "en": "Huygens"
+          },
+          "detail": {
+            "en": "The probe landed there in 2005."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Titan (moon)"
+        },
+        "url": "https://en.wikipedia.org/wiki/Titan_(moon)"
+      }
+    }
+  ],
+  "badges": [
+    {
+      "slug": "solar-stargazer",
+      "status": "published",
+      "name": {
+        "en": "Stargazer"
+      },
+      "description": {
+        "en": "Answered 80% of The Solar System quiz correctly."
+      },
+      "icon": "🔭",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.8
+      }
+    }
+  ],
+  "titles": [
+    {
+      "slug": "solar-voyager",
+      "status": "published",
+      "name": {
+        "en": "Voyager"
+      },
+      "description": {
+        "en": "Every Expert question answered correctly — you have been to the edge of the Solar System."
+      },
+      "icon": "🛰️",
+      "unlock": {
+        "type": "allCorrect",
+        "difficulty": "expert"
+      }
+    }
+  ]
+}

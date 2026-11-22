@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { serve } from '@hono/node-server';
 import { createDatabase, runMigrations, withAdvisoryLock } from './db/client';
-import { DEFAULT_WEB_DIR, DEV_TEST_CODE, loadEnv } from './env';
+import { DEV_TEST_CODE, loadEnv } from './env';
 import { createApp } from './http/app';
 import { createLogger } from './logger';
 import { attachRealtime } from './http/realtime';
@@ -26,7 +26,7 @@ await withAdvisoryLock(database.pool, 'kno:startup', async () => {
 });
 
 if (production && !env.RESEND_API_KEY) logger.warn('RESEND_API_KEY is not set: sign-in emails are only logged');
-const webDir = env.WEB_DIR ?? (production ? DEFAULT_WEB_DIR : undefined);
+const webDir = env.WEB_DIR;
 if (webDir && !existsSync(webDir)) logger.warn({ webDir }, 'web build not found: run `npm run build` first');
 
 const trustedOrigins = production ? [] : ['http://localhost:5173', 'http://localhost:5180'];

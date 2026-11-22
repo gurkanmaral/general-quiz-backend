@@ -1,0 +1,677 @@
+{
+  "slug": "world-geography",
+  "status": "published",
+  "kind": "quiz",
+  "category": "World",
+  "theme": "blue",
+  "title": {
+    "en": "World Geography"
+  },
+  "description": {
+    "en": "Oceans, capitals and the extremes of the planet."
+  },
+  "expertShare": 0.3,
+  "badges": [
+    {
+      "slug": "geo-globetrotter",
+      "status": "published",
+      "name": {
+        "en": "Globetrotter"
+      },
+      "description": {
+        "en": "Answered 80% of the World Geography quiz correctly."
+      },
+      "icon": "🌍",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.8
+      }
+    }
+  ],
+  "titles": [
+    {
+      "slug": "geo-cartographer",
+      "status": "published",
+      "name": {
+        "en": "Cartographer"
+      },
+      "description": {
+        "en": "Every Expert question answered correctly."
+      },
+      "icon": "🗺️",
+      "unlock": {
+        "type": "allCorrect",
+        "difficulty": "expert"
+      }
+    },
+    {
+      "slug": "geo-explorer",
+      "status": "published",
+      "name": {
+        "en": "Explorer"
+      },
+      "description": {
+        "en": "Half of the quiz answered correctly."
+      },
+      "icon": "🧭",
+      "unlock": {
+        "type": "correctShare",
+        "min": 0.5
+      }
+    }
+  ],
+  "questions": [
+    {
+      "slug": "geo-pacific",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Oceans"
+      },
+      "text": {
+        "en": "Which is the largest ocean on Earth?"
+      },
+      "options": [
+        {
+          "en": "Atlantic"
+        },
+        {
+          "en": "Indian"
+        },
+        {
+          "en": "Arctic"
+        },
+        {
+          "en": "Pacific"
+        }
+      ],
+      "correctIndex": 3,
+      "answerTitle": {
+        "en": "The Pacific Ocean."
+      },
+      "summary": {
+        "en": "It covers about a third of the planet's surface, more than all the land on Earth combined."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Deepest point"
+          },
+          "value": {
+            "en": "Challenger Deep"
+          },
+          "detail": {
+            "en": "In the Mariana Trench."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Pacific Ocean"
+        },
+        "url": "https://en.wikipedia.org/wiki/Pacific_Ocean"
+      }
+    },
+    {
+      "slug": "geo-canberra",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Capitals"
+      },
+      "text": {
+        "en": "What is the capital of Australia?"
+      },
+      "options": [
+        {
+          "en": "Sydney"
+        },
+        {
+          "en": "Melbourne"
+        },
+        {
+          "en": "Canberra"
+        },
+        {
+          "en": "Perth"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Canberra."
+      },
+      "summary": {
+        "en": "It was purpose-built as a compromise between rivals Sydney and Melbourne, and Parliament moved there in 1927."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Designed by"
+          },
+          "value": {
+            "en": "Walter & Marion Griffin"
+          },
+          "detail": {
+            "en": "American architects."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Canberra"
+        },
+        "url": "https://en.wikipedia.org/wiki/Canberra"
+      }
+    },
+    {
+      "slug": "geo-everest",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Mountains"
+      },
+      "text": {
+        "en": "What is the highest mountain above sea level?"
+      },
+      "options": [
+        {
+          "en": "K2"
+        },
+        {
+          "en": "Kangchenjunga"
+        },
+        {
+          "en": "Mount Everest"
+        },
+        {
+          "en": "Denali"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Mount Everest."
+      },
+      "summary": {
+        "en": "It rises 8,849 m on the border of Nepal and China and was first climbed in 1953."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Height"
+          },
+          "value": {
+            "en": "8,849 m"
+          },
+          "detail": {
+            "en": "Measured in 2020."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Mount Everest"
+        },
+        "url": "https://en.wikipedia.org/wiki/Mount_Everest"
+      }
+    },
+    {
+      "slug": "geo-largest-country",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Countries"
+      },
+      "text": {
+        "en": "Which country has the largest area?"
+      },
+      "options": [
+        {
+          "en": "Canada"
+        },
+        {
+          "en": "China"
+        },
+        {
+          "en": "United States"
+        },
+        {
+          "en": "Russia"
+        }
+      ],
+      "correctIndex": 3,
+      "answerTitle": {
+        "en": "Russia."
+      },
+      "summary": {
+        "en": "It spans eleven time zones and covers more than an eighth of the world's inhabited land."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Time zones"
+          },
+          "value": {
+            "en": "11"
+          },
+          "detail": {
+            "en": "From Kaliningrad to Kamchatka."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Russia"
+        },
+        "url": "https://en.wikipedia.org/wiki/Russia"
+      }
+    },
+    {
+      "slug": "geo-africa",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Continents"
+      },
+      "text": {
+        "en": "Which continent has the most countries?"
+      },
+      "options": [
+        {
+          "en": "Asia"
+        },
+        {
+          "en": "Europe"
+        },
+        {
+          "en": "Africa"
+        },
+        {
+          "en": "South America"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Africa."
+      },
+      "summary": {
+        "en": "It has 54 internationally recognised sovereign states, more than any other continent."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Countries"
+          },
+          "value": {
+            "en": "54"
+          },
+          "detail": {
+            "en": "All members of the UN."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Africa"
+        },
+        "url": "https://en.wikipedia.org/wiki/Africa"
+      }
+    },
+    {
+      "slug": "geo-ottawa",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Capitals"
+      },
+      "text": {
+        "en": "What is the capital of Canada?"
+      },
+      "options": [
+        {
+          "en": "Toronto"
+        },
+        {
+          "en": "Vancouver"
+        },
+        {
+          "en": "Montreal"
+        },
+        {
+          "en": "Ottawa"
+        }
+      ],
+      "correctIndex": 3,
+      "answerTitle": {
+        "en": "Ottawa."
+      },
+      "summary": {
+        "en": "Queen Victoria chose it in 1857, partly because it sat between English- and French-speaking Canada."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "River"
+          },
+          "value": {
+            "en": "Ottawa River"
+          },
+          "detail": {
+            "en": "The border with Quebec."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Ottawa"
+        },
+        "url": "https://en.wikipedia.org/wiki/Ottawa"
+      }
+    },
+    {
+      "slug": "geo-istanbul",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Two continents"
+      },
+      "text": {
+        "en": "Which city lies on both Europe and Asia?"
+      },
+      "options": [
+        {
+          "en": "Athens"
+        },
+        {
+          "en": "Istanbul"
+        },
+        {
+          "en": "Cairo"
+        },
+        {
+          "en": "Moscow"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Istanbul."
+      },
+      "summary": {
+        "en": "The Bosphorus strait runs through the city and separates its European and Asian sides."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Strait"
+          },
+          "value": {
+            "en": "Bosphorus"
+          },
+          "detail": {
+            "en": "Links the Black Sea and the Sea of Marmara."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Istanbul"
+        },
+        "url": "https://en.wikipedia.org/wiki/Istanbul"
+      }
+    },
+    {
+      "slug": "geo-amazon",
+      "status": "published",
+      "difficulty": "standard",
+      "eyebrow": {
+        "en": "Rivers"
+      },
+      "text": {
+        "en": "What is the longest river in South America?"
+      },
+      "options": [
+        {
+          "en": "Orinoco"
+        },
+        {
+          "en": "Paraná"
+        },
+        {
+          "en": "Amazon"
+        },
+        {
+          "en": "Magdalena"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "The Amazon."
+      },
+      "summary": {
+        "en": "It carries more water than any other river on Earth and flows through the world's largest rainforest."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Mouth"
+          },
+          "value": {
+            "en": "Atlantic"
+          },
+          "detail": {
+            "en": "In northern Brazil."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Amazon River"
+        },
+        "url": "https://en.wikipedia.org/wiki/Amazon_River"
+      }
+    },
+    {
+      "slug": "geo-vatican",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Tiny states"
+      },
+      "text": {
+        "en": "What is the smallest country in the world by area?"
+      },
+      "options": [
+        {
+          "en": "Monaco"
+        },
+        {
+          "en": "San Marino"
+        },
+        {
+          "en": "Vatican City"
+        },
+        {
+          "en": "Liechtenstein"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Vatican City."
+      },
+      "summary": {
+        "en": "It covers about 0.44 km² inside Rome and is ruled by the Pope."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Area"
+          },
+          "value": {
+            "en": "~0.44 km²"
+          },
+          "detail": {
+            "en": "Smaller than many city parks."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Vatican City"
+        },
+        "url": "https://en.wikipedia.org/wiki/Vatican_City"
+      }
+    },
+    {
+      "slug": "geo-dead-sea",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Extremes"
+      },
+      "text": {
+        "en": "Where is the lowest point on dry land?"
+      },
+      "options": [
+        {
+          "en": "Death Valley"
+        },
+        {
+          "en": "The Dead Sea shore"
+        },
+        {
+          "en": "Lake Assal"
+        },
+        {
+          "en": "The Caspian shore"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "The shore of the Dead Sea."
+      },
+      "summary": {
+        "en": "It lies more than 400 m below sea level, between Jordan, Israel and the West Bank, and the level is still falling."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Saltiness"
+          },
+          "value": {
+            "en": "~34%"
+          },
+          "detail": {
+            "en": "About ten times saltier than the ocean."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Dead Sea"
+        },
+        "url": "https://en.wikipedia.org/wiki/Dead_Sea"
+      }
+    },
+    {
+      "slug": "geo-astana",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Capitals"
+      },
+      "text": {
+        "en": "What is the capital of Kazakhstan?"
+      },
+      "options": [
+        {
+          "en": "Almaty"
+        },
+        {
+          "en": "Astana"
+        },
+        {
+          "en": "Tashkent"
+        },
+        {
+          "en": "Bishkek"
+        }
+      ],
+      "correctIndex": 1,
+      "answerTitle": {
+        "en": "Astana."
+      },
+      "summary": {
+        "en": "It replaced Almaty as capital in 1997. It was named Nur-Sultan from 2019 to 2022."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Capital since"
+          },
+          "value": {
+            "en": "1997"
+          },
+          "detail": {
+            "en": "Moved from Almaty."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Astana"
+        },
+        "url": "https://en.wikipedia.org/wiki/Astana"
+      }
+    },
+    {
+      "slug": "geo-baikal",
+      "status": "published",
+      "difficulty": "expert",
+      "eyebrow": {
+        "en": "Lakes"
+      },
+      "text": {
+        "en": "What is the deepest lake in the world?"
+      },
+      "options": [
+        {
+          "en": "Lake Tanganyika"
+        },
+        {
+          "en": "Lake Superior"
+        },
+        {
+          "en": "Lake Baikal"
+        },
+        {
+          "en": "Caspian Sea"
+        }
+      ],
+      "correctIndex": 2,
+      "answerTitle": {
+        "en": "Lake Baikal."
+      },
+      "summary": {
+        "en": "In Siberia, it is over 1,600 m deep and holds roughly a fifth of the world's unfrozen fresh surface water."
+      },
+      "facts": [
+        {
+          "label": {
+            "en": "Depth"
+          },
+          "value": {
+            "en": "1,642 m"
+          },
+          "detail": {
+            "en": "At its deepest."
+          }
+        }
+      ],
+      "source": {
+        "label": {
+          "en": "Wikipedia — Lake Baikal"
+        },
+        "url": "https://en.wikipedia.org/wiki/Lake_Baikal"
+      }
+    }
+  ]
+}

@@ -14,7 +14,7 @@ const database = openTestDatabase();
 const db = database.db;
 const NOW = new Date('2026-11-16T12:00:00Z');
 const { app } = createTestApp(db, { now: () => NOW });
-const REPO_CONTENT = new URL('../../../content', import.meta.url).pathname;
+const REPO_CONTENT = new URL('../content', import.meta.url).pathname;
 const POOL = ['earth-atmosphere', 'first-modern-olympics', 'http-meaning', 'largest-desert', 'lotr-oscars', 'moby-dick-opening', 'thriller-album'];
 let dir: string;
 

@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { DailyAnswerResponseSchema, DailyHistoryResponseSchema, ProblemSchema } from '@general-quiz/contracts';
 import { rotationSlug } from '@general-quiz/shared';
-import schedule from '../../../content/daily/schedule.json';
+import schedule from '../content/daily/schedule.json';
 import { importContent } from '../src/modules/content';
 import { isTodaySomewhere } from '../src/modules/daily';
 import { openTestDatabase } from './db';
@@ -10,7 +10,7 @@ import { createSignedInUser, createTestApp, jsonRequest } from './auth';
 const database = openTestDatabase();
 let clock = new Date('2026-11-16T12:00:00Z');
 const { app, mailer } = createTestApp(database.db, { now: () => clock });
-const CONTENT_DIR = new URL('../../../content', import.meta.url).pathname;
+const CONTENT_DIR = new URL('../content', import.meta.url).pathname;
 let ada = '';
 let bob = '';
 

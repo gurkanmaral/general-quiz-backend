@@ -1,0 +1,399 @@
+{
+  "app": {
+    "name": "Bayrak Quiz"
+  },
+  "language": {
+    "name": "Türkçe"
+  },
+  "flag": {
+    "label": "Tahmin edilecek bayrak"
+  },
+  "start": {
+    "title": "Dünya bayraklarını ne kadar iyi tanıyorsun?",
+    "subtitle": "Bayraklar, başkentler ve ülke şekilleri. BM'ye üye {{total}} ülkeyle beş farklı oyun.",
+    "bests": "Rekorların",
+    "no_best": "–",
+    "play": "Oyna",
+    "globe_hint": "Keşfetmek için sürükle",
+    "settings": "Ayarlar"
+  },
+  "modes": {
+    "title": "Oyun modunu seç",
+    "back": "Ana sayfaya dön",
+    "best": "Rekor: {{value}}",
+    "no_best": "Henüz rekor yok",
+    "last_played": "Son oynanan",
+    "points_value": "{{points}} puan",
+    "correct_value": "{{count}} doğru",
+    "classic": {
+      "name": "Klasik",
+      "rule": "{{count}} soru. Hızlı cevapla, bonus puan kap."
+    },
+    "timeAttack": {
+      "name": "Zamana Karşı",
+      "rule": "{{seconds}} saniye. Her yanlış cevap {{penalty}} saniye götürür."
+    },
+    "survival": {
+      "name": "Hayatta Kal",
+      "rule": "{{lives}} canın bitene kadar devam et."
+    },
+    "daily": {
+      "name": "Günlük Meydan Okuma"
+    },
+    "higherLower": {
+      "name": "Hangisi Kalabalık",
+      "rule": "Hangi ülkenin nüfusu daha fazla? İlk hatana kadar devam et.",
+      "scope": "Tüm ülkeler · nüfus"
+    },
+    "run_value": "{{count}} seri"
+  },
+  "regions": {
+    "all": "Tümü",
+    "africa": "Afrika",
+    "americas": "Amerika",
+    "asia": "Asya",
+    "europe": "Avrupa",
+    "oceania": "Okyanusya"
+  },
+  "setup": {
+    "title": "Oyun ayarları",
+    "region": "Bölge",
+    "difficulty": "Zorluk",
+    "normal": "Normal",
+    "hard": "Zor",
+    "normal_hint": "Yanlış şıklar rastgele seçilir.",
+    "hard_hint": "Yanlış şıklar benzer ya da aynı bölgeden bayraklar. Dikkatli bak!",
+    "direction": "Yön",
+    "flag": "Bayrak → İsim",
+    "name": "İsim → Bayrak",
+    "label": "{{region}} · {{difficulty}} · {{direction}}",
+    "quiz": "Soru türü",
+    "hard_hint_region": "Yanlış şıklar aynı bölgeden seçilir. Dikkatli bak!",
+    "capitals_flag": "Ülke → Başkent",
+    "capitals_name": "Başkent → Ülke",
+    "shapes_flag": "Şekil → İsim",
+    "shapes_name": "İsim → Şekil",
+    "label_quiz": "{{quiz}} · {{region}} · {{difficulty}} · {{direction}}"
+  },
+  "question": {
+    "quit": "Oyundan çık",
+    "count": "Soru {{current}}",
+    "of": "/ {{total}}",
+    "prompt": "Bu hangi ülkenin bayrağı?",
+    "options": "Cevap şıkları",
+    "tag_correct": "Doğru cevap",
+    "tag_wrong": "Senin seçimin, yanlış",
+    "feedback_correct": "Doğru! Harikasın.",
+    "feedback_wrong": "Olmadı — bu {{country}} bayrağı.",
+    "next": "Sonraki soru",
+    "see_results": "Sonuçları gör",
+    "reverse_prompt": "Bu ülkenin bayrağı hangisi?",
+    "flag_options": "Bayrak şıkları",
+    "option_label": "{{letter}} şıkkı",
+    "feedback_wrong_reverse": "Olmadı — seçtiğin bayrak {{country}} bayrağı.",
+    "capital_prompt": "{{country}} ülkesinin başkenti neresi?",
+    "capital_reverse_prompt": "Bu hangi ülkenin başkenti?",
+    "capital_options": "Başkent şıkları",
+    "country_options": "Ülke şıkları",
+    "feedback_wrong_capital": "Olmadı — {{country}} ülkesinin başkenti {{capital}}.",
+    "feedback_wrong_capital_reverse": "Olmadı — {{capital}}, {{country}} ülkesinin başkenti.",
+    "shape_prompt": "Bu şekil hangi ülkenin?",
+    "shape_label": "Tahmin edilecek ülke şekli",
+    "shape_reverse_prompt": "Bu ülkenin şekli hangisi?",
+    "shape_options": "Şekil şıkları",
+    "shape_loading": "Şekiller yükleniyor…",
+    "shape_error": "Şekiller yüklenemedi. Bağlantını kontrol edip tekrar dene.",
+    "feedback_wrong_shape": "Olmadı — bu {{country}} şekli.",
+    "feedback_wrong_shape_reverse": "Olmadı — seçtiğin şekil {{country}} şekli.",
+    "shape_retry": "Tekrar dene"
+  },
+  "round": {
+    "points_label": "Puan",
+    "streak": "Seri {{streak}}",
+    "multiplier": "×{{multiplier}}",
+    "correct_count": "{{count}} doğru",
+    "time_label": "Kalan süre",
+    "seconds": "{{seconds}} sn",
+    "time_left_one": "{{count}} saniye kaldı",
+    "time_left_other": "{{count}} saniye kaldı",
+    "penalty": "−{{seconds}} sn",
+    "time_up": "Süre doldu!",
+    "lives_left_one": "{{count}} can kaldı",
+    "lives_left_other": "{{count}} can kaldı"
+  },
+  "result": {
+    "title_perfect": "Kusursuz tur!",
+    "title_nice": "Güzel tur!",
+    "title_good": "Fena değil!",
+    "title_keep": "Pratik yapmaya devam!",
+    "title_time": "Süre doldu!",
+    "title_lives": "Canların bitti!",
+    "points": "puan",
+    "new_best": "Yeni rekor",
+    "best": "Rekorun: {{value}}",
+    "summary": "{{total}} bayraktan {{score}} tanesini bildin.",
+    "summary_endless": "{{answered}} sorudan {{correct}} tanesini bildin.",
+    "stat_correct": "Doğru",
+    "stat_streak": "En uzun seri",
+    "stat_accuracy": "İsabet",
+    "accuracy_value": "%{{percent}}",
+    "review_one": "Buna bir daha bak",
+    "review_other": "Şu {{count}} bayrağa bir daha bak",
+    "no_misses": "Hiç hata yok — hepsini bildin.",
+    "play_again": "Tekrar oyna",
+    "home": "Ana sayfaya dön",
+    "summary_neutral": "{{total}} sorudan {{score}} tanesini bildin.",
+    "no_misses_neutral": "Hiç hata yok — hepsini bildin.",
+    "review_neutral_one": "Buna bir daha bak",
+    "review_neutral_other": "Şu {{count}} ülkeye bir daha bak"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "back": "Geri",
+    "language": "Dil",
+    "motion": "Hareket",
+    "reduce_motion": "Hareketi azalt",
+    "reduce_motion_hint": "Sallanma, zıplama ve konfeti efektlerini kapatır. Kapalıyken cihaz ayarın geçerli olur.",
+    "progress": "İlerleme",
+    "reset": "İlerlemeyi sıfırla",
+    "reset_confirm": "Tüm rekorların, günlük sonuçların, pasaportun ve başarımların silinecek. Dil ayarın korunur. Emin misin?",
+    "reset_yes": "Evet, sıfırla",
+    "reset_cancel": "Vazgeç",
+    "reset_done": "İlerleme sıfırlandı."
+  },
+  "daily": {
+    "title": "Günlük Meydan Okuma",
+    "number": "Günlük #{{number}}",
+    "play": "Günlük #{{number}} oyna",
+    "teaser": "Bugün herkese aynı {{total}} bayrak. Tek hak.",
+    "done": "Bugünlük bu kadar",
+    "score": "{{correct}}/{{total}} · {{points}} puan",
+    "grid_label": "{{total}} sorudan {{correct}} doğru",
+    "next_in": "Sonraki: {{hours}} sa {{minutes}} dk",
+    "streak_one": "{{count}} günlük seri",
+    "streak_other": "{{count}} günlük seri",
+    "share": "Paylaş"
+  },
+  "share": {
+    "title": "Bayrak Quiz Günlük #{{number}}",
+    "score": "{{correct}}/{{total}} · {{points}} puan",
+    "copied": "Kopyalandı!",
+    "failed": "Paylaşılamadı"
+  },
+  "passport": {
+    "title": "Bayrak Pasaportu",
+    "back": "Ana sayfaya dön",
+    "home_value": "{{collected}} / {{total}}",
+    "home_hint": "Toplandı",
+    "totals": "{{collected}} / {{total}} Toplandı · {{mastered}} Usta",
+    "regions": "Bölge",
+    "countries": "Ülkeler",
+    "collected": "Toplandı",
+    "mastered": "Usta",
+    "none": "Henüz toplanmadı",
+    "legend": "Bir bayrağı bir kez doğru bil, pasaportuna ekle. Üç kez doğru bil, ustası ol.",
+    "home_label": "Bayrak Pasaportu, {{total}} ülkeden {{collected}} tanesi toplandı"
+  },
+  "achievements": {
+    "title": "Başarımlar",
+    "back": "Ana sayfaya dön",
+    "home_value": "{{unlocked}} / {{total}}",
+    "home_hint": "Açıldı",
+    "summary": "{{unlocked}} / {{total}} açıldı",
+    "unlocked_on": "{{date}} tarihinde açıldı",
+    "locked": "Kilitli",
+    "progress": "{{current}} / {{target}}",
+    "new_one": "Yeni başarım",
+    "new_other": "Yeni başarımlar",
+    "items": {
+      "firstSteps": {
+        "name": "İlk Adım",
+        "description": "İlk turunu tamamla."
+      },
+      "perfect10": {
+        "name": "Kusursuz 10",
+        "description": "Klasik bir turda 10 bayrağın 10'unu da bil."
+      },
+      "onFire": {
+        "name": "Alev Aldın",
+        "description": "Tek turda 10'luk bir seriye ulaş."
+      },
+      "unstoppable": {
+        "name": "Durdurulamaz",
+        "description": "Tek turda 25'lik bir seriye ulaş."
+      },
+      "speedDemon": {
+        "name": "Hız Canavarı",
+        "description": "Tek bir Zamana Karşı turunda 20 doğru yap."
+      },
+      "survivor": {
+        "name": "Hayatta Kalan",
+        "description": "Tek bir Hayatta Kal oyununda 25 doğru yap."
+      },
+      "dailyHabit": {
+        "name": "Günlük Alışkanlık",
+        "description": "Günlük Meydan Okumayı 7 gün üst üste oyna."
+      },
+      "continental": {
+        "name": "Kıta Fatihi",
+        "description": "Bir kıtadaki tüm ülkelerin ustası ol."
+      },
+      "collector50": {
+        "name": "Koleksiyoncu 50",
+        "description": "Pasaportunda 50 ülke topla."
+      },
+      "collector100": {
+        "name": "Koleksiyoncu 100",
+        "description": "Pasaportunda 100 ülke topla."
+      },
+      "collector193": {
+        "name": "Koleksiyoncu {{total}}",
+        "description": "{{total}} ülkenin hepsini topla."
+      },
+      "hardModeHero": {
+        "name": "Zor Mod Kahramanı",
+        "description": "Zor seviyede Klasik bir turda 10'da 10 yap."
+      }
+    },
+    "progress_continent": "{{continent}} · {{current}} / {{target}}",
+    "list": "Tüm başarımlar",
+    "home_label": "Başarımlar, {{total}} başarımdan {{unlocked}} tanesi açıldı"
+  },
+  "landing": {
+    "modes_eyebrow": "Oyun modları",
+    "modes_title": "Kendini sınamanın beş yolu",
+    "modes_lead": "Rahat başla, zamanla yarış, ne kadar dayanabileceğini gör ya da hangi ülkenin daha kalabalık olduğunu tahmin et. BM'ye üye {{total}} ülkenin tamamıyla ya da tek bir kıtayla oyna.",
+    "daily_rule": "{{count}} bayrak, bugün herkes için aynı. Tek hak.",
+    "how_eyebrow": "Günlük Meydan Okuma",
+    "how_title": "Günlük oyun nasıl işler?",
+    "how_step1_title": "Herkese aynı bayraklar",
+    "how_step1_body": "Her gün {{count}} yeni bayrak gelir. Aynı tarihte oynayan herkes aynı bayraklarla oynar.",
+    "how_step2_title": "Günde tek hak",
+    "how_step2_body": "Sadece ilk denemen sayılır. Hızlı ol: çabuk verilen cevaplar bonus puan kazandırır.",
+    "how_step3_title": "Paylaş, serini sürdür",
+    "how_step3_body": "Sonuç tablonu cevapları ele vermeden paylaş, yarın yine gel ve serini büyüt.",
+    "faq_title": "Sık sorulanlar",
+    "faq_q1": "Oyunda hangi ülkeler var?",
+    "faq_a1": "Birleşmiş Milletler'e üye {{total}} ülkenin hepsi. Bayraklarını, başkentlerini ya da şekillerini sor; istersen bir turu tek bir kıtayla sınırla.",
+    "faq_q2": "Puanlar nasıl hesaplanıyor?",
+    "faq_a2": "Her doğru cevap taban puan kazandırır, hızlı cevaplar ek bonus getirir. Art arda doğru cevaplardan oluşan seri puanlarını katlar.",
+    "faq_q3": "Bayrak Pasaportu nedir?",
+    "faq_a3": "Bayraklar sorularında doğru bildiğin her ülke Pasaportuna eklenir. Bir ülkeyi üç kez doğru bilirsen onda ustalaşırsın.",
+    "faq_q4": "Hesap açmam gerekiyor mu?",
+    "faq_a4": "Hayır. Rekorların, Pasaportun ve Başarımların sadece bu cihazda saklanır.",
+    "faq_q5": "Animasyonları kapatabilir miyim?",
+    "faq_a5": "Evet. Ayarlar'dan Hareketi azalt seçeneğini aç ya da cihazının hareket azaltma ayarını kullan.",
+    "cta_title": "Dünyayı gezmeye hazır mısın?",
+    "cta_body": "Bir mod seç ve dünyayı gerçekte ne kadar tanıdığını gör.",
+    "cta_button": "Hemen oyna",
+    "quizzes": "Bayraklar, başkentler ya da ülke şekilleri: neyi soracağını seç, sonra nasıl oynayacağını."
+  },
+  "quizzes": {
+    "flags": "Bayraklar",
+    "capitals": "Başkentler",
+    "shapes": "Şekiller"
+  },
+  "higherLower": {
+    "prompt": "Hangisinin nüfusu daha fazla?",
+    "run": "Seri",
+    "best": "Rekor {{count}}",
+    "or": "ya da",
+    "population": "{{value}} kişi",
+    "hidden": "Nüfus gizli",
+    "correct": "Doğru! {{country}} daha kalabalık.",
+    "wrong": "Olmadı — {{country}} daha kalabalık.",
+    "title": "Seri bitti!",
+    "summary_one": "Üst üste {{count}} doğru bildin.",
+    "summary_other": "Üst üste {{count}} doğru bildin.",
+    "run_label": "seri",
+    "last_pair": "Son ikili",
+    "people": "kişi"
+  },
+  "country": {
+    "back": "Geri",
+    "capital": "Başkent",
+    "population": "Nüfus",
+    "continent": "Kıta",
+    "record": "Senin karnen",
+    "record_value_one": "{{count}} cevabın {{correct}} tanesi doğru",
+    "record_value_other": "{{count}} cevabın {{correct}} tanesi doğru",
+    "record_none": "Henüz bir turda çıkmadı",
+    "open": "{{name}} sayfasını aç",
+    "unknown": "–"
+  },
+  "learn": {
+    "title": "Öğren",
+    "back": "Ana sayfaya dön",
+    "home_value_one": "{{count}} kart",
+    "home_value_other": "{{count}} kart",
+    "home_hint": "En zayıf bayrakların",
+    "home_label_one": "Öğren: en zayıf {{count}} bayrağının kartları",
+    "home_label_other": "Öğren: en zayıf {{count}} bayrağının kartları",
+    "intro": "Sadece alıştırma: puan, rekor ya da pasaport değişmez.",
+    "left_one": "{{count}} kart kaldı",
+    "left_other": "{{count}} kart kaldı",
+    "card_front": "Bu hangi ülke?",
+    "flip": "Cevabı göster",
+    "got_it": "Bildim",
+    "again": "Tekrar",
+    "capital": "Başkent: {{capital}}",
+    "done_title": "Deste bitti!",
+    "done_body": "Tüm zayıf noktalarının üzerinden geçtin. Akılda kalıp kalmadığını görmek için bir tur oyna.",
+    "restart": "Yeni deste",
+    "home": "Ana sayfaya dön"
+  },
+  "stats": {
+    "title": "İstatistikler",
+    "back": "Ana sayfaya dön",
+    "home_value_one": "{{count}} tur",
+    "home_value_other": "{{count}} tur",
+    "home_hint": "Doğruluk ve gidişat",
+    "home_label_one": "İstatistikler, {{count}} tur oynandı",
+    "home_label_other": "İstatistikler, {{count}} tur oynandı",
+    "empty_title": "Henüz tur yok",
+    "empty_body": "Bir tur bitir, istatistiklerin burada görünsün.",
+    "rounds": "Tur",
+    "answers": "Cevap",
+    "accuracy": "Doğruluk",
+    "percent": "%{{percent}}",
+    "none": "–",
+    "continents": "Kıtalara göre doğruluk",
+    "continent_label": "{{continent}}: %{{percent}}",
+    "continent_none": "{{continent}}: henüz cevap yok",
+    "missed": "En çok kaçırılanlar",
+    "missed_value_one": "{{count}} kez kaçırıldı",
+    "missed_value_other": "{{count}} kez kaçırıldı",
+    "missed_none": "Henüz kaçırılan yok.",
+    "recent": "Son turlardaki puanlar",
+    "recent_label_one": "Son turun puanı: {{values}}",
+    "recent_label_other": "Son {{count}} turun puanları: {{values}}",
+    "history_note": "Tur, cevap ve doğruluk son {{limit}} turunu kapsar. Kıta doğruluğu ve en çok kaçırılanlar tüm Bayrak cevaplarını sayar."
+  },
+  "challenge": {
+    "share": "Arkadaşına meydan oku",
+    "share_text": "{{app}} oyununda {{points}} puanımı geçebilir misin? {{url}}",
+    "intro_eyebrow": "Meydan okuma",
+    "beat": "{{points}} puanı geç",
+    "intro_body_one": "Bir arkadaşın {{correct}} doğru cevapla {{points}} puan aldı. Aynı {{count}} soru, sıra sende.",
+    "intro_body_other": "Bir arkadaşın {{correct}} doğru cevapla {{points}} puan aldı. Aynı {{count}} soru, sıra sende.",
+    "accept": "Meydan okumayı kabul et",
+    "decline": "Şimdi değil",
+    "broken": "Bu meydan okuma bağlantısı bozuk",
+    "outdated": "Bu meydan okuma bağlantısı oyunun eski bir sürümünden",
+    "you": "Sen",
+    "friend": "Arkadaşın",
+    "compare": "Sen {{you}} · Arkadaşın {{friend}}",
+    "compare_correct": "Doğru: sen {{you}}/{{total}} · arkadaşın {{friend}}/{{total}}",
+    "win": "Kazandın!",
+    "lose": "Arkadaşın kazandı",
+    "tie": "Berabere"
+  },
+  "xp": {
+    "level": "Seviye {{level}}",
+    "progress": "{{into}} / {{needed}} XP",
+    "chip_label": "Seviye {{level}}, sonraki seviye için {{into}} / {{needed}} XP",
+    "gained": "+{{xp}} XP",
+    "level_up": "Seviye atladın!",
+    "level_up_to": "Seviye atladın! Artık seviye {{level}}."
+  }
+}
