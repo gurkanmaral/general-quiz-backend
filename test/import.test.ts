@@ -6,6 +6,7 @@ import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { award, question, quiz, rotation, scheduleEntry } from '../src/db/schema';
 import { countChanges, importContent } from '../src/modules/content';
 import { openTestDatabase, truncateAll } from './db';
+import { repoContent } from './contentStats';
 
 const database = openTestDatabase();
 const db = database.db;
@@ -30,8 +31,8 @@ afterAll(() => database.close());
 describe('kno import', () => {
   it('upserts published questions and the rotation, and a second run changes nothing', async () => {
     const first = await importContent(db, dir);
-    expect(first.quizzes.written).toBe(3);
-    expect(first.questions.written).toBe(42);
+    expect(first.quizzes.written).toBe(repoContent.quizzes);
+    expect(first.questions.written).toBe(repoContent.questions);
     expect(first.rotation.written).toBe(7);
 
     const before = await db.select().from(question).orderBy(asc(question.slug));
@@ -219,7 +220,7 @@ describe('kno import', () => {
   });
   it('imports Badges and Titles with their Unlock Rules (Story 3.1)', async () => {
     const report = await importContent(db, dir);
-    expect(report.awards.written).toBe(5);
+    expect(report.awards.written).toBe(repoContent.awards);
     const rows = await db.select().from(award).where(eq(award.quizSlug, 'lord-of-the-rings'));
     expect(rows.map((row) => [row.kind, row.slug, row.unlock])).toEqual(
       expect.arrayContaining([

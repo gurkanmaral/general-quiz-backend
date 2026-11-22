@@ -7,6 +7,7 @@ import { importContent } from '../src/modules/content';
 import { rarityOf, startRarityJob } from '../src/modules/progress';
 import { openTestDatabase } from './db';
 import { createSignedInUser, createTestApp, jsonRequest } from './auth';
+import { repoContent } from './contentStats';
 
 const database = openTestDatabase();
 const db = database.db;
@@ -51,7 +52,7 @@ describe('Rarity (Story 3.2)', () => {
     await playGame(users.cy!, 'solar-system', false);
 
     const report = await app.progress.computeRarity();
-    expect(report).toEqual({ rankedAccounts: 3, items: 5 });
+    expect(report).toEqual({ rankedAccounts: 3, items: repoContent.awards });
     const stored = await rarityOf(db, ['lotr-frodo', 'lotr-gandalf', 'solar-voyager']);
     expect(stored.get('lotr-frodo')).toEqual({ percent: 33.33, label: '33%' });
     expect(stored.get('lotr-gandalf')).toEqual({ percent: 0, label: '<1%' });

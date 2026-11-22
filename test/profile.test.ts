@@ -11,6 +11,7 @@ import { equippedTitle, question } from '../src/db/schema';
 import { importContent } from '../src/modules/content';
 import { openTestDatabase } from './db';
 import { completeProfile, createSignedInUser, createTestApp, jsonRequest } from './auth';
+import { repoContent } from './contentStats';
 
 const database = openTestDatabase();
 const db = database.db;
@@ -69,8 +70,8 @@ describe('own Profile (Story 3.3)', () => {
     expect((await app.request('/api/v1/daily/2026-11-16/answer', jsonRequest('POST', { selectedIndex: 0, playedOn: '2026-11-16' }, ada))).status).toBe(200);
     const body = await profile(ada);
     expect(body).toMatchObject({ username: 'Ada', avatar: 'fox', title: null, own: true, streak: { current: 1, best: 1 } });
-    expect(body.quizzes.map((item) => item.title.en)).toEqual(['The Lord of the Rings', 'The Solar System']);
-    const lotr = body.quizzes[0]!.awards;
+    expect(body.quizzes.map((item) => item.title.en).sort()).toEqual([...repoContent.playableTitles].sort());
+    const lotr = body.quizzes.find((item) => item.title.en === 'The Lord of the Rings')!.awards;
     expect(lotr.map((item) => [item.kind, item.slug, item.earned])).toEqual([
       ['badge', 'lotr-middle-earth-fan', false],
       ['title', 'lotr-gandalf', false],
@@ -83,7 +84,7 @@ describe('own Profile (Story 3.3)', () => {
   it('shows earned items in colour with Rarity, keeping the how-to-earn for the rest', async () => {
     await playPerfect(ada, 'lord-of-the-rings');
     await app.progress.computeRarity();
-    const frodo = (await profile(ada)).quizzes[0]!.awards.find((item) => item.slug === 'lotr-frodo')!;
+    const frodo = (await profile(ada)).quizzes.flatMap((item) => item.awards).find((item) => item.slug === 'lotr-frodo')!;
     expect(frodo).toMatchObject({ earned: true, howToEarn: null, rarity: { label: '100%' } });
     expect(frodo.earnedAt).toBe('2026-11-16T12:00:00.000Z');
   });
