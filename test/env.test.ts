@@ -27,6 +27,13 @@ describe('env', () => {
     expect(env.BETTER_AUTH_URL).toBe('http://localhost:5180');
   });
 
+  it('accepts a 6-digit AUTH_TEST_CODE in development but refuses it in production', () => {
+    expect(parseEnv({ AUTH_TEST_CODE: '490909' }).AUTH_TEST_CODE).toBe('490909');
+    expect(() => parseEnv({ AUTH_TEST_CODE: '12ab' })).toThrow(/AUTH_TEST_CODE/);
+    const prod = { NODE_ENV: 'production', DATABASE_URL: 'postgres://db/kno', BETTER_AUTH_SECRET: 'x'.repeat(32) };
+    expect(() => parseEnv({ ...prod, AUTH_TEST_CODE: '490909' })).toThrow(/AUTH_TEST_CODE: must not be set in production/);
+  });
+
   it('reads TRUST_PROXY as a comma-separated list of proxy addresses', () => {
     expect(parseEnv({}).TRUST_PROXY).toEqual([]);
     expect(parseEnv({ TRUST_PROXY: ' 10.0.0.1, 192.0.2.0/24 ,' }).TRUST_PROXY).toEqual(['10.0.0.1', '192.0.2.0/24']);

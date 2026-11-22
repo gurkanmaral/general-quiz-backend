@@ -64,7 +64,7 @@ describe('startup lock (Story 6.4)', () => {
 });
 
 describe('production mailer (Story 6.4)', () => {
-  const mail: Mail = { kind: 'verifyEmail', to: 'ada@example.com', subject: 'Confirm', text: 'Open https://kno/x', url: 'https://kno/x' };
+  const mail: Mail = { kind: 'verifyCode', to: 'ada@example.com', subject: 'Confirm', text: 'Your code is 123456', code: '123456' };
 
   it('sends through the Resend HTTP API', async () => {
     const calls: { url: string; init: RequestInit }[] = [];
@@ -79,7 +79,7 @@ describe('production mailer (Story 6.4)', () => {
     await mailer.send(mail);
     expect(calls[0]!.url).toBe('https://api.resend.com/emails');
     expect((calls[0]!.init.headers as Record<string, string>).Authorization).toBe('Bearer re_test');
-    expect(JSON.parse(calls[0]!.init.body as string)).toEqual({ from: 'KNO. <hi@kno.example>', to: ['ada@example.com'], subject: 'Confirm', text: 'Open https://kno/x' });
+    expect(JSON.parse(calls[0]!.init.body as string)).toEqual({ from: 'KNO. <hi@kno.example>', to: ['ada@example.com'], subject: 'Confirm', text: 'Your code is 123456' });
   });
 
   it('fails loudly when Resend refuses, and falls back to the dev mailer without a key', async () => {

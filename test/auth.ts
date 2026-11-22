@@ -44,11 +44,11 @@ export async function signUp(app: TestApp, email: string, password = PASSWORD): 
   return app.request('/api/auth/sign-up/email', jsonRequest('POST', { name: '', email, password, callbackURL: '/' }));
 }
 
-/** Opens the confirmation link from the last mail; returns the session cookie it sets. */
+/** Enters the code from the last mail; returns the session cookie it sets. */
 export async function confirmLastMail(app: TestApp, mailer: DevMailer): Promise<string> {
-  const url = new URL(mailer.lastMail!.url);
-  const res = await app.request(`${url.pathname}${url.search}`, { headers: { Origin: ORIGIN } });
-  expect(res.status).toBe(302);
+  const mail = mailer.lastMail!;
+  const res = await app.request('/api/auth/email-otp/verify-email', jsonRequest('POST', { email: mail.to, otp: mail.code }));
+  expect(res.status).toBe(200);
   return cookiesFrom(res);
 }
 

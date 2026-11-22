@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { serve } from '@hono/node-server';
 import { createDatabase, runMigrations, withAdvisoryLock } from './db/client';
-import { DEFAULT_WEB_DIR, loadEnv } from './env';
+import { DEFAULT_WEB_DIR, DEV_TEST_CODE, loadEnv } from './env';
 import { createApp } from './http/app';
 import { createLogger } from './logger';
 import { attachRealtime } from './http/realtime';
@@ -41,6 +41,7 @@ const app = createApp({
     trustedOrigins,
     trustedProxies: env.TRUST_PROXY,
     mailer: createMailer(env, logger),
+    testCode: production ? undefined : (env.AUTH_TEST_CODE ?? DEV_TEST_CODE),
     google: env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } : undefined,
   },
 });

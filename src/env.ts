@@ -12,6 +12,8 @@ export const DEFAULT_WEB_DIR = fileURLToPath(new URL('../../web/dist', import.me
 /** The Vite dev server (same origin as the API through its `/api` proxy). */
 export const DEFAULT_AUTH_URL = 'http://localhost:5180';
 /** Development-only signing secret; production must set BETTER_AUTH_SECRET. */
+/** Email confirmation code used in development when AUTH_TEST_CODE is not set; no email is sent. */
+export const DEV_TEST_CODE = '490909';
 export const DEV_AUTH_SECRET = 'kno-dev-secret-not-for-production-use-0000';
 
 /** An unset or empty variable (`GOOGLE_CLIENT_ID=` in .env) means "not configured". */
@@ -37,6 +39,8 @@ const EnvSchema = z.object({
   WEB_DIR: optionalText,
   /** Run migrations and `kno import` on start (behind an advisory lock); defaults to on in production. */
   IMPORT_ON_START: z.enum(['true', 'false']).optional(),
+  /** Development/testing: fixed 6-digit email code and no emails sent. Defaults to 490909 outside production; refused in production. */
+  AUTH_TEST_CODE: z.string().regex(/^\d{6}$/).optional(),
   /** Comma-separated reverse-proxy IPs/CIDRs in front of the API (Better Auth's trusted proxies). */
   TRUST_PROXY: z.preprocess(
     (value) => (typeof value === 'string' ? value.split(',').map((item) => item.trim()).filter(Boolean) : []),
@@ -53,6 +57,9 @@ export function parseEnv(source: Record<string, string | undefined>): Env {
     if (env.NODE_ENV !== 'production') return;
     if (env.BETTER_AUTH_SECRET === DEV_AUTH_SECRET) {
       ctx.addIssue({ code: 'custom', path: ['BETTER_AUTH_SECRET'], message: 'must be set in production' });
+    }
+    if (env.AUTH_TEST_CODE) {
+      ctx.addIssue({ code: 'custom', path: ['AUTH_TEST_CODE'], message: 'must not be set in production' });
     }
   }).safeParse(withDefaults);
   if (!result.success) {

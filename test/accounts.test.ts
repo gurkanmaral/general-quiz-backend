@@ -29,12 +29,30 @@ async function expectProblem(res: Response, status: number, code: string) {
 }
 
 describe('email sign-up and sign-in (Story 1.3)', () => {
+  it('refuses a wrong confirmation code', async () => {
+    await signUp(app, 'wrongcode@example.com');
+    const wrong = mailer.lastMail!.code === '000000' ? '111111' : '000000';
+    const res = await app.request('/api/auth/email-otp/verify-email', jsonRequest('POST', { email: 'wrongcode@example.com', otp: wrong }));
+    expect(res.status).toBe(400);
+    expect(cookiesFrom(res)).not.toMatch(/session_token/);
+  });
+
+  it('uses the fixed test code without sending any email when testCode is set', async () => {
+    const { app: testApp, mailer: quiet } = createTestApp(database.db, { auth: { testCode: '490909' } });
+    await signUp(testApp, 'tester@example.com');
+    expect(quiet.sent).toHaveLength(0);
+    const res = await testApp.request('/api/auth/email-otp/verify-email', jsonRequest('POST', { email: 'tester@example.com', otp: '490909' }));
+    expect(res.status).toBe(200);
+    expect(cookiesFrom(res)).toMatch(/kno\.session_token=/);
+  });
+
   it('sends a confirmation email and refuses sign-in until it is confirmed', async () => {
     const res = await signUp(app, 'ada@example.com');
     expect(res.status).toBe(200);
     expect(cookiesFrom(res)).not.toMatch(/session_token/);
-    expect(mailer.lastMail).toMatchObject({ kind: 'verifyEmail', to: 'ada@example.com' });
-    expect(mailer.lastMail!.url).toMatch(/^http:\/\/localhost:5180\/api\/auth\/verify-email\?token=/);
+    expect(mailer.lastMail).toMatchObject({ kind: 'verifyCode', to: 'ada@example.com' });
+    expect(mailer.lastMail!.code).toMatch(/^\d{6}$/);
+    expect(mailer.lastMail!.text).toContain(mailer.lastMail!.code);
 
     const refused = await signIn(app, 'ada@example.com');
     expect(refused.status).toBe(403);

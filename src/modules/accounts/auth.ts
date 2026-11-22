@@ -1,6 +1,7 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { bearer } from 'better-auth/plugins/bearer';
+import { emailOTP } from 'better-auth/plugins/email-otp';
 import { username } from 'better-auth/plugins/username';
 import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@general-quiz/contracts';
 import type { Db } from '../../db/client';
@@ -23,6 +24,11 @@ export type AuthConfig = {
   rateLimit?: boolean;
   /** Reverse-proxy IPs/CIDRs whose X-Forwarded-For hops are skipped to find the client IP (TRUST_PROXY). */
   trustedProxies?: readonly string[];
+  /**
+   * Development/testing only: every confirmation code is this value and no email is sent.
+   * Never set in production (env validation refuses AUTH_TEST_CODE there).
+   */
+  testCode?: string;
 };
 
 export const AUTH_BASE_PATH = '/api/auth';
@@ -49,20 +55,9 @@ export function createAuth(db: Db, config: AuthConfig, logger?: Logger) {
       maxPasswordLength: PASSWORD_MAX_LENGTH,
       autoSignIn: false,
     },
-    emailVerification: {
-      sendOnSignUp: true,
-      autoSignInAfterVerification: true,
-      expiresIn: 24 * 60 * 60,
-      async sendVerificationEmail({ user, url }) {
-        await config.mailer.send({
-          kind: 'verifyEmail',
-          to: user.email,
-          subject: 'Confirm your KNO. account',
-          text: `Welcome to KNO.!\n\nConfirm your email to start saving your Streak:\n${url}\n\nIf you did not sign up, ignore this email.`,
-          url,
-        });
-      },
-    },
+    // Email is confirmed with a 6-digit code (email-OTP plugin below), which also signs the player in.
+    // A sign-in attempt on an unconfirmed account sends a fresh code, so the code screen always has one.
+    emailVerification: { sendOnSignUp: true, sendOnSignIn: true, autoSignInAfterVerification: true },
     socialProviders: config.google
       ? { google: { clientId: config.google.clientId, clientSecret: config.google.clientSecret, prompt: 'select_account' } }
       : {},
@@ -91,6 +86,29 @@ export function createAuth(db: Db, config: AuthConfig, logger?: Logger) {
       }),
       // Bearer tokens for the future React Native client (AD-12).
       bearer(),
+      emailOTP({
+        overrideDefaultEmailVerification: true,
+        sendVerificationOnSignUp: true,
+        otpLength: 6,
+        expiresIn: 10 * 60,
+        allowedAttempts: 5,
+        // Spread, not `generateOTP: undefined`: the plugin's default generator must survive when no test code is set.
+        ...(config.testCode ? { generateOTP: () => config.testCode } : {}),
+        async sendVerificationOTP({ email, otp, type }) {
+          if (type !== 'email-verification') return;
+          if (config.testCode) {
+            logger?.info({ kind: 'verifyCode' }, `test mode: no email sent, use code ${config.testCode}`);
+            return;
+          }
+          await config.mailer.send({
+            kind: 'verifyCode',
+            to: email,
+            subject: `${otp} is your KNO. code`,
+            text: `Welcome to KNO.!\n\nYour confirmation code is ${otp}. It expires in 10 minutes.\n\nIf you did not sign up, ignore this email.`,
+            code: otp,
+          });
+        },
+      }),
     ],
   });
 }

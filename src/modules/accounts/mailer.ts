@@ -1,12 +1,12 @@
 import type { Logger } from '../../logger';
 
 export type Mail = {
-  kind: 'verifyEmail';
+  kind: 'verifyCode';
   to: string;
   subject: string;
   text: string;
-  /** The action link inside the mail (e.g. the email confirmation link). */
-  url: string;
+  /** The one-time code inside the mail. */
+  code: string;
 };
 
 /** Outgoing email. The production provider is chosen at deploy (spine: Deferred). */
@@ -21,8 +21,8 @@ export type DevMailer = Mailer & {
 };
 
 /**
- * Development mailer: logs the action link (never the address) and keeps sent mail in memory.
- * Lets a developer confirm an account locally by opening the logged link.
+ * Development mailer: logs the code (never the address) and keeps sent mail in memory.
+ * Lets a developer confirm an account locally by reading the logged code.
  */
 export function createDevMailer(logger?: Logger): DevMailer {
   const sent: Mail[] = [];
@@ -30,7 +30,7 @@ export function createDevMailer(logger?: Logger): DevMailer {
     async send(mail) {
       sent.push(mail);
       if (sent.length > 50) sent.shift();
-      logger?.info({ kind: mail.kind, link: mail.url }, 'dev mailer: open this link to continue');
+      logger?.info({ kind: mail.kind, code: mail.code }, 'dev mailer: email confirmation code');
     },
     get lastMail() {
       return sent.at(-1);
