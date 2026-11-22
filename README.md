@@ -20,8 +20,8 @@ In development the email confirmation code is always `490909` and no mail is sen
 ## Layout
 
 - `src/modules/*` — one module per domain (accounts, daily, quizzes, awards, friends, lobbies, content), each with its own Postgres schema.
-- `packages/contracts` — zod request/response schemas shared with the web app.
-- `packages/shared` — streak logic shared with the web app.
+- `src/contracts` — zod request/response schemas (the web app keeps its own copy).
+- `src/shared` — streak and daily-rotation rules.
 - `content/` — quizzes and daily schedule as JSON; `npm run kno -- import` loads them.
 
 ## Scripts

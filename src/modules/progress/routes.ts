@@ -6,7 +6,7 @@ import {
   type EquipTitleResponse,
   type ProfileResponse,
   type Streak,
-} from '@general-quiz/contracts';
+} from '../../contracts';
 import type { DbExecutor } from '../../db/client';
 import { problem } from '../../http/problem';
 import type { PublicPlayer } from '../accounts';

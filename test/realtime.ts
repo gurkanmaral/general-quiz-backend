@@ -3,7 +3,7 @@ import type { AddressInfo } from 'node:net';
 import { getRequestListener } from '@hono/node-server';
 import { io as connect, type Socket } from 'socket.io-client';
 import type { Server } from 'socket.io';
-import { SOCKET_PATH } from '@general-quiz/contracts';
+import { SOCKET_PATH } from '../src/contracts';
 import { attachRealtime } from '../src/http/realtime';
 import { ORIGIN, type TestApp } from './auth';
 

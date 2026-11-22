@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { MeResponseSchema, ProblemSchema } from '@general-quiz/contracts';
+import { MeResponseSchema, ProblemSchema } from '../src/contracts';
 import { importContent } from '../src/modules/content';
 import { createRateLimiter } from '../src/http/rateLimit';
 import { openTestDatabase } from './db';

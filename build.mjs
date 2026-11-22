@@ -1,5 +1,5 @@
 // Bundles the API and the `kno` CLI to plain JS in dist/ (Story 6.4): workspace packages
-// (@general-quiz/*, TypeScript sources) and JSON data are inlined; npm dependencies stay external.
+// TypeScript sources and JSON data are inlined; npm dependencies stay external.
 import { cp, rm } from 'node:fs/promises';
 import { build } from 'esbuild';
 
@@ -19,7 +19,7 @@ await build({
     {
       name: 'external-npm-deps',
       setup(b) {
-        b.onResolve({ filter: /^[^./]/ }, (args) => (args.path.startsWith('@general-quiz/') || args.path.endsWith('.json') ? undefined : { path: args.path, external: true }));
+        b.onResolve({ filter: /^[^./]/ }, (args) => (args.path.endsWith('.json') ? undefined : { path: args.path, external: true }));
       },
     },
   ],

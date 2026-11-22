@@ -14,7 +14,7 @@ import {
   type LobbyState,
   type LocalizedText,
   type PlayerCard,
-} from '@general-quiz/contracts';
+} from '../../contracts';
 
 /** The server clock and timers (AD-8). Tests inject a manual clock. */
 export type Clock = {

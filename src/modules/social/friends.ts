@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { and, asc, eq, or } from 'drizzle-orm';
-import type { EquippedTitle, Friend, FriendRequest, FriendsResponse, PlayerCard, SendFriendRequestBody } from '@general-quiz/contracts';
+import type { EquippedTitle, Friend, FriendRequest, FriendsResponse, PlayerCard, SendFriendRequestBody } from '../../contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { uuidv7 } from '../../db/ids';
 import type { PublicPlayer } from '../accounts';

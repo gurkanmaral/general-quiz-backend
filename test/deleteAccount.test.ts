@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { sql } from 'drizzle-orm';
-import { MeResponseSchema, ProblemSchema } from '@general-quiz/contracts';
+import { MeResponseSchema, ProblemSchema } from '../src/contracts';
 import { importContent } from '../src/modules/content';
 import { openTestDatabase } from './db';
 import { completeProfile, cookiesFrom, createSignedInUser, createTestApp, jsonRequest, signIn, signUp } from './auth';

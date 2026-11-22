@@ -1,5 +1,5 @@
 import { and, eq, inArray, notInArray, sql } from 'drizzle-orm';
-import { QUESTION_CATEGORIES, type AwardKind, type AwardSummary, type UnlockRule, type DailyQuestion, type LocalizedText, type QuestionCategory, type QuestionDifficulty, type QuestionTheme, type QuizSummary } from '@general-quiz/contracts';
+import { QUESTION_CATEGORIES, type AwardKind, type AwardSummary, type UnlockRule, type DailyQuestion, type LocalizedText, type QuestionCategory, type QuestionDifficulty, type QuestionTheme, type QuizSummary } from '../../contracts';
 import type { DbExecutor } from '../../db/client';
 import { anyChanged, excluded } from '../../db/upsert';
 import { award, question, quiz } from './schema';

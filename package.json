@@ -9,13 +9,11 @@
     "kno": "tsx src/cli.ts",
     "db:generate": "drizzle-kit generate",
     "test": "vitest run",
-    "typecheck": "tsc -p tsconfig.json && npm run typecheck --workspaces --if-present",
+    "typecheck": "tsc -p tsconfig.json",
     "build": "node build.mjs",
     "kno:prod": "node --enable-source-maps dist/cli.js"
   },
   "dependencies": {
-    "@general-quiz/contracts": "*",
-    "@general-quiz/shared": "*",
     "@hono/node-server": "^2.1.8",
     "better-auth": "^1.7.27",
     "drizzle-orm": "^0.45.4",
@@ -35,9 +33,6 @@
     "vitest": "^2.1.9",
     "esbuild": "^0.21.5"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "engines": {
     "node": ">=22"
   }

@@ -1,6 +1,6 @@
 // Public interface of the accounts module (AD-2). Other modules import only from here.
 import type { Context } from 'hono';
-import type { EquippedTitle } from '@general-quiz/contracts';
+import type { EquippedTitle } from '../../contracts';
 import type { Db } from '../../db/client';
 import type { Logger } from '../../logger';
 import { createAuth, type AuthConfig } from './auth';

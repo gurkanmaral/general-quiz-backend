@@ -1,6 +1,6 @@
 import { inArray } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import { SoloAnswerResponseSchema, SoloGameResponseSchema, type SoloGameResponse } from '@general-quiz/contracts';
+import { SoloAnswerResponseSchema, SoloGameResponseSchema, type SoloGameResponse } from '../src/contracts';
 import { question, rarity } from '../src/db/schema';
 import { createLogger } from '../src/logger';
 import { importContent } from '../src/modules/content';

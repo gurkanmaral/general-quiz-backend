@@ -1,5 +1,5 @@
 import { Hono, type Context } from 'hono';
-import { QUIZZES_PROBLEM_CODES, SoloAnswerBodySchema, type QuizListResponse, type QuizRecord, type SoloAnswerResponse } from '@general-quiz/contracts';
+import { QUIZZES_PROBLEM_CODES, SoloAnswerBodySchema, type QuizListResponse, type QuizRecord, type SoloAnswerResponse } from '../../contracts';
 import type { DbExecutor } from '../../db/client';
 import { problem } from '../../http/problem';
 import type { SoloGames } from './games';

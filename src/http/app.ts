@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { RATE_LIMITED_CODE, type HealthResponse, type UnlockedAward } from '@general-quiz/contracts';
+import { RATE_LIMITED_CODE, type HealthResponse, type UnlockedAward } from '../contracts';
 import { pingDatabase, type Db } from '../db/client';
 import type { Logger } from '../logger';
 import { DEFAULT_AUTH_URL, DEV_AUTH_SECRET } from '../env';

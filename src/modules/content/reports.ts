@@ -1,6 +1,6 @@
 import { Hono, type Context } from 'hono';
 import { and, asc, eq, or } from 'drizzle-orm';
-import { CONTENT_PROBLEM_CODES, ReportBodySchema, type ReportBody, type ReportResponse } from '@general-quiz/contracts';
+import { CONTENT_PROBLEM_CODES, ReportBodySchema, type ReportBody, type ReportResponse } from '../../contracts';
 import type { DbExecutor } from '../../db/client';
 import { uuidv7 } from '../../db/ids';
 import { problem } from '../../http/problem';

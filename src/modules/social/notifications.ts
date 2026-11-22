@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { and, count, desc, eq, isNull, or } from 'drizzle-orm';
-import { NotificationSchema, type Notification, type NotificationEvent, type NotificationKind, type NotificationsResponse } from '@general-quiz/contracts';
+import { NotificationSchema, type Notification, type NotificationEvent, type NotificationKind, type NotificationsResponse } from '../../contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { uuidv7 } from '../../db/ids';
 import type { PlayerDirectory } from './friends';

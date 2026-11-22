@@ -1,7 +1,7 @@
 import { and, eq, inArray, ne, sql } from 'drizzle-orm';
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { ACCOUNTS_PROBLEM_CODES, AvatarIdSchema, type AvatarId, type MeResponse, type ProfileUpdate } from '@general-quiz/contracts';
+import { ACCOUNTS_PROBLEM_CODES, AvatarIdSchema, type AvatarId, type MeResponse, type ProfileUpdate } from '../../contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { problemResponse } from '../../http/problem';
 import type { Auth } from './auth';

@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, it } from 'vitest';
-import { AuthProvidersResponseSchema, MeResponseSchema, ProblemSchema } from '@general-quiz/contracts';
+import { AuthProvidersResponseSchema, MeResponseSchema, ProblemSchema } from '../src/contracts';
 import { isUsernameAllowed, isValidUsername } from '../src/modules/accounts';
 import { openTestDatabase } from './db';
 import {

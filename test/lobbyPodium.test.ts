@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { UnlockedAward } from '@general-quiz/contracts';
+import type { UnlockedAward } from '../src/contracts';
 import { DISCONNECT_GRACE_MS, REVEAL_MS, type GameResult } from '../src/modules/lobbies';
 import { testLobby } from './lobbyActor';
 

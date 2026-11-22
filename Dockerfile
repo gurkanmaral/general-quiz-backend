@@ -1,8 +1,6 @@
 FROM node:22-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
-COPY packages/contracts/package.json packages/contracts/
-COPY packages/shared/package.json packages/shared/
 RUN npm ci
 COPY . .
 RUN npm run build && npm prune --omit=dev

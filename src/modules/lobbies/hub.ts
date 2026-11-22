@@ -1,7 +1,7 @@
 import { randomInt } from 'node:crypto';
-import { LOBBY_CODE_ALPHABET, LOBBY_QUESTION_COUNT, LOBBY_TIME_LIMIT_S, type LobbyRemoved, type LobbyState, type PlayerCard } from '@general-quiz/contracts';
+import { LOBBY_CODE_ALPHABET, LOBBY_QUESTION_COUNT, LOBBY_TIME_LIMIT_S, type LobbyRemoved, type LobbyState, type PlayerCard } from '../../contracts';
 import { LobbyActor, systemClock, type Clock, type GameQuestion, type GameResult, type LobbyEnv, type LobbyQuiz } from './actor';
-import type { UnlockedAward } from '@general-quiz/contracts';
+import type { UnlockedAward } from '../../contracts';
 
 export type HubDeps = {
   clock?: Clock;

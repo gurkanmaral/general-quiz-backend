@@ -1,5 +1,5 @@
 import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
-import { AuthProvidersResponseSchema, MeResponseSchema } from '@general-quiz/contracts';
+import { AuthProvidersResponseSchema, MeResponseSchema } from '../src/contracts';
 import { openTestDatabase } from './db';
 import { ORIGIN, completeProfile, cookiesFrom, createSignedInUser, createTestApp, jsonRequest, signUp } from './auth';
 

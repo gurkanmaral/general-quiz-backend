@@ -3,7 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { bearer } from 'better-auth/plugins/bearer';
 import { emailOTP } from 'better-auth/plugins/email-otp';
 import { username } from 'better-auth/plugins/username';
-import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@general-quiz/contracts';
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '../../contracts';
 import type { Db } from '../../db/client';
 import type { Logger } from '../../logger';
 import type { Mailer } from './mailer';

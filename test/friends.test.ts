@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { FriendsResponseSchema, LinkOwnerResponseSchema, MeResponseSchema, ProblemSchema, SendFriendRequestResponseSchema } from '@general-quiz/contracts';
+import { FriendsResponseSchema, LinkOwnerResponseSchema, MeResponseSchema, ProblemSchema, SendFriendRequestResponseSchema } from '../src/contracts';
 import { friendRequest, friendship, playerLink } from '../src/db/schema';
 import { importContent } from '../src/modules/content';
 import { openTestDatabase } from './db';

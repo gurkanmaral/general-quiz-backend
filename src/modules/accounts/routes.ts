@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { ACCOUNTS_PROBLEM_CODES, DeleteAccountBodySchema, ProfileUpdateSchema, type AuthProvidersResponse, type EquippedTitle, type MeResponse } from '@general-quiz/contracts';
+import { ACCOUNTS_PROBLEM_CODES, DeleteAccountBodySchema, ProfileUpdateSchema, type AuthProvidersResponse, type EquippedTitle, type MeResponse } from '../../contracts';
 import { problem } from '../../http/problem';
 import type { AccountsService } from './service';
 

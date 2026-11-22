@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import fixtures from '../../../content/fixtures/streak-cases.json';
+import fixtures from '../../content/fixtures/streak-cases.json';
 import { computeStreak, countsForStreak, shiftDateKey, STREAK_REPAIR_DAYS } from './knoStreak';
 
 describe('KNO. Streak (shared fixtures)', () => {

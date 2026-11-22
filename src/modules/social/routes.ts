@@ -11,7 +11,7 @@ import {
   type LinkOwnerResponse,
   type NotificationsResponse,
   type SendFriendRequestResponse,
-} from '@general-quiz/contracts';
+} from '../../contracts';
 import { problem } from '../../http/problem';
 import type { RateLimit } from '../../http/rateLimit';
 import type { Social } from './service';

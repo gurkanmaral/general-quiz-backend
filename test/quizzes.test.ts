@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { QUESTION_CATEGORIES, QuizListResponseSchema } from '@general-quiz/contracts';
+import { QUESTION_CATEGORIES, QuizListResponseSchema } from '../src/contracts';
 import { importContent } from '../src/modules/content';
 import { openTestDatabase } from './db';
 import { createSignedInUser, createTestApp, jsonRequest } from './auth';

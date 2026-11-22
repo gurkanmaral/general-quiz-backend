@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
 import type { Socket } from 'socket.io-client';
-import { LOBBY_EVENTS, LOBBY_NAMESPACE, LobbyStateSchema, type LobbyAck, type LobbyRemoved, type LobbyState } from '@general-quiz/contracts';
+import { LOBBY_EVENTS, LOBBY_NAMESPACE, LobbyStateSchema, type LobbyAck, type LobbyRemoved, type LobbyState } from '../src/contracts';
 import { connected, socketFor } from './realtime';
 
 /** A simulated player's Lobby socket that keeps every state it receives. */

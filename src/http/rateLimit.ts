@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { RATE_LIMITED_CODE } from '@general-quiz/contracts';
+import { RATE_LIMITED_CODE } from '../contracts';
 import { problemResponse } from './problem';
 
 export type RateLimitRule = { limit: number; windowMs: number };

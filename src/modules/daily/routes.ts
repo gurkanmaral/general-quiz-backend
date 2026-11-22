@@ -8,7 +8,7 @@ import {
   type DailyAnswerResponse,
   type DailyHistoryResponse,
   type DailyMergeResponse,
-} from '@general-quiz/contracts';
+} from '../../contracts';
 import { problem } from '../../http/problem';
 import { isAcceptableDailyDate, isAnswerable, isTodaySomewhere, type DailyService } from './service';
 

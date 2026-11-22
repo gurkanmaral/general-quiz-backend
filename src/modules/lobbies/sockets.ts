@@ -8,7 +8,7 @@ import {
   LobbyKickSchema,
   LobbySettingsUpdateSchema,
   type LobbyAck,
-} from '@general-quiz/contracts';
+} from '../../contracts';
 import type { LobbyActor } from './actor';
 import type { LobbyHub } from './hub';
 

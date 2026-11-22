@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { DailyResponseSchema, ProblemSchema } from '@general-quiz/contracts';
-import { rotationSlug } from '@general-quiz/shared';
+import { DailyResponseSchema, ProblemSchema } from '../src/contracts';
+import { rotationSlug } from '../src/shared';
 import schedule from '../content/daily/schedule.json';
 import { scheduleEntry } from '../src/db/schema';
 import { createApp } from '../src/http/app';

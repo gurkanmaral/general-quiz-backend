@@ -10,7 +10,7 @@ import {
   QuestionFactSchema,
   QuestionThemeSchema,
   UnlockRuleSchema,
-} from '@general-quiz/contracts';
+} from '../../contracts';
 
 /** File formats under `content/` (AD-9). Not API payloads, so they live here, not in contracts. */
 export const ContentStatusSchema = z.enum(['pending', 'published']);

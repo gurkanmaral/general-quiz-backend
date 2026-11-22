@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
-import type { Problem } from '@general-quiz/contracts';
+import type { Problem } from '../contracts';
 
 export const PROBLEM_CONTENT_TYPE = 'application/problem+json';
 

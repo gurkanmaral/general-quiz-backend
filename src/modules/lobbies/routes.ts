@@ -1,5 +1,5 @@
 import { Hono, type Context } from 'hono';
-import { CreateLobbyBodySchema, LOBBY_PROBLEM_CODES, LobbyCodeSchema, LobbyInviteBodySchema, SOCIAL_PROBLEM_CODES, type CreateLobbyResponse } from '@general-quiz/contracts';
+import { CreateLobbyBodySchema, LOBBY_PROBLEM_CODES, LobbyCodeSchema, LobbyInviteBodySchema, SOCIAL_PROBLEM_CODES, type CreateLobbyResponse } from '../../contracts';
 import type { RateLimit } from '../../http/rateLimit';
 import { problem } from '../../http/problem';
 import type { LobbyHub } from './hub';

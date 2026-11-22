@@ -1,6 +1,6 @@
 import { and, asc, eq, gte, inArray, notInArray, sql } from 'drizzle-orm';
-import { isCalendarDate, type DailyPlay, type DailyQuestion, type DailyResponse, type Streak } from '@general-quiz/contracts';
-import { computeStreak, dayNumber, daysBetween, rotationSlug, type DailyRotation } from '@general-quiz/shared';
+import { isCalendarDate, type DailyPlay, type DailyQuestion, type DailyResponse, type Streak } from '../../contracts';
+import { computeStreak, dayNumber, daysBetween, rotationSlug, type DailyRotation } from '../../shared';
 import type { DbExecutor } from '../../db/client';
 import { anyChanged, excluded } from '../../db/upsert';
 import { answer, fallbackAssignment, rotation, scheduleEntry } from './schema';

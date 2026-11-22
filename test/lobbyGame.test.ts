@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LobbyStateSchema, lobbyPoints } from '@general-quiz/contracts';
+import { LobbyStateSchema, lobbyPoints } from '../src/contracts';
 import { REVEAL_MS } from '../src/modules/lobbies';
 import { settle } from './clock';
 import { testLobby } from './lobbyActor';

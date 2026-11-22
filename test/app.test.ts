@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, it } from 'vitest';
-import { HealthResponseSchema, ProblemSchema } from '@general-quiz/contracts';
+import { HealthResponseSchema, ProblemSchema } from '../src/contracts';
 import { createApp } from '../src/http/app';
 import { problemBody } from '../src/http/problem';
 import { createLogger } from '../src/logger';

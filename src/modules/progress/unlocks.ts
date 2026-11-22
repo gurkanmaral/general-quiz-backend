@@ -1,4 +1,4 @@
-import type { QuestionDifficulty, UnlockRule } from '@general-quiz/contracts';
+import type { QuestionDifficulty, UnlockRule } from '../../contracts';
 
 /** What an Unlock Rule is evaluated against: one player's Quiz Record (FR-15, AD-10). */
 export type RuleContext = {

@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { FriendsResponseSchema, LinkOwnerResponseSchema, MeResponseSchema, NotificationsResponseSchema, ProblemSchema, SocialSettingsSchema } from '@general-quiz/contracts';
+import { FriendsResponseSchema, LinkOwnerResponseSchema, MeResponseSchema, NotificationsResponseSchema, ProblemSchema, SocialSettingsSchema } from '../src/contracts';
 import { importContent } from '../src/modules/content';
 import { openTestDatabase } from './db';
 import { completeProfile, createSignedInUser, createTestApp, jsonRequest, signUp, confirmLastMail } from './auth';

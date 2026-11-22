@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { QuestionDifficulty } from '@general-quiz/contracts';
+import type { QuestionDifficulty } from '../src/contracts';
 import { describeUnlockRule, isRuleMet, type RuleContext } from '../src/modules/progress';
 
 // A Quiz with 4 Standard (s1–s4) and 2 Expert (e1, e2) published Questions.

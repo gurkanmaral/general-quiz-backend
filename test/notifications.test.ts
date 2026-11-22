@@ -7,7 +7,7 @@ import {
   ProblemSchema,
   UNREAD_EVENT,
   type NotificationEvent,
-} from '@general-quiz/contracts';
+} from '../src/contracts';
 import { openTestDatabase } from './db';
 import { completeProfile, createSignedInUser, createTestApp, jsonRequest } from './auth';
 import { connected, listen, next, socketFor } from './realtime';

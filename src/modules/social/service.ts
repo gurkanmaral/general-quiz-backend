@@ -1,4 +1,4 @@
-import type { SendFriendRequestBody } from '@general-quiz/contracts';
+import type { SendFriendRequestBody } from '../../contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { createFriends, deleteFriendsUserData, type PlayerDirectory, type SendRequestResult } from './friends';
 import { createNotifications, deleteNotificationsUserData } from './notifications';

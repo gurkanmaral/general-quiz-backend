@@ -1,6 +1,6 @@
 import { eq, inArray } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { ProblemSchema, QuizListResponseSchema, SoloAnswerResponseSchema, SoloGameResponseSchema, SoloQuestionSchema } from '@general-quiz/contracts';
+import { ProblemSchema, QuizListResponseSchema, SoloAnswerResponseSchema, SoloGameResponseSchema, SoloQuestionSchema } from '../src/contracts';
 import { question, soloGame } from '../src/db/schema';
 import { importContent } from '../src/modules/content';
 import { pickQuestions } from '../src/modules/quizzes';

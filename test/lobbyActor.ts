@@ -1,4 +1,4 @@
-import type { LobbyRemoved, LobbyState, PlayerCard } from '@general-quiz/contracts';
+import type { LobbyRemoved, LobbyState, PlayerCard } from '../src/contracts';
 import { LobbyActor, type GameQuestion, type LobbyEnv } from '../src/modules/lobbies';
 import { ManualClock } from './clock';
 

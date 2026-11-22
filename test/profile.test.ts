@@ -6,7 +6,7 @@ import {
   ProblemSchema,
   ProfileResponseSchema,
   SoloGameResponseSchema,
-} from '@general-quiz/contracts';
+} from '../src/contracts';
 import { equippedTitle, question } from '../src/db/schema';
 import { importContent } from '../src/modules/content';
 import { openTestDatabase } from './db';

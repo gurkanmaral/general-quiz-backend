@@ -8,7 +8,7 @@ import {
   ProblemSchema,
   QuizListResponseSchema,
   type PlayerCard,
-} from '@general-quiz/contracts';
+} from '../src/contracts';
 import { eq } from 'drizzle-orm';
 import { question } from '../src/db/schema';
 import { importContent } from '../src/modules/content';

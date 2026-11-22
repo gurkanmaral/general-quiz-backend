@@ -1,5 +1,5 @@
 import { inArray, sql } from 'drizzle-orm';
-import { toRarity, type Rarity } from '@general-quiz/contracts';
+import { toRarity, type Rarity } from '../../contracts';
 import type { DbExecutor } from '../../db/client';
 import type { Logger } from '../../logger';
 import { quizAwards } from '../quizzes';

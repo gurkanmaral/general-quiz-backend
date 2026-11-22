@@ -1,5 +1,5 @@
 import { and, eq, inArray, sql } from 'drizzle-orm';
-import type { QuestionDifficulty, QuizRecord, UnlockedAward } from '@general-quiz/contracts';
+import type { QuestionDifficulty, QuizRecord, UnlockedAward } from '../../contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { publishedQuestionIndex, quizAwards, type EndedSoloGame } from '../quizzes';
 import { correctQuestion, equippedTitle, quizRecord, userAward } from './schema';

@@ -1,6 +1,6 @@
 import { boolean, doublePrecision, index, integer, jsonb, pgSchema, primaryKey, smallint, text, timestamp } from 'drizzle-orm/pg-core';
 import { accountsUserTable } from '../accounts';
-import type { DailyQuestion, LocalizedText, UnlockRule } from '@general-quiz/contracts';
+import type { DailyQuestion, LocalizedText, UnlockRule } from '../../contracts';
 
 export const knoQuizzes = pgSchema('kno_quizzes');
 

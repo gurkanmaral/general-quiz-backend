@@ -9,7 +9,7 @@ import {
   type SoloAnswerBody,
   type SoloAnswerResponse,
   type SoloGameResponse,
-} from '@general-quiz/contracts';
+} from '../../contracts';
 import type { Db, DbExecutor } from '../../db/client';
 import { uuidv7 } from '../../db/ids';
 import { question, quiz, soloAnswer, soloGame } from './schema';

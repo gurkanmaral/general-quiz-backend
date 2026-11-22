@@ -1,4 +1,4 @@
-import { UsernameSchema } from '@general-quiz/contracts';
+import { UsernameSchema } from '../../contracts';
 
 /**
  * Small offensive-word and impersonation blocklist (NFR-8). Matched as a substring of the

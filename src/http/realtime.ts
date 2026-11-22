@@ -1,6 +1,6 @@
 import type { IncomingHttpHeaders, Server as HttpServer } from 'node:http';
 import { Server, type Socket } from 'socket.io';
-import { LOBBY_NAMESPACE, NOTIFICATION_EVENT, NOTIFICATIONS_NAMESPACE, SOCKET_PATH, UNREAD_EVENT } from '@general-quiz/contracts';
+import { LOBBY_NAMESPACE, NOTIFICATION_EVENT, NOTIFICATIONS_NAMESPACE, SOCKET_PATH, UNREAD_EVENT } from '../contracts';
 import { attachLobbySockets } from '../modules/lobbies';
 import type { Logger } from '../logger';
 import type { createApp } from './app';

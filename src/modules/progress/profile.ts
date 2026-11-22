@@ -1,5 +1,5 @@
 import { and, asc, eq, inArray } from 'drizzle-orm';
-import type { EquippedTitle, ProfileAward, ProfileQuiz } from '@general-quiz/contracts';
+import type { EquippedTitle, ProfileAward, ProfileQuiz } from '../../contracts';
 import type { DbExecutor } from '../../db/client';
 import { awardDefinitions, quizAwards, quizTitles, type AwardDefinition } from '../quizzes';
 import { rarityOf } from './rarity';

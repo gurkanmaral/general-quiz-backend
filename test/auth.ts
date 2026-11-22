@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import type { AvatarId } from '@general-quiz/contracts';
+import type { AvatarId } from '../src/contracts';
 import { DEFAULT_AUTH_URL } from '../src/env';
 import { createApp, type AppDeps } from '../src/http/app';
 import { createLogger } from '../src/logger';
