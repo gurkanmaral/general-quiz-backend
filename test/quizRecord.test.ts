@@ -1,6 +1,6 @@
 import { eq, inArray } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { QuizListResponseSchema, SoloAnswerResponseSchema, SoloGameResponseSchema, type SoloGameResponse } from '../src/contracts';
+import { QuizListResponseSchema, SoloAnswerResponseSchema, SoloGameResponseSchema, type SoloAnswerResponse, type SoloGameResponse } from '../src/contracts';
 import { correctQuestion, question, quizRecord, soloGame } from '../src/db/schema';
 import { importContent } from '../src/modules/content';
 import { isWon, toQuizRecord } from '../src/modules/progress';
@@ -36,7 +36,7 @@ async function correctIndexes(game: SoloGameResponse): Promise<Map<string, numbe
 /** Answers `count` Questions (all by default); `right(position)` decides which are correct. */
 async function play(game: SoloGameResponse, right: (position: number) => boolean, count = game.questions.length) {
   const correct = await correctIndexes(game);
-  let last;
+  let last: SoloAnswerResponse | undefined;
   for (const item of game.questions.slice(0, count)) {
     const index = correct.get(item.slug)!;
     const res = await app.request(

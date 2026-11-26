@@ -1,6 +1,6 @@
 import { eq, inArray } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { QuizListResponseSchema, SoloAnswerResponseSchema, SoloGameResponseSchema, type SoloGameResponse } from '../src/contracts';
+import { QuizListResponseSchema, SoloAnswerResponseSchema, SoloGameResponseSchema, type SoloAnswerResponse, type SoloGameResponse } from '../src/contracts';
 import { award, question, userAward } from '../src/db/schema';
 import { importContent } from '../src/modules/content';
 import { openTestDatabase } from './db';
@@ -30,7 +30,7 @@ async function playPerfect(game: SoloGameResponse) {
     .from(question)
     .where(inArray(question.slug, game.questions.map((item) => item.slug)));
   const right = new Map(rows.map((row) => [row.slug, row.correctIndex]));
-  let last;
+  let last: SoloAnswerResponse | undefined;
   for (const item of game.questions) {
     const res = await app.request(`/api/v1/solo-games/${game.gameId}/answers`, jsonRequest('POST', { position: item.position, selectedIndex: right.get(item.slug)! }, ada));
     last = SoloAnswerResponseSchema.parse(await res.json());

@@ -11,7 +11,8 @@
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json",
     "build": "node build.mjs",
-    "kno:prod": "node --enable-source-maps dist/cli.js"
+    "kno:prod": "node --enable-source-maps dist/cli.js",
+    "lint": "biome lint"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.8",
@@ -24,6 +25,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.6.9",
     "@types/node": "^22.10.0",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.11",

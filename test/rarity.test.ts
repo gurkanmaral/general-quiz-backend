@@ -1,6 +1,6 @@
 import { inArray } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import { SoloAnswerResponseSchema, SoloGameResponseSchema, type SoloGameResponse } from '../src/contracts';
+import { SoloAnswerResponseSchema, SoloGameResponseSchema, type SoloAnswerResponse, type SoloGameResponse } from '../src/contracts';
 import { question, rarity } from '../src/db/schema';
 import { createLogger } from '../src/logger';
 import { importContent } from '../src/modules/content';
@@ -28,7 +28,7 @@ async function playGame(cookie: string, slug: string, allRight: boolean) {
   );
   const rows = await db.select().from(question).where(inArray(question.slug, game.questions.map((item) => item.slug)));
   const right = new Map(rows.map((row) => [row.slug, row.correctIndex]));
-  let last;
+  let last: SoloAnswerResponse | undefined;
   for (const item of game.questions) {
     const index = right.get(item.slug)!;
     const res = await app.request(

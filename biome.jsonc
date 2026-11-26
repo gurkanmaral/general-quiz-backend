@@ -1,0 +1,18 @@
+// Lint only: the formatter stays off so the codebase isn't reformatted in one sweep.
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+	"files": { "includes": ["src/**", "test/**", "*.ts", "*.mjs"] },
+	"formatter": { "enabled": false },
+	"assist": { "enabled": false },
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"preset": "recommended",
+			"style": {
+				// Non-null assertions follow noUncheckedIndexedAccess lookups.
+				"noNonNullAssertion": "off"
+			}
+		}
+	}
+}

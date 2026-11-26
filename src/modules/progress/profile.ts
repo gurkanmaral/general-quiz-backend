@@ -45,7 +45,7 @@ export async function equipTitle(db: DbExecutor, userId: string, slug: string | 
     .where(and(eq(userAward.userId, userId), eq(userAward.awardSlug, slug)))
     .limit(1);
   const definition = earned ? (await awardDefinitions(db, [slug])).get(slug) : undefined;
-  if (!definition || definition.kind !== 'title') return { ok: false };
+  if (definition?.kind !== 'title') return { ok: false };
   await db
     .insert(equippedTitle)
     .values({ userId, awardSlug: slug })

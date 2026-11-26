@@ -195,7 +195,7 @@ export class LobbyActor {
   disconnect(userId: string, socketId: string): Promise<void> {
     return this.run(() => {
       const player = this.players.get(userId);
-      if (!player || !player.sockets.delete(socketId) || player.sockets.size > 0) return;
+      if (!player?.sockets.delete(socketId) || player.sockets.size > 0) return;
       player.graceTimer = this.env.clock.setTimeout(() => void this.expire(userId), DISCONNECT_GRACE_MS);
       this.changed();
       // Nobody waits for a player who dropped mid-Question.
