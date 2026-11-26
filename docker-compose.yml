@@ -1,0 +1,43 @@
+# Local development: Postgres and the API with hot reload.
+#   docker compose up --build        API on http://localhost:8787, Postgres on localhost:5433
+#   docker compose exec api npm run kno -- reports
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: kno
+    ports:
+      - '5433:5432' # host-side `npm test` and tools use localhost:5433 (see .env.example)
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres', '-d', 'kno']
+      interval: 2s
+      retries: 30
+
+  api:
+    build:
+      context: .
+      target: dev
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres@db:5432/kno
+      PORT: 8787
+      LOG_LEVEL: info
+      BETTER_AUTH_URL: http://localhost:5180
+      # Apply migrations and load content/ on every start.
+      IMPORT_ON_START: 'true'
+    ports:
+      - '8787:8787'
+    volumes:
+      - ./src:/app/src
+      - ./content:/app/content
+
+volumes:
+  pgdata:
+    # The same volume the old `kno-postgres` container used, so existing data carries over.
+    name: kno-pgdata

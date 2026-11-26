@@ -19,3 +19,5 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      # The production image must keep building (it once broke silently after the repo split).
+      - run: docker build .
